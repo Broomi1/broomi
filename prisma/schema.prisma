@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  role         String   @default("customer") // "admin" or "customer"
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  memories     Memory[]
+}
+
+model Memory {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  description String?
+  type        String   @default("text") // "photo", "video", "voice", "text"
+  mediaUrl    String?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
