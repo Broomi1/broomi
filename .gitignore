@@ -20,6 +20,9 @@ prisma/dev.db-journal
 public/uploads/*
 !public/uploads/.gitkeep
 
+# Large static assets
+public/login-bg.jpg
+
 # Misc
 .DS_Store
 *.pem
