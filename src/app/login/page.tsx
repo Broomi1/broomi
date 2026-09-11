@@ -85,21 +85,41 @@ export default function LoginPage() {
         
         {/* Top Decorative Image / Polaroid */}
         <div className="pt-10 flex justify-center relative">
-          <div className="relative rotate-[-3deg] hover:rotate-0 transition-transform cursor-pointer">
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10 text-rose-400">
+          <div className="relative rotate-[2deg] hover:rotate-0 transition-transform cursor-pointer">
+            
+            {/* The Little Red Heart Pin */}
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 text-rose-400 drop-shadow-md">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
               </svg>
             </div>
-            <div className="bg-white p-2 pb-5 rounded shadow-lg">
-              <div className="w-28 h-24 bg-gradient-to-br from-rose-200 to-amber-100 rounded overflow-hidden relative flex items-center justify-center">
-                 {/* Placeholder for Polaroid image - using emoji for cute effect */}
-                 <span className="text-4xl">🌅</span>
+
+            {/* Back Polaroid (tilted right) */}
+            <div className="absolute top-1 left-2 w-32 h-36 bg-white p-2 pb-6 rounded-sm shadow-md border border-stone-100 rotate-[8deg] z-0">
+               <div className="w-full h-full bg-stone-100/50 rounded-sm"></div>
+            </div>
+
+            {/* Front Polaroid (tilted left) */}
+            <div className="bg-white p-2 pb-8 rounded-sm shadow-lg border border-stone-100 relative z-10 rotate-[-4deg]">
+              <div className="w-28 h-24 overflow-hidden rounded-sm relative">
+                 <img 
+                   src="/couple-polaroid.jpg" 
+                   alt="Couple watching sunset" 
+                   className="w-full h-full object-cover object-top"
+                 />
               </div>
             </div>
+
             {/* Sketch marks around */}
-            <div className="absolute -left-6 top-10 text-stone-500 font-[family-name:--font-caveat] text-2xl rotate-[-15deg]">♡</div>
-            <div className="absolute -right-8 top-12 text-stone-500 font-[family-name:--font-caveat] text-2xl rotate-[15deg]">♡</div>
+            <div className="absolute -left-10 top-16 text-[#6D544F] font-[family-name:--font-caveat] text-3xl rotate-[-15deg] opacity-80">♡</div>
+            <div className="absolute -right-12 top-14 text-[#6D544F] font-[family-name:--font-caveat] text-3xl rotate-[15deg] opacity-80">♡</div>
+            
+            {/* Little sketch lines */}
+            <div className="absolute -left-6 top-10 w-2 h-[2px] bg-[#6D544F] rotate-45 opacity-60 rounded-full"></div>
+            <div className="absolute -left-4 top-24 w-2 h-[2px] bg-[#6D544F] -rotate-12 opacity-60 rounded-full"></div>
+            
+            <div className="absolute -right-6 top-6 w-2 h-[2px] bg-[#6D544F] -rotate-45 opacity-60 rounded-full"></div>
+            <div className="absolute -right-8 top-10 w-2 h-[2px] bg-[#6D544F] rotate-[20deg] opacity-60 rounded-full"></div>
           </div>
         </div>
 
