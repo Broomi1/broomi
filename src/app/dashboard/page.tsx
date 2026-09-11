@@ -39,6 +39,7 @@ export default function DashboardPage() {
   const router = useRouter();
   const [memories, setMemories] = useState<Memory[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -146,7 +147,10 @@ export default function DashboardPage() {
 
                       {/* Media */}
                       {memory.mediaUrl && memory.type === "photo" && (
-                        <div className="px-4 pb-1">
+                        <div 
+                          className="px-4 pb-1 cursor-pointer transition-transform active:scale-[0.98]" 
+                          onClick={() => setSelectedMemory(memory)}
+                        >
                           <img
                             src={memory.mediaUrl}
                             alt={memory.title}
@@ -188,6 +192,79 @@ export default function DashboardPage() {
       </div>
 
       <Nav />
+
+      {/* Photo Lightbox Modal */}
+      {selectedMemory && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ backgroundColor: "rgba(0,0,0,0.85)" }}
+          onClick={() => setSelectedMemory(null)}
+        >
+          <div
+            className="bg-white rounded-3xl overflow-hidden w-full max-w-[420px] shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Full image */}
+            {selectedMemory.mediaUrl && (
+              <div className="relative">
+                <img
+                  src={selectedMemory.mediaUrl}
+                  alt={selectedMemory.title}
+                  className="w-full max-h-[60vh] object-contain bg-stone-900"
+                />
+                {/* Close button */}
+                <button
+                  onClick={() => setSelectedMemory(null)}
+                  className="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/50 text-white flex items-center justify-center text-lg hover:bg-black/70 transition"
+                >
+                  ✕
+                </button>
+              </div>
+            )}
+
+            {/* Details panel */}
+            <div className="p-5 space-y-3">
+              <div className="flex items-center gap-2">
+                <MemoryTypeIcon type={selectedMemory.type} />
+                <h2 className="text-xl font-semibold text-stone-800" style={{ fontFamily: "Georgia, serif" }}>
+                  {selectedMemory.title}
+                </h2>
+              </div>
+
+              <div className="flex items-center gap-2 text-amber-700 text-xs font-medium">
+                <span>📅</span>
+                <span>{formatDate(selectedMemory.date)}</span>
+              </div>
+
+              {selectedMemory.description && (
+                <p className="text-sm text-stone-600 leading-relaxed border-t border-stone-100 pt-3">
+                  {selectedMemory.description}
+                </p>
+              )}
+
+              <div className="flex gap-3 pt-2 border-t border-stone-100">
+                <Link
+                  href={`/memories/${selectedMemory.id}/edit`}
+                  className="flex-1 py-2.5 text-center text-sm font-semibold text-amber-700 bg-amber-50 rounded-xl hover:bg-amber-100 transition"
+                  onClick={() => setSelectedMemory(null)}
+                >
+                  ✏️ Edit
+                </Link>
+                <button
+                  onClick={() => {
+                    if (selectedMemory.mediaUrl) {
+                      window.open(selectedMemory.mediaUrl, "_blank");
+                    }
+                  }}
+                  className="flex-1 py-2.5 text-center text-sm font-semibold text-stone-700 bg-stone-100 rounded-xl hover:bg-stone-200 transition"
+                >
+                  🔗 Open Full
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
