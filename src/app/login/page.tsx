@@ -1,29 +1,39 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useState, useEffect } from "react";
+import { User, Lock, Heart, EyeOff, Eye } from "lucide-react";
 
-export default function WelcomeAndLoginPage() {
-  const router = useRouter();
+export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+  const { status } = useSession();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/");
+    }
+  }, [status, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
     setError("");
+    setLoading(true);
 
     if (isLogin) {
       const res = await signIn("credentials", {
         redirect: false,
         username,
         password,
+        loginType: "customer",
       });
+
       if (res?.error) {
         setError("Invalid username or password");
         setLoading(false);
@@ -31,164 +41,185 @@ export default function WelcomeAndLoginPage() {
         router.push("/dashboard");
       }
     } else {
+      // Sign up
       try {
         const res = await fetch("/api/auth/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ username, password }),
         });
+
         const data = await res.json();
+
         if (res.ok) {
-          await signIn("credentials", { redirect: false, username, password });
+          await signIn("credentials", {
+            redirect: false,
+            username,
+            password,
+            loginType: "customer",
+          });
           router.push("/dashboard");
         } else {
           setError(data.error || "Failed to create account");
           setLoading(false);
         }
-      } catch {
-        setError("Network error. Please try again.");
+      } catch (err) {
+        setError("An error occurred");
         setLoading(false);
       }
     }
   };
 
+  if (status === "loading") return null;
+
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-end font-sans relative overflow-hidden"
+    <div 
+      className="min-h-screen flex items-center justify-center p-6"
       style={{
         backgroundImage: "url('/login-bg.jpg')",
         backgroundSize: "cover",
-        backgroundPosition: "center top",
+        backgroundPosition: "center",
       }}
     >
-      {/* Soft gradient overlay at the bottom so card blends in */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#f5ede4]/80 via-transparent to-transparent" />
-
-      {/* Main Card */}
-      <div className="relative z-10 w-full max-w-sm mx-auto mb-0 pb-0">
-        <div className="bg-white/90 backdrop-blur-md rounded-t-[2.5rem] px-7 pt-8 pb-10 shadow-2xl shadow-stone-400/20">
-
-          {/* Lock icon */}
-          <div className="flex justify-center mb-4">
-            <div className="w-12 h-12 rounded-full bg-[#f0e8df] flex items-center justify-center border border-[#e2d5c8]">
-              <svg className="w-5 h-5 text-[#7c6654]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+      <div className="w-full max-w-[360px] bg-[#FAF3EF] shadow-2xl overflow-hidden rounded-t-[140px] rounded-b-[40px] border-4 border-white/40 backdrop-blur-sm relative">
+        
+        {/* Top Decorative Image / Polaroid */}
+        <div className="pt-10 flex justify-center relative">
+          <div className="relative rotate-[-3deg] hover:rotate-0 transition-transform cursor-pointer">
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10 text-rose-400">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
               </svg>
             </div>
+            <div className="bg-white p-2 pb-5 rounded shadow-lg">
+              <div className="w-28 h-24 bg-gradient-to-br from-rose-200 to-amber-100 rounded overflow-hidden relative flex items-center justify-center">
+                 {/* Placeholder for Polaroid image - using emoji for cute effect */}
+                 <span className="text-4xl">🌅</span>
+              </div>
+            </div>
+            {/* Sketch marks around */}
+            <div className="absolute -left-6 top-10 text-stone-500 font-[family-name:--font-caveat] text-2xl rotate-[-15deg]">♡</div>
+            <div className="absolute -right-8 top-12 text-stone-500 font-[family-name:--font-caveat] text-2xl rotate-[15deg]">♡</div>
           </div>
+        </div>
 
-          {/* Title */}
-          <div className="text-center mb-4">
-            <h1 className="text-[1.75rem] font-semibold text-stone-800 tracking-wide" style={{ fontFamily: "Georgia, serif" }}>
+        <div className="px-8 pt-6 pb-10">
+          
+          <div className="text-center mb-6">
+            <h1 className="text-5xl text-[#4A2F2B] font-[family-name:--font-caveat] mb-2 leading-none flex items-center justify-center gap-2">
               MemoryTap
             </h1>
-            <p className="text-stone-500 text-sm mt-2 leading-relaxed">
-              You've received a digital memory box.<br />
-              Sign in or create an account to curate<br />
-              your special moments.
+            <div className="text-[#8D6B63] text-sm mb-4">— ♡ —</div>
+            <p className="text-[#6D544F] text-xs font-medium leading-relaxed tracking-wide">
+              You've received a digital memory box.<br/>
+              Sign in or create an account to curate<br/>
+              your special moments.<br/>
+              <span className="inline-block mt-2 font-[family-name:--font-caveat] text-lg">♡</span>
             </p>
           </div>
 
-          {/* Toggle Tabs */}
-          <div className="flex bg-[#f0e8df] rounded-full p-1 mb-6">
+          <div className="bg-[#EFDDD7] rounded-full p-1.5 flex mb-8 relative shadow-inner">
+            <div 
+              className={`absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] bg-[#B67575] rounded-full transition-all duration-300 ease-out shadow-sm`}
+              style={{ left: isLogin ? '6px' : 'calc(50%)' }}
+            />
             <button
-              onClick={() => { setIsLogin(true); setError(""); }}
-              className={`flex-1 py-2.5 text-sm font-medium rounded-full transition-all ${
-                isLogin
-                  ? "bg-[#e2cdb8] text-stone-800 shadow-sm"
-                  : "text-stone-500 hover:text-stone-700"
+              type="button"
+              onClick={() => setIsLogin(true)}
+              className={`flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-2 z-10 transition-colors ${
+                isLogin ? 'text-white' : 'text-[#6D544F] hover:text-[#4A2F2B]'
               }`}
             >
-              Sign In
+              <Heart size={14} className={isLogin ? "fill-current" : ""} /> Sign In
             </button>
             <button
-              onClick={() => { setIsLogin(false); setError(""); }}
-              className={`flex-1 py-2.5 text-sm font-medium rounded-full transition-all ${
-                !isLogin
-                  ? "bg-[#e2cdb8] text-stone-800 shadow-sm"
-                  : "text-stone-500 hover:text-stone-700"
+              type="button"
+              onClick={() => setIsLogin(false)}
+              className={`flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-2 z-10 transition-colors ${
+                !isLogin ? 'text-white' : 'text-[#6D544F] hover:text-[#4A2F2B]'
               }`}
             >
-              Create Account
+              <User size={14} /> Create Account
             </button>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
-              <div className="bg-red-50 text-red-500 text-xs p-3 rounded-xl border border-red-100 text-center">
+              <div className="p-3 bg-red-50 text-red-500 text-xs rounded-xl text-center border border-red-100">
                 {error}
               </div>
             )}
 
-            {/* Username field */}
             <div>
-              <label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">
-                Username
+              <label className="flex items-center gap-2 text-[10px] font-bold text-[#4A2F2B] uppercase tracking-widest mb-1.5">
+                <Heart size={10} className="fill-current" /> Username
               </label>
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#f7f2ed] border border-[#e8ddd4]">
-                <svg className="w-4 h-4 text-stone-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8D6B63]">
+                  <User size={16} />
+                </div>
                 <input
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  className="w-full bg-[#F5E6E0] border border-transparent focus:border-[#B67575] rounded-full py-3.5 pl-11 pr-4 text-sm text-[#4A2F2B] placeholder:text-[#A88880] focus:outline-none transition-all"
                   placeholder="Enter your username"
-                  className="bg-transparent w-full text-sm text-stone-700 placeholder:text-stone-300 focus:outline-none"
                   required
                 />
               </div>
             </div>
 
-            {/* Password field */}
             <div>
-              <label className="block text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-1.5">
-                Password
+              <label className="flex items-center gap-2 text-[10px] font-bold text-[#4A2F2B] uppercase tracking-widest mb-1.5">
+                <Heart size={10} className="fill-current" /> Password
               </label>
-              <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#f7f2ed] border border-[#e8ddd4]">
-                <svg className="w-4 h-4 text-stone-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
+              <div className="relative">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8D6B63]">
+                  <Lock size={16} />
+                </div>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-[#F5E6E0] border border-transparent focus:border-[#B67575] rounded-full py-3.5 pl-11 pr-11 text-sm text-[#4A2F2B] placeholder:text-[#A88880] focus:outline-none transition-all"
                   placeholder="Enter your password"
-                  className="bg-transparent w-full text-sm text-stone-700 placeholder:text-stone-300 focus:outline-none"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8D6B63] hover:text-[#4A2F2B] transition-colors"
+                >
+                  {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+                </button>
               </div>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3.5 px-6 rounded-full bg-stone-900 text-white text-sm font-medium flex items-center justify-center gap-2 hover:bg-stone-800 active:scale-[0.98] transition-all disabled:opacity-70 shadow-lg shadow-stone-900/20"
+              className="w-full bg-[#4A2F2B] hover:bg-[#3A221F] text-white rounded-full py-4 text-sm font-semibold mt-4 transition-all active:scale-[0.98] disabled:opacity-70 flex items-center justify-center gap-2 shadow-lg relative overflow-hidden"
             >
-              {loading ? (
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-              ) : (
-                <>
-                  {isLogin ? "Sign In" : "Create Account"}
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </>
+              {loading ? "Please wait..." : isLogin ? "Sign In →" : "Create Account →"}
+              {!loading && (
+                <div className="absolute right-6 top-1/2 -translate-y-1/2 font-[family-name:--font-caveat] text-2xl text-[#E6C6C1] rotate-[-10deg]">
+                  ♡
+                </div>
               )}
             </button>
-          </form>
 
-          {/* Footer link */}
-          <div className="text-center mt-5">
-            <Link href="/about" className="text-xs text-stone-400 hover:text-stone-600 transition-colors">
-              How does this work?
-            </Link>
-          </div>
+            <div className="pt-6 text-center">
+              <div className="flex items-center justify-center gap-4 text-xs text-[#8D6B63]">
+                <div className="h-px bg-[#8D6B63]/20 flex-1"></div>
+                <button type="button" className="hover:text-[#4A2F2B] transition-colors">
+                  How does this work?
+                </button>
+                <div className="h-px bg-[#8D6B63]/20 flex-1"></div>
+              </div>
+              <div className="mt-2 text-[#8D6B63] font-[family-name:--font-caveat] text-lg">♡</div>
+            </div>
+
+          </form>
         </div>
       </div>
     </div>
