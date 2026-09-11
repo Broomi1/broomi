@@ -5,17 +5,18 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
 // POST /api/admin/users/[id]/reset-password
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if ((session?.user as any)?.role !== "admin")
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
+  const { id } = await params;
   const { password } = await req.json();
   if (!password) return NextResponse.json({ error: "Password required" }, { status: 400 });
 
   const passwordHash = await bcrypt.hash(password, 10);
   await prisma.user.update({
-    where: { id: params.id },
+    where: { id },
     data: { passwordHash },
   });
 

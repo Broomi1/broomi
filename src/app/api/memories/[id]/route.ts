@@ -4,28 +4,30 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
 
 // DELETE /api/memories/[id]
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const { id } = await params;
   const userId = (session.user as any).id;
-  const memory = await prisma.memory.findUnique({ where: { id: params.id } });
+  const memory = await prisma.memory.findUnique({ where: { id } });
 
   if (!memory || memory.userId !== userId) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
-  await prisma.memory.delete({ where: { id: params.id } });
+  await prisma.memory.delete({ where: { id } });
   return NextResponse.json({ success: true });
 }
 
 // PUT /api/memories/[id]
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await getServerSession(authOptions);
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const { id } = await params;
   const userId = (session.user as any).id;
-  const memory = await prisma.memory.findUnique({ where: { id: params.id } });
+  const memory = await prisma.memory.findUnique({ where: { id } });
 
   if (!memory || memory.userId !== userId) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -33,7 +35,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
   const { title, description, type, date, mediaUrl } = await req.json();
   const updated = await prisma.memory.update({
-    where: { id: params.id },
+    where: { id },
     data: { title, description, type, date: date ? new Date(date) : undefined, mediaUrl },
   });
 
