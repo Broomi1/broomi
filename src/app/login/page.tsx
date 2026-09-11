@@ -81,7 +81,17 @@ export default function LoginPage() {
         backgroundPosition: "center",
       }}
     >
-      <div className="w-full max-w-[360px] bg-[#FAF3EF] shadow-2xl overflow-hidden rounded-t-[140px] rounded-b-[40px] border-4 border-white/40 backdrop-blur-sm relative">
+      <div className="relative w-full max-w-[360px] mt-8">
+        
+        {/* Sticky Note */}
+        <div className="absolute -top-8 -left-4 z-30 rotate-[-10deg] shadow-[2px_4px_12px_rgba(0,0,0,0.1)] bg-[#F8F2EC] p-3 px-5 border border-[#EAE0D5]">
+          <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-5 bg-[#E2D2C2]/90 -rotate-3"></div>
+          <p className="font-[family-name:--font-caveat] text-[22px] text-[#4A2F2B] leading-[1.1] text-center">
+            Better<br/>Moments<br/>Together<br/><span className="text-lg">♡</span>
+          </p>
+        </div>
+
+        <div className="w-full bg-[#FAF3EF] shadow-2xl overflow-hidden rounded-t-[160px] rounded-b-[40px] border-[6px] border-white/60 backdrop-blur-sm relative">
         
         {/* Top Decorative Image / Polaroid */}
         <div className="pt-10 flex justify-center relative">
@@ -240,6 +250,7 @@ export default function LoginPage() {
             </div>
 
           </form>
+        </div>
         </div>
       </div>
     </div>
