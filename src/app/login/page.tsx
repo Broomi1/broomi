@@ -290,7 +290,7 @@ export default function LoginPage() {
                   transition: "color 0.2s",
                 }}
               >
-                👤 Create Account
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="16" y1="11" x2="22" y2="11"></line></svg> Create Account
               </button>
             </div>
           </div>
@@ -309,8 +309,8 @@ export default function LoginPage() {
                 <span style={{ color: "#B87070" }}>♥</span> Username
               </label>
               <div style={{ position: "relative" }}>
-                <span style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "#9B7168", fontSize: "16px" }}>
-                  👤
+                <span style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "#9B7168", display: "flex" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 </span>
                 <input
                   type="text"
@@ -339,8 +339,8 @@ export default function LoginPage() {
                 <span style={{ color: "#B87070" }}>♥</span> Password
               </label>
               <div style={{ position: "relative" }}>
-                <span style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "#9B7168", fontSize: "16px" }}>
-                  🔒
+                <span style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "#9B7168", display: "flex" }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                 </span>
                 <input
                   type={showPassword ? "text" : "password"}
@@ -372,12 +372,15 @@ export default function LoginPage() {
                     border: "none",
                     cursor: "pointer",
                     color: "#9B7168",
-                    fontSize: "16px",
                     display: "flex",
                     alignItems: "center",
                   }}
                 >
-                  {showPassword ? "👁" : "🚫"}
+                  {showPassword ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                  )}
                 </button>
               </div>
             </div>
@@ -409,19 +412,23 @@ export default function LoginPage() {
 
                 {/* Sparkle heart circle on right side of button */}
                 {!loading && (
-                  <span
+                  <div
                     style={{
                       position: "absolute",
-                      right: "20px",
+                      right: "24px",
                       top: "50%",
                       transform: "translateY(-50%)",
                       color: "#E8C4C4",
-                      fontFamily: "var(--font-caveat), cursive",
-                      fontSize: "22px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    ♡
-                  </span>
+                    <span style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "24px" }}>♡</span>
+                    <span style={{ position: "absolute", top: "-4px", left: "-6px", fontSize: "10px", transform: "rotate(-20deg)" }}>/</span>
+                    <span style={{ position: "absolute", top: "2px", left: "-10px", fontSize: "10px", transform: "rotate(-60deg)" }}>-</span>
+                    <span style={{ position: "absolute", top: "-8px", right: "2px", fontSize: "10px", transform: "rotate(20deg)" }}>\</span>
+                  </div>
                 )}
               </button>
             </div>
