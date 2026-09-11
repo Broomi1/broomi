@@ -81,32 +81,34 @@ export default function DashboardPage() {
       }}
     >
       {/* Header */}
-      <header className="pt-14 pb-4 px-6">
-        <p className="text-[11px] font-bold text-amber-800 uppercase tracking-[0.2em] mb-1">
+      <header className="pt-16 pb-6 px-6">
+        <p className="text-[10px] font-bold text-[#A68A78] uppercase tracking-[0.15em] mb-1">
           Your Space
         </p>
-        <h1 className="text-[2rem] font-semibold text-stone-800 leading-tight" style={{ fontFamily: "Georgia, serif" }}>
-          Hello, {user?.name} 👋
+        <h1 className="text-[2.2rem] font-semibold text-black leading-tight flex items-center gap-2" style={{ fontFamily: "Georgia, serif", letterSpacing: "-0.02em" }}>
+          Hello, {user?.name}
+          <span className="text-3xl inline-block drop-shadow-sm">👋</span>
         </h1>
-        <p className="text-stone-500 text-sm mt-1">
+        <p className="text-[#8B8276] text-sm mt-1">
           {memories.length} {memories.length === 1 ? "memory" : "memories"} collected
         </p>
       </header>
 
       {/* Add a Memory CTA */}
-      <div className="px-6 mb-6 mt-2">
+      <div className="px-6 mb-8 mt-1">
         <Link
           href="/memories/new"
-          className="w-full flex items-center justify-center gap-2 py-4 rounded-full bg-stone-900 text-white text-sm font-semibold shadow-lg hover:bg-stone-800 transition-all active:scale-[0.98]"
+          className="w-full flex items-center justify-center gap-2 py-4 rounded-full text-white text-[15px] font-medium shadow-md transition-all active:scale-[0.98]"
+          style={{ backgroundColor: "#222222" }}
         >
-          <span className="text-lg">+</span> Add a Memory
+          <span className="text-xl font-light leading-none relative" style={{ top: "-1px" }}>+</span> Add a Memory
         </Link>
       </div>
 
       {/* Timeline */}
-      <div className="px-5">
+      <div className="px-6 relative">
         {memories.length === 0 ? (
-          <div className="text-center py-20 space-y-3">
+          <div className="text-center py-20 space-y-3 relative z-10">
             <div className="text-5xl">🌿</div>
             <h3 className="text-lg font-medium text-stone-600" style={{ fontFamily: "Georgia, serif" }}>
               Your story starts here
@@ -115,65 +117,74 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div>
-            <h2 className="text-[11px] font-bold text-stone-400 uppercase tracking-[0.2em] mb-4 px-1">Timeline</h2>
+            <h2 className="text-[10px] font-bold text-[#A68A78] uppercase tracking-[0.15em] mb-4">Timeline</h2>
 
             <div className="relative">
               {/* Vertical timeline line */}
-              <div className="absolute left-[11px] top-3 bottom-3 w-[2px] bg-stone-200/80 rounded-full" />
+              <div className="absolute left-[8px] top-6 bottom-0 w-[1px] bg-[#D4CEC4]" />
 
-              <div className="space-y-5">
+              <div className="space-y-6">
                 {memories.map((memory) => (
-                  <div key={memory.id} className="flex gap-4 relative">
+                  <div key={memory.id} className="relative pl-7">
                     {/* Timeline dot */}
-                    <div className="shrink-0 w-6 h-6 rounded-full bg-amber-300 border-4 border-white shadow-md mt-3 z-10" />
+                    <div className="absolute left-0 top-6 w-4 h-4 rounded-full bg-white shadow-sm flex items-center justify-center z-10">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#E0B56A]" />
+                    </div>
+                    {/* Speech bubble pointer */}
+                    <div className="absolute left-6 top-7 w-0 h-0 border-t-[6px] border-t-transparent border-r-[8px] border-r-[#FDFBF8] border-b-[6px] border-b-transparent z-20" />
 
                     {/* Memory Card */}
-                    <div className="flex-1 bg-white/80 backdrop-blur-sm rounded-2xl shadow-md border border-white/60 overflow-hidden">
+                    <div 
+                      className="bg-[#FDFBF8] rounded-[24px] overflow-hidden relative shadow-sm border border-[#EBE5DB]/50"
+                    >
                       {/* Card Header */}
-                      <div className="px-4 pt-4 pb-2">
+                      <div className="px-5 pt-5 pb-3">
                         <div className="flex items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
                             <MemoryTypeIcon type={memory.type} />
-                            <h3 className="font-semibold text-stone-800 text-[15px]" style={{ fontFamily: "Georgia, serif" }}>
+                            <h3 className="font-semibold text-black text-[15px]">
                               {memory.title}
                             </h3>
                           </div>
-                          <span className="text-xs text-stone-400 shrink-0">{formatDate(memory.date)}</span>
+                          <span className="text-[13px] text-[#9A9A9A] shrink-0 font-medium">
+                            {formatDate(memory.date)}
+                          </span>
                         </div>
                         {memory.description && (
-                          <p className="text-sm text-stone-400 mt-1 line-clamp-2">{memory.description}</p>
+                          <p className="text-[15px] text-[#8B8276] mt-1">{memory.description}</p>
                         )}
                       </div>
 
                       {/* Media */}
                       {memory.mediaUrl && memory.type === "photo" && (
                         <div 
-                          className="px-4 pb-1 cursor-pointer transition-transform active:scale-[0.98]" 
+                          className="px-5 pb-2 cursor-pointer transition-transform active:scale-[0.99]" 
                           onClick={() => setSelectedMemory(memory)}
                         >
                           <img
                             src={memory.mediaUrl}
                             alt={memory.title}
-                            className="w-full h-52 object-cover rounded-xl border border-stone-100"
+                            className="w-full h-48 object-cover rounded-2xl border border-[#EBE5DB]/50"
                           />
                         </div>
                       )}
                       {memory.mediaUrl && memory.type === "video" && (
-                        <div className="px-4 pb-1">
-                          <video src={memory.mediaUrl} controls className="w-full rounded-xl" />
+                        <div className="px-5 pb-2">
+                          <video src={memory.mediaUrl} controls className="w-full h-48 object-cover rounded-2xl border border-[#EBE5DB]/50" />
                         </div>
                       )}
                       {memory.mediaUrl && memory.type === "voice" && (
-                        <div className="px-4 pb-1">
+                        <div className="px-5 pb-2">
                           <audio src={memory.mediaUrl} controls className="w-full" />
                         </div>
                       )}
 
                       {/* Actions */}
-                      <div className="px-4 py-3 flex gap-3">
+                      <div className="px-5 pb-5 pt-1 flex gap-4">
                         <Link
                           href={`/memories/${memory.id}/edit`}
-                          className="text-sm text-amber-600 hover:text-amber-800 font-semibold transition-colors"
+                          className="text-[15px] font-medium transition-colors"
+                          style={{ color: "#C37A5C" }}
                         >
                           Edit
                         </Link>
@@ -276,18 +287,18 @@ function DeleteButton({ id, onDelete }: { id: string; onDelete: () => void }) {
     onDelete();
   };
   return confirming ? (
-    <span className="text-sm flex gap-2">
-      <button onClick={handleDelete} className="text-red-500 font-semibold hover:text-red-700">
+    <span className="text-[15px] flex gap-2">
+      <button onClick={handleDelete} className="text-red-500 font-medium hover:text-red-700">
         Confirm
       </button>
-      <button onClick={() => setConfirming(false)} className="text-stone-400">
+      <button onClick={() => setConfirming(false)} className="text-[#9A9A9A] font-medium">
         Cancel
       </button>
     </span>
   ) : (
     <button
       onClick={() => setConfirming(true)}
-      className="text-sm text-stone-400 hover:text-red-400 font-medium transition-colors"
+      className="text-[15px] text-[#9A9A9A] font-medium transition-colors"
     >
       Delete
     </button>
