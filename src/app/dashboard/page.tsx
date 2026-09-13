@@ -18,12 +18,7 @@ interface Memory {
 
 function formatDateDisplay(dateStr: string) {
   const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-}
-
-function formatFullDate(dateStr: string) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 export default function DashboardPage() {
@@ -51,264 +46,235 @@ export default function DashboardPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FDFBF8]">
-        <div className="animate-spin w-8 h-8 border-4 border-[#3D2410] border-t-transparent rounded-full" />
+      <div className="min-h-screen flex items-center justify-center bg-[#FDF6F3]">
+        <div className="animate-spin w-8 h-8 border-4 border-[#3C2415] border-t-transparent rounded-full" />
       </div>
     );
   }
 
   const user = session?.user as any;
-  const recentMemories = memories.slice(0, 5); // top 5 recent for vertical list
-  const featuredMemories = memories.filter(m => m.mediaUrl).slice(0, 4); // top 4 with media for carousel
+  const recentMemories = memories.slice(0, 5);
+  const featuredMemory = memories.find(m => m.mediaUrl) || memories[0];
 
   return (
     <div
-      className="min-h-screen pb-32"
+      className="min-h-screen pb-40 font-sans"
       style={{
-        backgroundImage: "url('/dashboard-bg.jpg')",
+        backgroundImage: "url('/dashboard-bunny-bg.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
       }}
     >
       {/* ── HEADER ── */}
-      <header className="pt-20 px-6 pb-4 relative z-10">
-        <h1 
-          className="text-[2.5rem] leading-[1.1] text-[#3D2410] tracking-tight relative inline-block"
-          style={{ fontFamily: "var(--font-caveat), cursive", fontWeight: 700 }}
-        >
-          Hello,<br />
-          Welcome back!
-          <span 
-            className="absolute -right-8 bottom-0" 
-            style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.8rem" }}
-          >
-            ♡
-          </span>
-          <svg className="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 100 8" preserveAspectRatio="none">
-            <path d="M0,4 Q25,8 50,4 T100,4" stroke="#8B7055" strokeWidth="1.5" fill="none" />
-          </svg>
+      <header className="pt-20 px-6 pb-6 relative z-10">
+        <h2 className="text-[1.3rem] text-[#3C2415] mb-[-4px]" style={{ fontFamily: "var(--font-caveat), cursive", fontWeight: 700 }}>
+          Good to see you,
+        </h2>
+        <h1 className="text-[3rem] font-bold text-[#3C2415] leading-none mb-3 tracking-tight flex items-center gap-2">
+          {user?.name?.split(' ')[0] || "There"}
+          <span className="text-[2rem] font-normal" style={{ fontFamily: "var(--font-caveat), cursive" }}>♡</span>
         </h1>
-        <p className="text-[11px] text-[#5C4532] mt-5 leading-relaxed font-medium uppercase tracking-[0.05em]" style={{ fontFamily: "monospace" }}>
-          Memories are the little<br />
-          pieces of happiness<br />
-          we collect in life ♡
+        
+        <p className="text-[1.1rem] text-[#7A665A] leading-[1.3]" style={{ fontFamily: "var(--font-caveat), cursive", fontWeight: 600 }}>
+          Your memories<br/>
+          are little pieces<br/>
+          of happiness ♡
         </p>
+        
+        {/* Underline doodle */}
+        <svg width="80" height="10" viewBox="0 0 100 10" fill="none" className="mt-2 opacity-60">
+          <path d="M5,5 Q50,10 95,2" stroke="#A66B6B" strokeWidth="2" strokeLinecap="round" />
+        </svg>
 
-        {/* Profile Circle */}
-        <Link href="/profile" className="absolute top-16 right-6 w-10 h-10 rounded-full bg-[#F5ECE0] border border-[#DCD0C0] shadow-sm flex items-center justify-center text-[#8B7055]">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-          </svg>
-        </Link>
+        {/* Small scattered hearts/stars near text */}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="absolute top-16 right-32 opacity-70">
+           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="#A66B6B" strokeWidth="1.5" />
+        </svg>
       </header>
 
+      {/* ── TODAY's MEMORY ── */}
+      {featuredMemory && (
+        <div className="px-5 mt-2 relative z-10">
+          <div className="relative bg-[#FCF8F5]/90 backdrop-blur-md rounded-[24px] p-4 shadow-sm border border-[#F0E6DF]">
+            
+            {/* Tape Label */}
+            <div 
+              className="absolute -top-3 left-6 px-3 py-1 shadow-sm rotate-[-3deg]"
+              style={{ backgroundColor: "#E3C2AA", color: "#4A3320" }}
+            >
+              <span className="text-[14px] font-bold" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+                Today's Memory ♡
+              </span>
+            </div>
+
+            <div className="flex gap-4 mt-3">
+              {/* Image */}
+              <div className="w-[130px] h-[130px] shrink-0 rounded-[16px] overflow-hidden relative shadow-sm bg-[#F5ECE0]">
+                {featuredMemory.mediaUrl ? (
+                  <img src={featuredMemory.mediaUrl} alt={featuredMemory.title} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-4xl">
+                    {featuredMemory.type === "text" ? "📝" : "🎙️"}
+                  </div>
+                )}
+                <div className="absolute top-2 right-2 text-white drop-shadow-md">
+                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                   </svg>
+                </div>
+              </div>
+
+              {/* Info */}
+              <div className="flex-1 py-1 relative">
+                <button className="absolute -top-1 right-0 text-[#8B6A5B] opacity-70">
+                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                     <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                   </svg>
+                </button>
+                <h3 className="text-[1.6rem] text-[#3C2415] font-bold leading-tight mb-2 pr-4" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+                  {featuredMemory.title} ♡
+                </h3>
+                <p className="text-[#6B5A50] text-[15px] leading-[1.2] line-clamp-3 mb-3" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+                  {featuredMemory.description || "A special moment saved forever."}
+                </p>
+                <div className="flex items-center gap-1.5 text-[#8B6A5B] text-[12px] font-medium">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  {formatDateDisplay(featuredMemory.date)}
+                </div>
+              </div>
+            </div>
+            
+            {/* Doodles bottom right */}
+            <div className="absolute -bottom-2 right-4 text-[#A66B6B] opacity-60 flex gap-1">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mt-1"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── ADD MEMORY BUTTON ── */}
-      <div className="px-5 mt-2 relative z-10">
+      <div className="px-5 mt-6 relative z-10">
         <Link
           href="/memories/new"
-          className="w-full h-16 rounded-full flex items-center justify-between px-6 shadow-md transition-all active:scale-[0.98] relative overflow-hidden"
-          style={{ backgroundColor: "#4A3628" }}
+          className="w-full rounded-[30px] flex items-center justify-between p-4 shadow-md transition-transform active:scale-[0.98] relative"
+          style={{ backgroundColor: "#A36D6D" }}
         >
-          {/* Sparkles left */}
-          <span className="absolute left-4 top-4 text-[#C4A07A] opacity-50" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "18px" }}>✧</span>
-          <span className="absolute left-8 bottom-3 text-[#C4A07A] opacity-30" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "14px" }}>+</span>
-          
-          <div className="flex-1 flex justify-center items-center gap-3">
-            <span className="text-[#FDFBF8] text-2xl font-light leading-none relative" style={{ top: "-1px" }}>+</span>
-            <span className="text-[#FDFBF8] text-[17px] font-medium tracking-wide" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.4rem" }}>Add a Memory</span>
+          <div className="flex items-center gap-4">
+            {/* Camera Icon */}
+            <div className="relative text-white ml-2">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <rect x="3" y="7" width="18" height="14" rx="3" ry="3"></rect>
+                <circle cx="12" cy="14" r="3"></circle>
+                <path d="M7 7V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              {/* Sparkles */}
+              <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="absolute -top-2 -right-3 text-white/80">
+                <line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+              </svg>
+            </div>
+            
+            <div className="text-white">
+              <h3 className="text-[1.4rem] font-medium leading-none mb-1" style={{ fontFamily: "var(--font-caveat), cursive" }}>Add Memory</h3>
+              <p className="text-[11px] opacity-90 tracking-wide font-medium" style={{ fontFamily: "monospace" }}>Capture a moment, keep it forever ♡</p>
+            </div>
           </div>
-
-          <div className="w-8 h-8 rounded-full bg-[#7A5C48] flex items-center justify-center text-[#FDFBF8]">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          
+          <div className="text-white opacity-80 mr-2">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </div>
         </Link>
-      </div>
-
-      {/* ── STATS BAR ── */}
-      <div className="px-5 mt-5 relative z-10">
-        <div className="w-full bg-[#FCF8F2] border border-[#EBE3D5] shadow-sm rounded-[24px] py-4 px-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4A3628" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <circle cx="8.5" cy="8.5" r="1.5"></circle>
-              <polyline points="21 15 16 10 5 21"></polyline>
-            </svg>
-            <div>
-              <div className="text-[#4A3628] font-bold text-[15px] leading-tight">{memories.length}</div>
-              <div className="text-[#8B7055] text-[10px] uppercase tracking-wider font-semibold">Memories</div>
-            </div>
-          </div>
-
-          <div className="w-[1px] h-8 bg-[#EBE3D5]"></div>
-
-          <div className="flex items-center gap-3">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4A3628" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-              <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-            <div>
-              <div className="text-[#4A3628] font-bold text-[15px] leading-tight">
-                {memories.filter(m => new Date(m.date) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length}
-              </div>
-              <div className="text-[#8B7055] text-[10px] uppercase tracking-wider font-semibold">This week</div>
-            </div>
-          </div>
-
-          <div className="text-[#8B7055]" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "20px" }}>♡</div>
+        
+        {/* Floating heart below button */}
+        <div className="absolute -bottom-3 right-8 text-[#A66B6B] opacity-70">
+           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
         </div>
       </div>
-
-      {/* ── YOUR MEMORIES (CAROUSEL) ── */}
-      {featuredMemories.length > 0 && (
-        <div className="mt-8 relative z-10">
-          <div className="px-6 flex items-end justify-between mb-4">
-            <h2 className="text-[1.8rem] text-[#3D2410] font-bold leading-none relative inline-block" style={{ fontFamily: "var(--font-caveat), cursive" }}>
-              Your Memories
-              <svg className="absolute -bottom-1 left-0 w-full" height="4" viewBox="0 0 100 4" preserveAspectRatio="none">
-                <path d="M0,2 Q25,4 50,2 T100,2" stroke="#8B7055" strokeWidth="1.5" fill="none" />
-              </svg>
-            </h2>
-            <Link href="/gallery" className="text-[#8B7055] text-[12px] font-semibold flex items-center gap-1 hover:text-[#4A3628]">
-              See all →
-            </Link>
-          </div>
-          
-          <div className="flex overflow-x-auto gap-4 px-6 pb-4 snap-x hide-scrollbar">
-            {featuredMemories.map(memory => (
-              <Link 
-                href={`/memories/${memory.id}/edit`} 
-                key={memory.id}
-                className="relative shrink-0 w-[160px] h-[220px] rounded-[20px] overflow-hidden shadow-sm snap-start"
-              >
-                <img src={memory.mediaUrl!} alt={memory.title} className="w-full h-full object-cover" />
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/20"></div>
-                
-                {/* Top icons */}
-                <div className="absolute top-3 left-3 bg-black/30 backdrop-blur-md rounded-lg px-2 py-1 flex items-center gap-1">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                    <polyline points="21 15 16 10 5 21"></polyline>
-                  </svg>
-                  <span className="text-white text-[10px] font-bold">1</span>
-                </div>
-                <div className="absolute top-3 right-3 text-white">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-                  </svg>
-                </div>
-
-                {/* Bottom text */}
-                <div className="absolute bottom-3 left-3 right-3 text-white">
-                  <h3 className="text-[14px] font-medium leading-tight line-clamp-2 mb-1" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.1rem" }}>
-                    {memory.title} ♡
-                  </h3>
-                  <p className="text-[10px] text-white/80 font-medium tracking-wide text-right">
-                    {formatDateDisplay(memory.date)}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* ── RECENT MEMORIES (LIST) ── */}
-      <div className="mt-4 px-5 relative z-10">
-        <div className="flex items-center gap-2 mb-4 pl-1">
-          <h2 className="text-[1.8rem] text-[#3D2410] font-bold leading-none" style={{ fontFamily: "var(--font-caveat), cursive" }}>
-            Recent Memories
-          </h2>
-          <span className="text-[#8B7055] text-lg mt-1" style={{ fontFamily: "var(--font-caveat), cursive" }}>✨</span>
+      <div className="mt-8 px-5 relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A66B6B" stroke="#A66B6B" strokeWidth="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+            <h2 className="text-[1.6rem] text-[#3C2415] font-bold leading-none" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+              Recent Memories
+            </h2>
+          </div>
+          <Link href="/gallery" className="text-[#A66B6B] text-[12px] font-semibold flex items-center gap-1 hover:text-[#8B5A5A]" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "16px" }}>
+            View All →
+          </Link>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {recentMemories.map(memory => (
             <Link 
               href={`/memories/${memory.id}/edit`} 
               key={memory.id}
-              className="bg-[#FCF8F2]/90 backdrop-blur-sm rounded-[24px] p-3 flex gap-4 shadow-sm border border-[#EBE3D5] items-center"
+              className="bg-[#FCF8F5]/90 backdrop-blur-sm rounded-[20px] p-2 flex items-center gap-4 shadow-sm border border-[#F0E6DF] relative overflow-hidden"
             >
-              {/* Image Thumbnail */}
-              <div className="w-[85px] h-[85px] shrink-0 rounded-[18px] overflow-hidden bg-[#F5ECE0]">
+              {/* Image Thumbnail with tape */}
+              <div className="w-[70px] h-[70px] shrink-0 rounded-[14px] overflow-hidden bg-[#F5ECE0] relative ml-1">
+                 <div className="absolute -top-2 -left-2 w-8 h-4 bg-[#DDB99F] rotate-[-25deg] z-10 shadow-sm opacity-80"></div>
                 {memory.mediaUrl ? (
                   <img src={memory.mediaUrl} alt={memory.title} className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-[2rem]">
+                  <div className="w-full h-full flex items-center justify-center text-3xl">
                     {memory.type === "text" ? "📝" : memory.type === "voice" ? "🎙️" : "📷"}
                   </div>
                 )}
               </div>
 
               {/* Content */}
-              <div className="flex-1 py-1">
-                <div className="flex justify-between items-start mb-1">
-                  <h3 className="font-bold text-[#3D2410] text-[15px]">{memory.title}</h3>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="#8B7055">
-                    <path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+              <div className="flex-1 py-1 pr-2">
+                <div className="flex justify-between items-center mb-1">
+                  <h3 className="font-bold text-[#3C2415] text-[1.2rem]" style={{ fontFamily: "var(--font-caveat), cursive" }}>{memory.title} ♡</h3>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A66B6B" strokeWidth="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
                   </svg>
                 </div>
                 
-                <div className="flex items-center gap-2 text-[#8B7055] text-[11px] font-medium mb-1.5">
+                <div className="flex items-center gap-2 text-[#8B6A5B] text-[11px] font-medium">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                     <line x1="16" y1="2" x2="16" y2="6"></line>
                     <line x1="8" y1="2" x2="8" y2="6"></line>
                     <line x1="3" y1="10" x2="21" y2="10"></line>
                   </svg>
-                  {formatFullDate(memory.date)}
+                  {formatDateDisplay(memory.date)}
                 </div>
+              </div>
 
-                <div className="flex justify-between items-end">
-                  <div className="flex items-center gap-1.5 text-[#8B7055] text-[11px] font-medium">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      {memory.type === "photo" ? (
-                        <><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></>
-                      ) : memory.type === "video" ? (
-                        <><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></>
-                      ) : memory.type === "voice" ? (
-                        <><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></>
-                      ) : (
-                        <><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></>
-                      )}
-                    </svg>
-                    {memory.type === "photo" ? "1 photo" : memory.type === "video" ? "1 video" : memory.type === "voice" ? "1 voice note" : "Written"}
-                  </div>
-                  
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B7055" strokeWidth="1.5" className="mb-0.5">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                  </svg>
-                </div>
+              {/* Right side floating heart */}
+              <div className="absolute right-4 bottom-2 text-[#A66B6B] opacity-60">
+                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                 </svg>
+                 {/* Sparkle line next to heart */}
+                 <svg width="6" height="6" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3" className="absolute -top-1 -right-1">
+                    <line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/>
+                 </svg>
               </div>
             </Link>
           ))}
           
           {recentMemories.length === 0 && (
-            <div className="text-center py-10 text-[#8B7055]">
+            <div className="text-center py-10 text-[#8B6A5B] font-medium" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.2rem" }}>
               No memories yet. Add your first one above!
             </div>
           )}
         </div>
       </div>
-
-      {/* Hide scrollbar styles */}
-      <style dangerouslySetInnerHTML={{__html: `
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}} />
 
       <Nav />
     </div>
