@@ -5,73 +5,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import Nav from "@/components/Nav";
 
-/* ── Torn paper top edge for type cards ── */
-const TornEdge = ({ fill }: { fill: string }) => (
-  <svg viewBox="0 0 220 14" preserveAspectRatio="none"
-    style={{ position:"absolute", top:0, left:0, width:"100%", height:"14px", display:"block", zIndex:2, pointerEvents:"none" }}>
-    <path d="M0,14 L0,8 Q5,2 11,6 Q17,10 24,5 Q31,0 39,5 Q47,10 55,4 Q63,0 72,5 Q81,10 90,4 Q98,0 107,5 Q116,10 124,4 Q132,0 141,5 Q150,10 158,4 Q166,0 174,5 Q181,10 188,5 Q196,0 210,6 L220,5 L220,14 Z"
-      fill={fill}/>
-  </svg>
-);
-
-/* ── Sketch-style icons ── */
-const WrittenIcon = ({ active }: { active: boolean }) => {
-  const s = active ? "#3D1E04" : "#6B4E30";
-  const fillA = active ? "rgba(255,255,255,0.28)" : "rgba(160,130,90,0.10)";
-  return (
-    <svg width="46" height="46" viewBox="0 0 52 52" fill="none">
-      <rect x="10" y="7" width="24" height="32" rx="2" stroke={s} strokeWidth="1.7" fill={fillA}/>
-      {[16,22,28].map(y => <line key={y} x1="15" y1={y} x2="29" y2={y} stroke={s} strokeWidth="1.3" strokeLinecap="round"/>)}
-      <line x1="15" y1="28" x2="22" y2="28" stroke={s} strokeWidth="1.3" strokeLinecap="round"/>
-      {[14,20,26,32].map(y => <path key={y} d={`M8 ${y} Q10 ${y-2.5} 12 ${y} Q10 ${y+2.5} 8 ${y}`} stroke={s} strokeWidth="1.1" fill="none"/>)}
-      <path d="M30 29 L39 20 L43 24 L34 33 Z" stroke={s} strokeWidth="1.4" fill={active ? "rgba(255,255,255,0.35)" : "rgba(160,130,90,0.18)"} strokeLinejoin="round"/>
-      <path d="M34 33 L32 38 L37 36 Z" fill={s} opacity="0.65"/>
-    </svg>
-  );
-};
-
-const PhotoIcon = ({ active }: { active: boolean }) => {
-  const s = active ? "#3D1E04" : "#6B4E30";
-  const fillA = active ? "rgba(255,255,255,0.28)" : "rgba(160,130,90,0.10)";
-  return (
-    <svg width="46" height="46" viewBox="0 0 52 52" fill="none">
-      <rect x="4" y="14" width="44" height="28" rx="3.5" stroke={s} strokeWidth="1.7" fill={fillA}/>
-      <path d="M16 14 L19 8 L33 8 L36 14" stroke={s} strokeWidth="1.4" fill="none" strokeLinejoin="round"/>
-      <circle cx="26" cy="28" r="9" stroke={s} strokeWidth="1.6" fill="none"/>
-      <circle cx="26" cy="28" r="4.5" stroke={s} strokeWidth="1.2" fill={fillA}/>
-      <circle cx="38" cy="19" r="2.2" stroke={s} strokeWidth="1.2" fill="none"/>
-    </svg>
-  );
-};
-
-const VideoIcon = ({ active }: { active: boolean }) => {
-  const s = active ? "#3D1E04" : "#6B4E30";
-  const fillA = active ? "rgba(255,255,255,0.28)" : "rgba(160,130,90,0.10)";
-  return (
-    <svg width="46" height="46" viewBox="0 0 52 52" fill="none">
-      <rect x="3" y="14" width="30" height="24" rx="3.5" stroke={s} strokeWidth="1.7" fill={fillA}/>
-      <path d="M33 20 L47 14 L47 38 L33 32 Z" stroke={s} strokeWidth="1.5" fill={fillA} strokeLinejoin="round"/>
-      <circle cx="18" cy="26" r="6" stroke={s} strokeWidth="1.3" fill="none"/>
-      <polygon points="16,23 16,29 22,26" fill={s} opacity="0.6"/>
-    </svg>
-  );
-};
-
-const VoiceIcon = ({ active }: { active: boolean }) => {
-  const s = active ? "#3D1E04" : "#6B4E30";
-  const fillA = active ? "rgba(255,255,255,0.28)" : "rgba(160,130,90,0.10)";
-  return (
-    <svg width="46" height="46" viewBox="0 0 52 52" fill="none">
-      <rect x="18" y="4" width="16" height="24" rx="8" stroke={s} strokeWidth="1.7" fill={fillA}/>
-      <line x1="22" y1="12" x2="30" y2="12" stroke={s} strokeWidth="1.2" strokeLinecap="round"/>
-      <line x1="22" y1="18" x2="30" y2="18" stroke={s} strokeWidth="1.2" strokeLinecap="round"/>
-      <path d="M10 27 C10 38 42 38 42 27" stroke={s} strokeWidth="1.6" fill="none" strokeLinecap="round"/>
-      <line x1="26" y1="38" x2="26" y2="46" stroke={s} strokeWidth="1.5" strokeLinecap="round"/>
-      <line x1="18" y1="46" x2="34" y2="46" stroke={s} strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  );
-};
-
 export default function AddMemoryPage() {
   const { status } = useSession();
   const router = useRouter();
@@ -96,19 +29,19 @@ export default function AddMemoryPage() {
     if (f) {
       setFile(f);
       setPreview(URL.createObjectURL(f));
-      if (f.type.startsWith("image/")) setType("photo");
-      else if (f.type.startsWith("video/")) setType("video");
-      else if (f.type.startsWith("audio/")) setType("voice");
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true); setError("");
+    setLoading(true);
+    setError("");
     let mediaUrl: string | null = null;
     if (file) {
-      const fd = new FormData(); fd.append("file", file);
-      mediaUrl = (await (await fetch("/api/upload", { method:"POST", body:fd })).json()).url;
+      const fd = new FormData();
+      fd.append("file", file);
+      const r = await fetch("/api/upload", { method: "POST", body: fd });
+      mediaUrl = (await r.json()).url;
     }
     const res = await fetch("/api/memories", {
       method: "POST",
@@ -120,343 +53,339 @@ export default function AddMemoryPage() {
   };
 
   const fmtDate = (d: string) =>
-    new Date(d).toLocaleDateString("en-GB", { day:"numeric", month:"short", year:"numeric" });
+    new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
 
   const types = [
-    { v:"text",  l:"Written", Icon: WrittenIcon },
-    { v:"photo", l:"Photo",   Icon: PhotoIcon   },
-    { v:"video", l:"Video",   Icon: VideoIcon   },
-    { v:"voice", l:"Voice",   Icon: VoiceIcon   },
+    {
+      v: "text", l: "Written",
+      icon: (
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+        </svg>
+      ),
+    },
+    {
+      v: "photo", l: "Photo",
+      icon: (
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+          <polyline points="21 15 16 10 5 21"/>
+        </svg>
+      ),
+    },
+    {
+      v: "video", l: "Video",
+      icon: (
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+        </svg>
+      ),
+    },
+    {
+      v: "voice", l: "Voice",
+      icon: (
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/>
+        </svg>
+      ),
+    },
   ];
 
-  /* shared field style */
   const FIELD: React.CSSProperties = {
     width: "100%",
-    background: "rgba(242,232,214,0.60)",
-    border: "1.5px solid rgba(165,135,95,0.28)",
-    borderRadius: "18px",
-    padding: "15px 18px 15px 50px",
+    background: "#E8DCDA",
+    border: "none",
+    borderRadius: "999px",
+    padding: "15px 20px 15px 50px",
     fontSize: "15px",
-    color: "#2A1505",
+    color: "#3C1A1A",
     outline: "none",
     boxSizing: "border-box",
-    fontFamily: "inherit",
   };
 
   const LABEL: React.CSSProperties = {
-    fontSize: "10px",
-    fontWeight: 700,
-    color: "#B89A72",
-    letterSpacing: "0.2em",
+    fontSize: "12px",
+    fontWeight: 800,
+    color: "#3C1A1A",
+    letterSpacing: "0.12em",
     textTransform: "uppercase",
-    marginBottom: "9px",
+    marginBottom: "10px",
     display: "block",
   };
 
-  const ICON_WRAP: React.CSSProperties = {
-    position: "absolute",
-    left: "16px",
-    top: "50%",
-    transform: "translateY(-50%)",
-    color: "#A68A6A",
-    display: "flex",
-    alignItems: "center",
-  };
-
   return (
-    <div
-      className="min-h-screen pb-44"
-      style={{
-        backgroundImage: "url('/dashboard-bg.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      }}
-    >
-      {/* ── HEADER ── */}
-      <header className="pt-16 px-6 pb-4">
-        <p style={{ fontSize:"10px", fontWeight:700, color:"#B89A72", letterSpacing:"0.2em",
-                    textTransform:"uppercase", marginBottom:"8px" }}>
-          New Memory
-        </p>
-        <div style={{ position:"relative" }}>
-          <h1 style={{ fontFamily:"Georgia, serif", fontSize:"2rem", fontWeight:800,
-                       color:"#130800", lineHeight:1.18, letterSpacing:"-0.015em",
-                       paddingRight:"48px" }}>
-            Preserve a moment<br/>forever.
-            {/* hand-drawn heart */}
-            <svg display="inline" width="30" height="28" viewBox="0 0 32 30" style={{ verticalAlign:"middle", marginLeft:"6px" }}>
-              <path d="M16 27 C16 27 3 18 3 9 C3 5 7 2 11 3 C13 3 15 5 16 7 C17 5 19 3 21 3 C25 2 29 5 29 9 C29 18 16 27 16 27Z"
-                stroke="#B87A5A" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </h1>
-          {/* paper airplane */}
-          <svg width="32" height="26" viewBox="0 0 34 28" fill="none"
-            style={{ position:"absolute", top:"2px", right:"4px", opacity:0.38 }}>
-            <path d="M2 14 L32 2 L20 26 L14 16 Z" stroke="#A68A6A" strokeWidth="1.4" fill="none" strokeLinejoin="round"/>
-            <path d="M14 16 L32 2" stroke="#A68A6A" strokeWidth="1.1" strokeLinecap="round"/>
-          </svg>
+    <div className="min-h-screen pb-36 relative overflow-hidden" style={{ backgroundColor: "#F5EDE8" }}>
+
+      {/* ── BACKGROUND BLOBS ── */}
+      {/* White blob top-left */}
+      <div style={{
+        position: "absolute", top: "-60px", left: "-70px",
+        width: "220px", height: "220px",
+        borderRadius: "50% 60% 55% 65%",
+        background: "rgba(255,255,255,0.85)",
+        zIndex: 0,
+      }}/>
+      {/* Pink blob top-right */}
+      <div style={{
+        position: "absolute", top: "-40px", right: "-50px",
+        width: "200px", height: "200px",
+        borderRadius: "60% 40% 65% 45%",
+        background: "#D9A8B0",
+        zIndex: 0,
+      }}/>
+      {/* Pink blob bottom-left */}
+      <div style={{
+        position: "absolute", bottom: "80px", left: "-60px",
+        width: "180px", height: "180px",
+        borderRadius: "55% 65% 50% 70%",
+        background: "#D9A8B0",
+        zIndex: 0,
+      }}/>
+      {/* White blob bottom-right */}
+      <div style={{
+        position: "absolute", bottom: "60px", right: "-50px",
+        width: "160px", height: "160px",
+        borderRadius: "65% 45% 70% 50%",
+        background: "rgba(255,255,255,0.75)",
+        zIndex: 0,
+      }}/>
+      {/* Scattered heart outlines */}
+      {[
+        { top:"8%",  left:"6%",  size:22 },
+        { top:"12%", left:"42%", size:18 },
+        { top:"5%",  right:"4%", size:16 },
+        { top:"32%", right:"4%", size:20 },
+        { top:"52%", left:"3%",  size:18 },
+        { bottom:"28%", left:"6%",  size:22 },
+        { bottom:"22%", right:"6%", size:20 },
+        { bottom:"12%", left:"42%", size:16 },
+        { bottom:"10%", right:"38%",size:14 },
+      ].map((pos, i) => (
+        <svg key={i} width={pos.size} height={pos.size} viewBox="0 0 24 24" fill="none"
+          stroke="#D9A8B0" strokeWidth="1.5"
+          style={{ position:"absolute", zIndex:1, ...Object.fromEntries(Object.entries(pos).filter(([k])=>k!=="size")) }}>
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      ))}
+
+      {/* ── POLAROID STACK TOP RIGHT ── */}
+      <div style={{ position:"absolute", top:"12px", right:"10px", zIndex:2, width:"170px", height:"160px" }}>
+        {/* Back polaroid — tilted */}
+        <div style={{
+          position:"absolute", top:"10px", right:"0px",
+          width:"120px", background:"white", padding:"8px 8px 28px",
+          boxShadow:"0 4px 14px rgba(0,0,0,0.12)",
+          transform:"rotate(8deg)", borderRadius:"4px",
+        }}>
+          <div style={{ width:"100%", aspectRatio:"1", background:"#F5EADF", borderRadius:"2px" }}/>
+          <p style={{ fontSize:"9px", color:"#8B6A5B", marginTop:"6px", textAlign:"center",
+                       fontStyle:"italic", fontFamily:"var(--font-caveat), cursive" }}>
+            Better together ♡
+          </p>
         </div>
+        {/* Paper clip */}
+        <svg width="18" height="40" viewBox="0 0 18 40" fill="none" stroke="#888" strokeWidth="2"
+          style={{ position:"absolute", top:"-4px", right:"54px", zIndex:4 }}>
+          <path d="M9 2 C4 2 2 6 2 10 L2 30 C2 36 6 38 9 38 C12 38 16 36 16 30 L16 12 C16 8 14 6 11 6 C8 6 6 8 6 12 L6 28 C6 32 12 32 12 28 L12 14"/>
+        </svg>
+        {/* Front polaroid */}
+        <div style={{
+          position:"absolute", top:"0px", right:"40px",
+          width:"110px", background:"white", padding:"8px 8px 28px",
+          boxShadow:"0 6px 18px rgba(0,0,0,0.15)",
+          transform:"rotate(-5deg)", borderRadius:"4px",
+        }}>
+          <div style={{ width:"100%", aspectRatio:"1", background:"#C8A080", borderRadius:"2px" }}/>
+          <p style={{ fontSize:"0px" }}>&nbsp;</p>
+        </div>
+        {/* Sticky note */}
+        <div style={{
+          position:"absolute", bottom:"-4px", right:"-4px",
+          width:"70px", padding:"8px",
+          background:"#F5E9A8", boxShadow:"0 3px 8px rgba(0,0,0,0.1)",
+          transform:"rotate(3deg)", borderRadius:"2px", zIndex:5,
+        }}>
+          <p style={{ fontSize:"11px", color:"#5A4020", lineHeight:1.3, fontFamily:"var(--font-caveat), cursive", fontWeight:600 }}>
+            Good<br/>Vibes<br/>Only ♡
+          </p>
+        </div>
+      </div>
+
+      {/* ── HEADER ── */}
+      <header className="pt-20 px-6 pb-2 relative z-10">
+        <p style={{ fontFamily:"var(--font-caveat), cursive", fontSize:"1.3rem", color:"#3C1A1A", marginBottom:"-4px", fontStyle:"italic" }}>
+          Create a
+        </p>
+        <h1 style={{ fontFamily:"var(--font-caveat), cursive", fontSize:"3rem", fontWeight:800, color:"#2A0A0A", lineHeight:1.1, marginBottom:"6px" }}>
+          New Memory
+        </h1>
+        <p style={{ fontSize:"14px", color:"#5A3A3A", fontWeight:500 }}>
+          Preserve a moment forever.
+        </p>
       </header>
 
-      <form onSubmit={handleSubmit} className="px-5 space-y-6">
+      {/* ── FORM ── */}
+      <form onSubmit={handleSubmit} className="px-6 mt-6 space-y-6 relative z-10">
         {error && (
-          <div style={{ background:"#FFF0EE", color:"#B03030", fontSize:"13px",
+          <div style={{ background:"#FFE8E8", color:"#B04040", fontSize:"13px",
                         padding:"10px 16px", borderRadius:"14px", border:"1px solid #FFCCCC" }}>
             {error}
           </div>
         )}
 
-        {/* ── CHOOSE TYPE ── */}
+        {/* TYPE */}
         <div>
-          <p style={LABEL}>Choose Type</p>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"8px" }}>
-            {types.map(({ v, l, Icon }) => {
+          <p style={LABEL}>Type</p>
+          <div className="flex gap-3 overflow-x-auto hide-scrollbar">
+            {types.map(({ v, l, icon }) => {
               const active = type === v;
-              const cardBg = active ? "#C8943A" : "rgba(248,240,224,0.90)";
               return (
-                <button
-                  key={v}
-                  type="button"
-                  onClick={() => setType(v)}
+                <button key={v} type="button" onClick={() => setType(v)}
+                  className="flex items-center gap-2 shrink-0 transition-all active:scale-95"
                   style={{
-                    position: "relative",
-                    background: cardBg,
-                    border: active ? "none" : "1.5px solid rgba(175,150,110,0.32)",
-                    borderRadius: "0 0 16px 16px",
-                    paddingTop: "20px",
-                    paddingBottom: "14px",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: "8px",
+                    padding: "10px 18px",
+                    borderRadius: "999px",
+                    background: active ? "#C8A0A8" : "#E8DCDA",
+                    color: active ? "white" : "#3C1A1A",
+                    border: "none",
+                    fontSize: "14px",
+                    fontWeight: 600,
+                    boxShadow: active ? "0 4px 12px rgba(160,80,100,0.25)" : "none",
                     cursor: "pointer",
-                    overflow: "visible",
-                    boxShadow: active
-                      ? "0 6px 20px rgba(150,95,10,0.28)"
-                      : "0 2px 8px rgba(0,0,0,0.06)",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  <TornEdge fill={cardBg} />
-
-                  {/* Tape strip — active card only */}
-                  {active && (
-                    <div style={{
-                      position: "absolute", top:"-9px", left:"50%",
-                      transform: "translateX(-50%) rotate(-1deg)",
-                      width: "38px", height: "15px",
-                      background: "rgba(200,168,75,0.55)",
-                      borderRadius: "3px", zIndex:3,
-                    }}/>
-                  )}
-
-                  <Icon active={active} />
-
-                  <span style={{
-                    fontSize: "11px", fontWeight: 700,
-                    color: active ? "#2A0E00" : "#7A5C38",
-                    textDecoration: active ? "underline" : "none",
-                    textUnderlineOffset: "3px",
-                    letterSpacing: "0.02em",
                   }}>
-                    {l}
-                  </span>
+                  {icon}
+                  {l}
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* ── TITLE ── */}
+        {/* TITLE */}
         <div>
           <p style={LABEL}>Title</p>
           <div style={{ position:"relative" }}>
-            <span style={ICON_WRAP}>
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-                <line x1="7" y1="7" x2="7.01" y2="7"/>
+            <span style={{ position:"absolute", left:"18px", top:"50%", transform:"translateY(-50%)",
+                            color:"#8B6060", display:"flex" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
             </span>
-            <input
-              type="text"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              placeholder="Name this memory..."
-              required
-              style={FIELD}
-            />
+            <input type="text" value={title} onChange={e => setTitle(e.target.value)}
+              placeholder="Name this memory..." required style={FIELD}/>
           </div>
         </div>
 
-        {/* ── DATE ── */}
+        {/* DATE */}
         <div>
           <p style={LABEL}>Date</p>
           <div style={{ position:"relative" }} onClick={() => dateInputRef.current?.showPicker?.()}>
-            <span style={ICON_WRAP}>
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+            <span style={{ position:"absolute", left:"18px", top:"50%", transform:"translateY(-50%)",
+                            color:"#8B6060", display:"flex" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
                 <line x1="3" y1="10" x2="21" y2="10"/>
               </svg>
             </span>
-            {/* styled display */}
-            <div style={{ ...FIELD, cursor:"pointer", display:"flex", alignItems:"center",
-                          paddingRight:"44px", userSelect:"none" }}>
-              <span style={{ color: date ? "#2A1505" : "#B09A7A" }}>
-                {date ? fmtDate(date) : "Pick a date"}
-              </span>
+            <div style={{ ...FIELD, paddingRight:"46px", display:"flex", alignItems:"center", cursor:"pointer", userSelect:"none" }}>
+              <span style={{ color:"#3C1A1A" }}>{fmtDate(date)}</span>
             </div>
-            {/* hidden real input */}
-            <input ref={dateInputRef} type="date" value={date}
-              onChange={e => setDate(e.target.value)} required
-              style={{ position:"absolute", inset:0, opacity:0, cursor:"pointer",
-                        width:"100%", height:"100%", border:"none", background:"transparent" }}/>
-            {/* chevron */}
-            <span style={{ position:"absolute", right:"16px", top:"50%",
-                            transform:"translateY(-50%)", color:"#A68A6A",
-                            display:"flex", pointerEvents:"none" }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
+            <input ref={dateInputRef} type="date" value={date} onChange={e => setDate(e.target.value)} required
+              style={{ position:"absolute", inset:0, opacity:0, cursor:"pointer", width:"100%", height:"100%" }}/>
+            <span style={{ position:"absolute", right:"18px", top:"50%", transform:"translateY(-50%)",
+                            color:"#8B6060", pointerEvents:"none" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9"/>
               </svg>
             </span>
           </div>
         </div>
 
-        {/* ── YOUR STORY ── */}
+        {/* YOUR STORY */}
         <div>
           <p style={LABEL}>Your Story</p>
           <div style={{ position:"relative" }}>
-            {/* tape corner */}
-            <div style={{
-              position:"absolute", top:"-7px", right:"22px",
-              width:"34px", height:"12px",
-              background:"rgba(195,162,85,0.42)",
-              borderRadius:"3px", transform:"rotate(2deg)", zIndex:1,
-            }}/>
-            <span style={{ position:"absolute", left:"16px", top:"16px",
-                            color:"#A68A6A", display:"flex" }}>
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            <span style={{ position:"absolute", left:"18px", top:"18px", color:"#8B6060", display:"flex" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
               </svg>
             </span>
-            <textarea
-              value={description}
-              onChange={e => setDescription(e.target.value)}
+            <textarea value={description} onChange={e => setDescription(e.target.value)}
               placeholder="Write something beautiful..."
               rows={type === "text" ? 6 : 4}
-              style={{ ...FIELD, paddingTop:"14px", paddingBottom:"14px",
-                        resize:"none", lineHeight:"1.65" }}
-            />
+              style={{
+                ...FIELD,
+                borderRadius: "22px",
+                paddingTop: "16px",
+                paddingBottom: "16px",
+                resize: "none",
+                lineHeight: "1.65",
+              }}/>
           </div>
         </div>
 
-        {/* ── MEDIA UPLOAD ── */}
+        {/* MEDIA UPLOAD */}
         {type !== "text" && (
           <div>
             <p style={LABEL}>
-              {type==="photo" ? "Upload Photo" : type==="video" ? "Upload Video" : "Voice Note"}
+              {type === "photo" ? "Photo" : type === "video" ? "Video" : "Voice Note"}
             </p>
-            <div
-              onClick={() => fileRef.current?.click()}
+            <div onClick={() => fileRef.current?.click()}
               style={{
-                width:"100%", background:"rgba(242,232,214,0.50)",
-                border:"2px dashed rgba(165,135,95,0.38)",
-                borderRadius:"18px", display:"flex", flexDirection:"column",
-                alignItems:"center", justifyContent:"center",
-                padding:"32px 16px", cursor:"pointer", minHeight:"130px",
-              }}
-            >
-              {preview && type==="photo" ? (
-                <img src={preview} alt="preview"
-                  style={{ maxHeight:"200px", borderRadius:"12px", objectFit:"cover", width:"100%" }}/>
-              ) : preview && type==="video" ? (
-                <video src={preview} controls style={{ maxHeight:"200px", borderRadius:"12px", width:"100%" }}/>
-              ) : preview && type==="voice" ? (
+                background: "#E8DCDA", borderRadius:"22px", border:"2px dashed #C8A8A8",
+                display:"flex", flexDirection:"column", alignItems:"center",
+                justifyContent:"center", padding:"32px 16px", cursor:"pointer", minHeight:"120px",
+              }}>
+              {preview && type === "photo" ? (
+                <img src={preview} alt="preview" style={{ maxHeight:"200px", borderRadius:"14px", objectFit:"cover", width:"100%" }}/>
+              ) : preview && type === "video" ? (
+                <video src={preview} controls style={{ maxHeight:"200px", borderRadius:"14px", width:"100%" }}/>
+              ) : preview && type === "voice" ? (
                 <audio src={preview} controls style={{ width:"100%" }}/>
               ) : (
                 <>
-                  <span style={{ fontSize:"44px", marginBottom:"10px" }}>
-                    {type==="photo" ? "📷" : type==="video" ? "🎥" : "🎙️"}
+                  <span style={{ fontSize:"40px", marginBottom:"8px" }}>
+                    {type === "photo" ? "📷" : type === "video" ? "🎥" : "🎙️"}
                   </span>
-                  <span style={{ fontSize:"14px", color:"#A68A6A", fontWeight:500 }}>Tap to upload</span>
-                  <span style={{ fontSize:"12px", color:"#C4A07A", marginTop:"4px" }}>
-                    {type==="photo" ? "JPG, PNG, HEIC" : type==="video" ? "MP4, MOV" : "MP3, WAV"}
-                  </span>
+                  <span style={{ fontSize:"14px", color:"#8B6060", fontWeight:500 }}>Tap to upload</span>
                 </>
               )}
             </div>
             <input ref={fileRef} type="file" onChange={handleFileChange} style={{ display:"none" }}
-              accept={type==="photo" ? "image/*" : type==="video" ? "video/*" : "audio/*"}/>
+              accept={type === "photo" ? "image/*" : type === "video" ? "video/*" : "audio/*"}/>
           </div>
         )}
 
-        {/* ── SAVE MEMORY BUTTON ── */}
-        <div style={{ paddingTop:"8px", paddingBottom:"16px" }}>
-          <button
-            type="submit"
-            disabled={loading}
+        {/* SAVE BUTTON */}
+        <div style={{ paddingTop:"4px", paddingBottom:"12px" }}>
+          <button type="submit" disabled={loading}
             style={{
-              width: "100%",
-              background: "#130D06",
-              color: "#FFFFFF",
-              border: "none",
-              borderRadius: "999px",
-              padding: "18px 28px",
-              fontSize: "16px",
-              fontWeight: 600,
-              cursor: loading ? "not-allowed" : "pointer",
-              opacity: loading ? 0.72 : 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "relative",
-              boxShadow: "0 8px 28px rgba(0,0,0,0.28)",
-              letterSpacing: "0.025em",
-              transition: "opacity 0.2s",
-            }}
-          >
-            {/* left botanical leaf */}
-            <svg width="22" height="24" viewBox="0 0 22 24" fill="none"
-              style={{ position:"absolute", left:"20px", top:"50%", transform:"translateY(-50%)", opacity:0.65 }}>
-              <path d="M11 22 C11 22 2 15 2 8 C2 4 5 1 11 1 C17 1 20 4 20 8 C20 15 11 22 11 22Z"
-                stroke="#C4A04A" strokeWidth="1.3" fill="none"/>
-              <path d="M11 22 L11 1" stroke="#C4A04A" strokeWidth="0.9" strokeDasharray="2,2"/>
-            </svg>
-
+              width:"100%", background:"#2A0A0A", color:"white", border:"none",
+              borderRadius:"999px", padding:"18px 24px", fontSize:"17px", fontWeight:600,
+              cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1,
+              letterSpacing:"0.02em", boxShadow:"0 6px 20px rgba(42,10,10,0.3)",
+              transition:"opacity 0.2s",
+            }}>
             {loading ? (
-              <svg className="animate-spin" width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="4" opacity="0.25"/>
-                <path fill="white" opacity="0.75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
-              </svg>
-            ) : (
-              <span style={{ display:"flex", alignItems:"center", gap:"10px" }}>
-                <span style={{ color:"#D4A853" }}>✦</span>
-                Save Memory
-                <span style={{ color:"#D4A853" }}>✦</span>
+              <span className="flex items-center justify-center gap-2">
+                <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="4" opacity="0.25"/>
+                  <path fill="white" opacity="0.75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                </svg>
+                Saving...
               </span>
-            )}
-
-            {/* right botanical flower */}
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-              style={{ position:"absolute", right:"20px", top:"50%", transform:"translateY(-50%)", opacity:0.65 }}>
-              <circle cx="12" cy="12" r="3" fill="#C4A04A"/>
-              {[0,60,120,180,240,300].map((a,i) => {
-                const rad = a * Math.PI/180;
-                return <ellipse key={i} cx={12+6.5*Math.cos(rad)} cy={12+6.5*Math.sin(rad)}
-                  rx="2.5" ry="1.4" transform={`rotate(${a},${12+6.5*Math.cos(rad)},${12+6.5*Math.sin(rad)})`}
-                  fill="#C4A04A"/>;
-              })}
-            </svg>
+            ) : "Save Memory"}
           </button>
         </div>
       </form>
+
+      <style dangerouslySetInnerHTML={{__html:`
+        .hide-scrollbar::-webkit-scrollbar { display:none; }
+        .hide-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+      `}}/>
 
       <Nav />
     </div>
