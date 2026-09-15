@@ -16,56 +16,10 @@ interface Memory {
   createdAt: string;
 }
 
-function formatFullDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString("en-US", {
-    month: "long", day: "numeric", year: "numeric",
-  });
+function formatDateDisplay(dateStr: string) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
-
-/* ── Floating space decoration SVGs ── */
-const Astronaut = ({ style }: { style?: React.CSSProperties }) => (
-  <svg viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
-    <ellipse cx="40" cy="38" rx="22" ry="25" fill="white" stroke="#DDD" strokeWidth="1"/>
-    <circle cx="40" cy="32" r="15" fill="#6B4FA0"/>
-    <circle cx="40" cy="32" r="11" fill="#A8C4F0" opacity="0.8"/>
-    <circle cx="36" cy="29" r="3" fill="white" opacity="0.6"/>
-    <rect x="18" y="40" width="8" height="22" rx="4" fill="white" stroke="#DDD" strokeWidth="1"/>
-    <rect x="54" y="40" width="8" height="22" rx="4" fill="white" stroke="#DDD" strokeWidth="1"/>
-    <rect x="24" y="62" width="32" height="24" rx="6" fill="white" stroke="#DDD" strokeWidth="1"/>
-    <rect x="30" y="86" width="8" height="14" rx="4" fill="white" stroke="#DDD" strokeWidth="1"/>
-    <rect x="42" y="86" width="8" height="14" rx="4" fill="white" stroke="#DDD" strokeWidth="1"/>
-    <rect x="28" y="48" width="10" height="6" rx="2" fill="#7EC8E3" opacity="0.8"/>
-  </svg>
-);
-
-const Saturn = ({ style }: { style?: React.CSSProperties }) => (
-  <svg viewBox="0 0 80 60" fill="none" style={style}>
-    <ellipse cx="40" cy="30" rx="18" ry="18" fill="#D4A44C"/>
-    <ellipse cx="40" cy="30" rx="18" ry="18" fill="url(#saturnGrad)"/>
-    <ellipse cx="40" cy="30" rx="34" ry="8" fill="none" stroke="#C8894A" strokeWidth="3" opacity="0.8"/>
-    <ellipse cx="40" cy="30" rx="30" ry="6" fill="none" stroke="#E0B060" strokeWidth="2" opacity="0.6"/>
-    <defs>
-      <radialGradient id="saturnGrad" cx="40%" cy="35%">
-        <stop offset="0%" stopColor="#F0C878"/>
-        <stop offset="100%" stopColor="#C8894A"/>
-      </radialGradient>
-    </defs>
-  </svg>
-);
-
-const Planet = ({ color1, color2, style }: { color1: string; color2: string; style?: React.CSSProperties }) => (
-  <svg viewBox="0 0 60 60" fill="none" style={style}>
-    <circle cx="30" cy="30" r="25" fill={color1}/>
-    <ellipse cx="25" cy="22" rx="10" ry="6" fill={color2} opacity="0.5"/>
-    <ellipse cx="35" cy="38" rx="8" ry="4" fill={color2} opacity="0.35"/>
-  </svg>
-);
-
-const Star = ({ style }: { style?: React.CSSProperties }) => (
-  <svg viewBox="0 0 20 20" fill="#F5C842" style={style}>
-    <polygon points="10,1 12.9,7 19.5,7.6 14.5,12 16.2,18.5 10,15 3.8,18.5 5.5,12 0.5,7.6 7.1,7"/>
-  </svg>
-);
 
 export default function GalleryPage() {
   const { data: session, status } = useSession();
@@ -73,216 +27,194 @@ export default function GalleryPage() {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
-  const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [confirmId, setConfirmId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (status === "unauthenticated") router.push("/login");
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
   }, [status, router]);
 
   useEffect(() => {
     if (status === "authenticated") {
       fetch("/api/memories")
-        .then(r => r.json())
-        .then(data => { setMemories(data); setLoading(false); });
+        .then((res) => res.json())
+        .then((data) => {
+          setMemories(data);
+          setLoading(false);
+        });
     }
   }, [status]);
 
-  const handleDelete = async (id: string) => {
-    setDeletingId(id);
-    await fetch(`/api/memories/${id}`, { method: "DELETE" });
-    setMemories(m => m.filter(x => x.id !== id));
-    setDeletingId(null);
-    setConfirmId(null);
-  };
-
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center"
-        style={{ background: "linear-gradient(180deg,#C8B4E8 0%,#D4B8E8 40%,#E8C4C4 100%)" }}>
-        <div className="animate-spin w-8 h-8 border-4 border-white border-t-transparent rounded-full"/>
+      <div className="min-h-screen flex items-center justify-center bg-[#FDF6F3]">
+        <div className="animate-spin w-8 h-8 border-4 border-[#3C2415] border-t-transparent rounded-full" />
       </div>
     );
   }
 
   const filteredMemories = filter === "all" ? memories : memories.filter(m => m.type === filter);
 
+  // Card pastel backgrounds
+  const cardBgs = ["#FCEAEB", "#FDF0E1", "#EBF5ED", "#F3ECF7"];
+
   return (
-    <div className="min-h-screen pb-36 relative overflow-hidden font-sans"
-      style={{ background: "linear-gradient(180deg,#BFB0E0 0%,#D0B8E8 25%,#DFC0DC 55%,#EEC8C0 85%,#F0C8B8 100%)" }}>
-
-      {/* ── FLOATING SPACE DECORATIONS ── */}
-      {/* Top right astronaut */}
-      <Astronaut style={{ position:"absolute", top:"30px", right:"8px", width:"90px", opacity:0.95, zIndex:1, transform:"rotate(15deg)" }}/>
-      {/* Purple planet top right */}
-      <Planet color1="#9B85CC" color2="#7B65AC" style={{ position:"absolute", top:"60px", right:"108px", width:"40px", zIndex:1 }}/>
-      {/* Saturn mid right */}
-      <Saturn style={{ position:"absolute", top:"180px", right:"-10px", width:"80px", zIndex:1, opacity:0.85 }}/>
-      {/* Bottom left astronaut */}
-      <Astronaut style={{ position:"absolute", bottom:"90px", left:"-10px", width:"100px", opacity:0.90, zIndex:1, transform:"rotate(-20deg) scaleX(-1)" }}/>
-      {/* Bottom right Saturn */}
-      <Saturn style={{ position:"absolute", bottom:"70px", right:"-15px", width:"90px", zIndex:1, opacity:0.80 }}/>
-      {/* Earth-like planet */}
-      <Planet color1="#70B870" color2="#4A9850" style={{ position:"absolute", top:"300px", left:"-5px", width:"50px", zIndex:1, opacity:0.85 }}/>
-      {/* Stars scattered */}
-      <Star style={{ position:"absolute", top:"55px",  left:"30px",  width:"18px", zIndex:1 }}/>
-      <Star style={{ position:"absolute", top:"100px", left:"55px",  width:"12px", zIndex:1 }}/>
-      <Star style={{ position:"absolute", top:"140px", right:"130px",width:"14px", zIndex:1 }}/>
-      <Star style={{ position:"absolute", top:"200px", left:"15px",  width:"16px", zIndex:1 }}/>
-      <Star style={{ position:"absolute", top:"250px", right:"18px", width:"11px", zIndex:1 }}/>
-      <Star style={{ position:"absolute", top:"400px", left:"10px",  width:"13px", zIndex:1 }}/>
-      <Star style={{ position:"absolute", top:"460px", right:"15px", width:"15px", zIndex:1 }}/>
-      <Star style={{ position:"absolute", bottom:"220px",left:"60px",width:"12px", zIndex:1 }}/>
-      <Star style={{ position:"absolute", bottom:"160px",right:"55px",width:"14px",zIndex:1 }}/>
-      <Star style={{ position:"absolute", bottom:"110px",left:"30px",width:"16px",zIndex:1 }}/>
-      <Star style={{ position:"absolute", top:"85px", right:"55px",  width:"10px", zIndex:1 }}/>
-
+    <div
+      className="min-h-screen pb-36 font-sans"
+      style={{
+        backgroundImage: "url('/gallery-bg.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+      }}
+    >
       {/* ── HEADER ── */}
-      <header className="pt-20 px-6 pb-4 relative z-10">
-        <p className="text-[11px] font-bold text-[#5A3E7A] uppercase tracking-[0.18em] mb-1">
-          YOUR SPACE
-        </p>
-        <h1 className="text-[2.4rem] font-bold text-[#1A0A2E] leading-tight mb-1"
-          style={{ fontFamily:"Georgia, serif", letterSpacing:"-0.02em" }}>
-          Gallery <span className="text-[2rem]">🖼️</span>
+      <header className="pt-24 px-6 pb-4 relative z-10">
+        <h1 className="text-[3.2rem] font-bold text-[#3C2415] leading-none mb-1 tracking-tight flex items-center gap-2" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+          Gallery
+          <span className="text-[2rem] font-normal text-[#B97C7C]">♡</span>
         </h1>
-        <p className="text-[#4A3060] text-[15px] font-medium">
-          {memories.length} {memories.length === 1 ? "memory" : "memories"} collected.
+        <p className="text-[1.3rem] text-[#7A665A]" style={{ fontFamily: "var(--font-caveat), cursive", fontWeight: 600 }}>
+          All your captured moments ♡
         </p>
       </header>
 
       {/* ── FILTER TABS ── */}
-      <div className="px-6 mb-6 relative z-10">
-        <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
-          {[
-            { v:"all",   l:"All",   icon:"✦" },
-            { v:"photo", l:"Photo", icon:"📷" },
-            { v:"video", l:"Video", icon:"🎥" },
-            { v:"voice", l:"Voice", icon:"🎙️" },
-            { v:"text",  l:"Text",  icon:"✍️" },
-          ].map(({ v, l, icon }) => (
-            <button key={v} onClick={() => setFilter(v)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[13px] font-semibold shrink-0 transition-all"
-              style={{
-                background: filter === v ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)",
-                color: filter === v ? "#4A2D7A" : "#6B4A8A",
-                boxShadow: filter === v ? "0 4px 12px rgba(100,60,150,0.18)" : "none",
-                border: filter === v ? "1.5px solid rgba(160,120,200,0.4)" : "1.5px solid rgba(255,255,255,0.3)",
-              }}>
-              <span>{icon}</span>{l}
-            </button>
-          ))}
+      <div className="px-5 mt-2 mb-6 relative z-10">
+        <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-2 snap-x">
+          <FilterTab 
+            active={filter === "all"} 
+            onClick={() => setFilter("all")} 
+            label="All" 
+            icon={<svg width="14" height="14" viewBox="0 0 24 24" fill={filter==="all"?"white":"#8B6A5B"}><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>} 
+          />
+          <FilterTab 
+            active={filter === "photo"} 
+            onClick={() => setFilter("photo")} 
+            label="Photo" 
+            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={filter==="photo"?"white":"#8B6A5B"} strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>} 
+          />
+          <FilterTab 
+            active={filter === "video"} 
+            onClick={() => setFilter("video")} 
+            label="Video" 
+            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={filter==="video"?"white":"#8B6A5B"} strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>} 
+          />
+          <FilterTab 
+            active={filter === "voice"} 
+            onClick={() => setFilter("voice")} 
+            label="Voice" 
+            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={filter==="voice"?"white":"#8B6A5B"} strokeWidth="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>} 
+          />
+          <FilterTab 
+            active={filter === "text"} 
+            onClick={() => setFilter("text")} 
+            label="Text" 
+            icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={filter==="text"?"white":"#8B6A5B"} strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>} 
+          />
         </div>
       </div>
 
-      {/* ── TIMELINE ── */}
-      <div className="px-6 relative z-10">
-        <p className="text-[10px] font-bold text-[#5A3E7A] uppercase tracking-[0.18em] mb-5">
-          TIMELINE
-        </p>
-
-        {filteredMemories.length === 0 ? (
-          <div className="text-center py-16">
-            <div className="text-6xl mb-4">🚀</div>
-            <p className="text-[#5A3E7A] text-[16px] font-semibold">No memories here yet!</p>
-            <p className="text-[#7A5E9A] text-[13px] mt-1">Add your first cosmic memory.</p>
-          </div>
-        ) : (
-          <div className="relative">
-            {/* Vertical timeline line */}
-            <div className="absolute left-[7px] top-5 bottom-4 w-[1.5px]"
-              style={{ background:"linear-gradient(180deg,rgba(160,120,200,0.6) 0%,rgba(160,120,200,0.1) 100%)" }}/>
-
-            <div className="space-y-5">
-              {filteredMemories.map((memory) => (
-                <div key={memory.id} className="relative pl-8">
-                  {/* Timeline dot */}
-                  <div className="absolute left-0 top-5 w-4 h-4 rounded-full flex items-center justify-center z-10"
-                    style={{ background:"linear-gradient(135deg,#E8C842,#D4A020)", boxShadow:"0 2px 8px rgba(212,160,32,0.5)" }}>
-                    <div className="w-2 h-2 rounded-full bg-white opacity-70"/>
-                  </div>
-
-                  {/* Memory Card */}
-                  <div className="bg-white/92 backdrop-blur-md rounded-[22px] overflow-hidden shadow-sm"
-                    style={{ border:"1px solid rgba(200,180,240,0.35)" }}>
-
-                    {/* Card header */}
-                    <div className="px-5 pt-5 pb-3 flex items-start gap-3">
-                      {/* Type avatar */}
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                        style={{ background:"linear-gradient(135deg,#9B85CC,#7B65AC)" }}>
-                        <span className="text-[16px]">
-                          {memory.type === "photo" ? "📷" : memory.type === "video" ? "🎥" : memory.type === "voice" ? "🎙️" : "✍️"}
-                        </span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-2">
-                          <h3 className="font-bold text-[#1A0A2E] text-[16px] leading-tight">{memory.title}</h3>
-                          <span className="text-[12px] text-[#8A8A9A] font-medium shrink-0">{formatFullDate(memory.date)}</span>
-                        </div>
-                        {memory.description && (
-                          <p className="text-[13px] text-[#6A6A8A] mt-0.5 line-clamp-2">{memory.description}</p>
-                        )}
-                      </div>
+      {/* ── GRID ── */}
+      <div className="px-5 grid grid-cols-2 gap-4 relative z-10">
+        {filteredMemories.map((memory, idx) => {
+          const bg = cardBgs[idx % cardBgs.length];
+          const rotate = idx % 2 === 0 ? "rotate-[-2deg]" : "rotate-[3deg]";
+          return (
+            <Link 
+              href={`/memories/${memory.id}/edit`} 
+              key={memory.id}
+              className="rounded-[20px] p-3 flex flex-col gap-3 shadow-sm border border-black/5 relative overflow-hidden transition-transform active:scale-95"
+              style={{ backgroundColor: bg }}
+            >
+              {/* Tape decoration on the card */}
+              {idx % 2 === 0 && (
+                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-4 bg-[#EBA8B2]/50 border border-[#EBA8B2]/20 rotate-[-5deg] z-20 shadow-sm" style={{ backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.4) 2px, rgba(255,255,255,0.4) 4px)" }}></div>
+              )}
+              {idx % 2 !== 0 && (
+                <div className="absolute top-1 right-2 w-10 h-3 bg-[#DDC7AB] rotate-[15deg] z-20 shadow-sm opacity-90"></div>
+              )}
+              
+              {/* Polaroid Image */}
+              <div className={`bg-white p-2 pb-6 shadow-md ${rotate} rounded-sm mt-2 relative z-10 flex-shrink-0`}>
+                <div className="w-full aspect-square bg-[#F5ECE0] overflow-hidden rounded-sm relative">
+                  {memory.mediaUrl ? (
+                    <img src={memory.mediaUrl} alt={memory.title} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-4xl">
+                      {memory.type === "text" ? "📝" : "🎙️"}
                     </div>
+                  )}
+                </div>
+                {/* Hand-drawn heart on polaroid frame */}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A66B6B" strokeWidth="2" className="absolute bottom-1 right-2 opacity-70">
+                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                </svg>
+              </div>
 
-                    {/* Media */}
-                    {memory.mediaUrl && memory.type === "photo" && (
-                      <div className="px-5 pb-3">
-                        <img src={memory.mediaUrl} alt={memory.title}
-                          className="w-full h-52 object-cover rounded-[14px]"
-                          style={{ border:"1px solid rgba(200,180,240,0.3)" }}/>
-                      </div>
-                    )}
-                    {memory.mediaUrl && memory.type === "video" && (
-                      <div className="px-5 pb-3">
-                        <video src={memory.mediaUrl} controls className="w-full h-52 object-cover rounded-[14px]"/>
-                      </div>
-                    )}
-                    {memory.mediaUrl && memory.type === "voice" && (
-                      <div className="px-5 pb-3">
-                        <audio src={memory.mediaUrl} controls className="w-full"/>
-                      </div>
-                    )}
-
-                    {/* Actions */}
-                    <div className="px-5 pb-4 flex items-center gap-4">
-                      <Link href={`/memories/${memory.id}/edit`}
-                        className="text-[15px] font-semibold"
-                        style={{ color:"#C28C3A" }}>
-                        Edit
-                      </Link>
-                      {confirmId === memory.id ? (
-                        <span className="flex gap-3 text-[15px]">
-                          <button onClick={() => handleDelete(memory.id)}
-                            className="font-semibold text-red-500" disabled={deletingId === memory.id}>
-                            {deletingId === memory.id ? "..." : "Confirm"}
-                          </button>
-                          <button onClick={() => setConfirmId(null)} className="text-[#9A9AB0] font-medium">
-                            Cancel
-                          </button>
-                        </span>
-                      ) : (
-                        <button onClick={() => setConfirmId(memory.id)}
-                          className="text-[15px] font-medium text-[#9A9AB0]">
-                          Delete
-                        </button>
-                      )}
-                    </div>
+              {/* Info Box */}
+              <div className="bg-[#FCF8F5]/90 rounded-xl p-3 flex-1 flex flex-col justify-between shadow-sm relative z-10 border border-[#F0E6DF]">
+                <div>
+                  <h3 className="font-bold text-[#3C2415] text-[1.4rem] leading-none mb-1 line-clamp-1" style={{ fontFamily: "var(--font-caveat), cursive" }}>{memory.title}</h3>
+                  <div className="text-[#8B6A5B] text-[10px] font-medium tracking-wide">
+                    {formatDateDisplay(memory.date)}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
+                
+                <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-[#EAD4D0]/60 flex items-center justify-center text-[#A66B6B]">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </div>
+              </div>
+              
+              {/* Background doodles on the card itself */}
+              {idx % 2 === 0 ? (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B97C7C" strokeWidth="1.5" className="absolute bottom-2 left-2 opacity-50 z-0"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+              ) : (
+                <svg width="30" height="30" viewBox="0 0 24 24" stroke="#8B6A5B" strokeWidth="1.5" className="absolute bottom-1 right-8 opacity-40 z-0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 6v6l4.25 2.5"/></svg>
+              )}
+            </Link>
+          );
+        })}
       </div>
 
-      <style dangerouslySetInnerHTML={{__html:`
-        .hide-scrollbar::-webkit-scrollbar { display:none; }
-        .hide-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
-      `}}/>
+      {filteredMemories.length === 0 && (
+        <div className="text-center py-20 text-[#8B6A5B] font-medium" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.4rem" }}>
+          No memories found.
+        </div>
+      )}
+
+      {/* Hide scrollbar styles */}
+      <style dangerouslySetInnerHTML={{__html: `
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}} />
 
       <Nav />
     </div>
+  );
+}
+
+function FilterTab({ active, onClick, label, icon }: { active: boolean, onClick: () => void, label: string, icon: React.ReactNode }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`snap-start flex items-center gap-2 px-5 py-2.5 rounded-full transition-all shrink-0 border shadow-sm ${
+        active 
+          ? "bg-[#B97C7C] text-white border-[#B97C7C]" 
+          : "bg-[#FCF5F0] text-[#8B6A5B] border-[#E8D5C8]"
+      }`}
+    >
+      {icon}
+      <span className="text-[14px] font-medium tracking-wide">
+        {label}
+      </span>
+    </button>
   );
 }
