@@ -163,7 +163,7 @@ export default function AddMemoryPage() {
           boxShadow:"0 4px 14px rgba(0,0,0,0.12)",
           transform:"rotate(8deg)", borderRadius:"4px",
         }}>
-          <div style={{ width:"100%", aspectRatio:"1", backgroundImage:"url('https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=400&q=80')", backgroundSize:"cover", backgroundPosition:"center", borderRadius:"2px" }}/>
+          <div style={{ width:"100%", aspectRatio:"1", backgroundImage:"url('https://loremflickr.com/400/400/couple,sunset')", backgroundSize:"cover", backgroundPosition:"center", borderRadius:"2px" }}/>
           <p style={{ fontSize:"9px", color:"#8B6A5B", marginTop:"6px", textAlign:"center",
                        fontStyle:"italic", fontFamily:"var(--font-caveat), cursive" }}>
             Better together ♡
@@ -181,7 +181,7 @@ export default function AddMemoryPage() {
           boxShadow:"0 6px 18px rgba(0,0,0,0.15)",
           transform:"rotate(-5deg)", borderRadius:"4px",
         }}>
-          <div style={{ width:"100%", aspectRatio:"1", backgroundImage:"url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&q=80')", backgroundSize:"cover", backgroundPosition:"center", borderRadius:"2px" }}/>
+          <div style={{ width:"100%", aspectRatio:"1", backgroundImage:"url('/couple-polaroid.jpg')", backgroundSize:"cover", backgroundPosition:"center", borderRadius:"2px" }}/>
           <p style={{ fontSize:"0px" }}>&nbsp;</p>
         </div>
         {/* Sticky note */}
