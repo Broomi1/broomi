@@ -347,10 +347,10 @@ export default function AddMemoryPage() {
         <div style={{ paddingTop:"4px", paddingBottom:"12px" }}>
           <button type="submit" disabled={loading}
             style={{
-              width:"100%", background:"#2A0A0A", color:"white", border:"none",
+              width:"100%", background:"#D18C9D", color:"white", border:"none",
               borderRadius:"999px", padding:"18px 24px", fontSize:"17px", fontWeight:600,
               cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1,
-              letterSpacing:"0.02em", boxShadow:"0 6px 20px rgba(42,10,10,0.3)",
+              letterSpacing:"0.02em", boxShadow:"0 6px 20px rgba(209,140,157,0.35)",
               transition:"opacity 0.2s",
             }}>
             {loading ? (
