@@ -119,14 +119,6 @@ export default function AddMemoryPage() {
     <div className="min-h-screen pb-36 relative overflow-hidden" style={{ backgroundColor: "#F5EDE8" }}>
 
       {/* ── BACKGROUND BLOBS ── */}
-      {/* White blob top-left */}
-      <div style={{
-        position: "absolute", top: "-60px", left: "-70px",
-        width: "220px", height: "220px",
-        borderRadius: "50% 60% 55% 65%",
-        background: "rgba(255,255,255,0.85)",
-        zIndex: 0,
-      }}/>
       {/* Pink blob top-right */}
       <div style={{
         position: "absolute", top: "-40px", right: "-50px",
@@ -141,14 +133,6 @@ export default function AddMemoryPage() {
         width: "180px", height: "180px",
         borderRadius: "55% 65% 50% 70%",
         background: "#D9A8B0",
-        zIndex: 0,
-      }}/>
-      {/* White blob bottom-right */}
-      <div style={{
-        position: "absolute", bottom: "60px", right: "-50px",
-        width: "160px", height: "160px",
-        borderRadius: "65% 45% 70% 50%",
-        background: "rgba(255,255,255,0.75)",
         zIndex: 0,
       }}/>
       {/* Scattered heart outlines */}
@@ -179,7 +163,7 @@ export default function AddMemoryPage() {
           boxShadow:"0 4px 14px rgba(0,0,0,0.12)",
           transform:"rotate(8deg)", borderRadius:"4px",
         }}>
-          <div style={{ width:"100%", aspectRatio:"1", background:"#F5EADF", borderRadius:"2px" }}/>
+          <div style={{ width:"100%", aspectRatio:"1", backgroundImage:"url('https://images.unsplash.com/photo-1517404215738-15263e9f9178?w=400&q=80')", backgroundSize:"cover", backgroundPosition:"center", borderRadius:"2px" }}/>
           <p style={{ fontSize:"9px", color:"#8B6A5B", marginTop:"6px", textAlign:"center",
                        fontStyle:"italic", fontFamily:"var(--font-caveat), cursive" }}>
             Better together ♡
@@ -197,7 +181,7 @@ export default function AddMemoryPage() {
           boxShadow:"0 6px 18px rgba(0,0,0,0.15)",
           transform:"rotate(-5deg)", borderRadius:"4px",
         }}>
-          <div style={{ width:"100%", aspectRatio:"1", background:"#C8A080", borderRadius:"2px" }}/>
+          <div style={{ width:"100%", aspectRatio:"1", backgroundImage:"url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&q=80')", backgroundSize:"cover", backgroundPosition:"center", borderRadius:"2px" }}/>
           <p style={{ fontSize:"0px" }}>&nbsp;</p>
         </div>
         {/* Sticky note */}

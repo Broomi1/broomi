@@ -29,11 +29,13 @@ export default function Nav() {
     );
   }
 
+  const isNewMemory = pathname === "/memories/new";
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none flex flex-col items-center" style={{ height: "90px" }}>
-      <div className="relative w-full bg-[#FCF5F0] flex items-center justify-between px-2 pb-6 pt-3 pointer-events-auto border-t border-transparent" style={{ filter: "drop-shadow(0 -4px 10px rgba(0,0,0,0.04))" }}>
+      <div className={`relative w-full flex items-center justify-between px-2 pb-6 pt-3 pointer-events-auto border-t border-transparent ${!isNewMemory ? "bg-[#FCF5F0]" : ""}`} style={{ filter: !isNewMemory ? "drop-shadow(0 -4px 10px rgba(0,0,0,0.04))" : "none" }}>
         
-        <WavyTop />
+        {!isNewMemory && <WavyTop />}
 
         <div className="flex justify-around items-center w-full h-full z-10 px-2">
           {/* Home */}
