@@ -10,6 +10,23 @@ export default function ProfilePage() {
   const router = useRouter();
   const [memoryCount, setMemoryCount] = useState(0);
 
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [name, setName] = useState("Alex & Jamie");
+  
+  const [isPasswordExpanded, setIsPasswordExpanded] = useState(false);
+  const [oldPass, setOldPass] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [msg, setMsg] = useState("");
+
+  const [notifications, setNotifications] = useState(true);
+  const [isPrivate, setIsPrivate] = useState(false);
+
+  useEffect(() => {
+    if (session?.user?.name) {
+      setName(session.user.name);
+    }
+  }, [session]);
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
@@ -21,6 +38,24 @@ export default function ProfilePage() {
         .catch(() => setMemoryCount(0));
     }
   }, [status, router]);
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMsg("");
+    if (!oldPass || !newPass) return setMsg("Please fill both fields.");
+    const res = await fetch("/api/auth/change-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ oldPassword: oldPass, newPassword: newPass }),
+    });
+    if (res.ok) {
+      setMsg("Password updated successfully!");
+      setOldPass(""); setNewPass("");
+      setTimeout(() => setIsPasswordExpanded(false), 2000);
+    } else {
+      setMsg((await res.json()).error || "Failed to update password.");
+    }
+  };
 
   if (status === "loading") return null;
 
@@ -82,7 +117,7 @@ export default function ProfilePage() {
           </svg>
         </button>
         <h1 className="text-[19px] font-semibold tracking-wide">Profile</h1>
-        <button className="active:scale-90 transition-transform">
+        <button onClick={() => setIsPasswordExpanded(!isPasswordExpanded)} className="active:scale-90 transition-transform">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -95,11 +130,22 @@ export default function ProfilePage() {
         <div className="w-[124px] h-[124px] rounded-full border-[4px] border-white shadow-md overflow-hidden bg-[#EADBD7]">
           <img src="/couple-polaroid.jpg" alt="Profile" className="w-full h-full object-cover" />
         </div>
-        <div className="flex items-center gap-2 mt-4">
-          <h2 className="text-[24px] font-bold text-[#3A2222] tracking-tight">
-            {session?.user?.name || "Alex & Jamie"}
-          </h2>
-          <button className="text-[#9C7A7A]">
+        <div className="flex items-center gap-2 mt-4 relative">
+          {isEditingName ? (
+            <input 
+              type="text" 
+              value={name} 
+              onChange={e => setName(e.target.value)} 
+              onBlur={() => setIsEditingName(false)}
+              autoFocus
+              className="text-[24px] font-bold text-[#3A2222] tracking-tight bg-transparent border-b-2 border-[#AA6A73] outline-none text-center w-[200px]"
+            />
+          ) : (
+            <h2 className="text-[24px] font-bold text-[#3A2222] tracking-tight">
+              {name}
+            </h2>
+          )}
+          <button onClick={() => setIsEditingName(!isEditingName)} className="text-[#9C7A7A] active:scale-90 transition-transform">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
             </svg>
@@ -124,22 +170,48 @@ export default function ProfilePage() {
         <MenuItem 
           icon={<HeartSolid />} 
           label="My Memories" 
+          onClick={() => router.push("/gallery")}
         />
         <MenuItem 
           icon={<GearOutline />} 
           label="Account Settings" 
-        />
+          onClick={() => setIsPasswordExpanded(!isPasswordExpanded)}
+        >
+          {isPasswordExpanded && (
+            <form onSubmit={handlePasswordChange} className="mt-2 space-y-3 bg-[#F4E9E6] p-4 rounded-xl">
+              <input type="password" placeholder="Current Password" value={oldPass} onChange={e=>setOldPass(e.target.value)} required 
+                className="w-full bg-white px-4 py-2.5 rounded-lg text-sm border-none outline-none text-[#3A2222]" />
+              <input type="password" placeholder="New Password" value={newPass} onChange={e=>setNewPass(e.target.value)} required 
+                className="w-full bg-white px-4 py-2.5 rounded-lg text-sm border-none outline-none text-[#3A2222]" />
+              <button type="submit" className="w-full bg-[#AA6A73] text-white py-2.5 rounded-lg text-sm font-semibold mt-1">Update Password</button>
+              {msg && <p className="text-xs text-center font-medium mt-2" style={{color: msg.includes('success') ? '#4A7C59' : '#C45252'}}>{msg}</p>}
+            </form>
+          )}
+        </MenuItem>
         <MenuItem 
           icon={<BellOutline />} 
           label="Notifications" 
+          onClick={() => setNotifications(!notifications)}
+          rightElement={
+            <div className={`w-10 h-6 rounded-full p-1 transition-colors ${notifications ? 'bg-[#AA6A73]' : 'bg-[#D6C5C3]'}`}>
+              <div className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform ${notifications ? 'translate-x-4' : 'translate-x-0'}`}/>
+            </div>
+          }
         />
         <MenuItem 
           icon={<HeartSolid />} 
           label="Privacy & Security" 
+          onClick={() => setIsPrivate(!isPrivate)}
+          rightElement={
+            <div className={`w-10 h-6 rounded-full p-1 transition-colors ${isPrivate ? 'bg-[#AA6A73]' : 'bg-[#D6C5C3]'}`}>
+              <div className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform ${isPrivate ? 'translate-x-4' : 'translate-x-0'}`}/>
+            </div>
+          }
         />
         <MenuItem 
           icon={<QuestionOutline />} 
           label="Help & Support" 
+          onClick={() => window.location.href = "mailto:support@memorytap.com"}
           isLast
         />
       </div>
@@ -161,13 +233,21 @@ export default function ProfilePage() {
 
 /* ── REUSABLE COMPONENTS & ICONS ── */
 
-function MenuItem({ icon, label, isLast = false }: { icon: React.ReactNode, label: string, isLast?: boolean }) {
+function MenuItem({ icon, label, isLast = false, onClick, children, rightElement }: { icon: React.ReactNode, label: string, isLast?: boolean, onClick?: () => void, children?: React.ReactNode, rightElement?: React.ReactNode }) {
   return (
-    <div className={`flex items-center gap-4 py-4 ${!isLast ? 'border-b border-[#EBD0CD]' : ''}`}>
-      <div className="w-6 h-6 flex items-center justify-center">
-        {icon}
-      </div>
-      <span className="text-[16px] text-[#3A2222] font-medium">{label}</span>
+    <div className={`flex flex-col py-1 ${!isLast ? 'border-b border-[#EBD0CD]' : ''}`}>
+      <button onClick={onClick} className="flex items-center gap-4 py-3 w-full text-left active:scale-[0.98] transition-transform">
+        <div className="w-6 h-6 flex items-center justify-center shrink-0">
+          {icon}
+        </div>
+        <span className="text-[16px] text-[#3A2222] font-medium flex-1">{label}</span>
+        {rightElement}
+      </button>
+      {children && (
+        <div className="pb-3 px-1">
+          {children}
+        </div>
+      )}
     </div>
   );
 }
