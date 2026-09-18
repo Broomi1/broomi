@@ -46,7 +46,7 @@ export default function DashboardPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundImage: "url('/login-bg.jpg')", backgroundSize: "cover" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundImage: "url('/home-bg-new.jpg')", backgroundSize: "cover" }}>
         <div className="animate-spin w-8 h-8 border-4 border-[#4B2E28] border-t-transparent rounded-full" />
       </div>
     );
@@ -60,7 +60,7 @@ export default function DashboardPage() {
     <div
       className="min-h-screen pb-40 font-sans"
       style={{
-        backgroundImage: "url('/login-bg.jpg')",
+        backgroundImage: "url('/home-bg-new.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
