@@ -73,6 +73,46 @@ export default function LoginPage() {
       {/* Outer wrapper — holds sticky note + card */}
       <div className="relative w-full max-w-[400px] mx-auto pb-0">
 
+        {/* ── STICKY NOTE (torn paper, overlapping top-left) ── */}
+        <div
+          className="absolute z-30"
+          style={{
+            top: "-40px",
+            left: "-10px",
+            transform: "rotate(-6deg)",
+            filter: "drop-shadow(2px 4px 6px rgba(0,0,0,0.15))",
+          }}
+        >
+          {/* Tape strip at top */}
+          <div
+            className="absolute left-1/2 -translate-x-1/2 -top-2 w-12 h-6 rounded-sm z-10"
+            style={{ background: "rgba(120, 175, 230, 0.85)" }}
+          />
+          {/* Torn paper body */}
+          <div
+            style={{
+              background: "#FDF1BA",
+              padding: "16px 20px 20px 18px",
+              clipPath:
+                "polygon(0% 4%,3% 0%,8% 2%,15% 0%,22% 3%,30% 0%,37% 2%,45% 0%,52% 3%,60% 1%,67% 3%,75% 0%,82% 2%,90% 0%,97% 2%,100% 0%,100% 95%,98% 98%,93% 96%,86% 99%,79% 97%,72% 100%,65% 97%,57% 99%,50% 96%,42% 100%,35% 97%,28% 99%,21% 96%,14% 100%,7% 97%,2% 99%,0% 96%)",
+            }}
+          >
+            <p
+              className="text-center leading-snug tracking-wide"
+              style={{
+                fontFamily: "var(--font-caveat), cursive",
+                fontSize: "19px",
+                color: "#1B3C6A",
+                lineHeight: 1.3,
+                fontWeight: 600,
+              }}
+            >
+              Better<br />Moments<br />Together<br />
+              <span style={{ fontSize: "22px", display: "inline-block", marginTop: "4px" }}>♡</span>
+            </p>
+          </div>
+        </div>
+
         {/* ── MAIN ARCH CARD ── */}
         <div
           className="w-full relative"
