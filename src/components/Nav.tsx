@@ -56,10 +56,11 @@ export default function Nav() {
           <div className="relative flex justify-center w-[70px] -mt-10 z-20">
             <Link
               href="/memories/new"
-              className="w-[60px] h-[60px] rounded-full flex items-center justify-center transition-transform active:scale-95 shadow-sm"
-              style={{ backgroundColor: "#4B2E28", border: "2px dashed #F5E9E0", boxShadow: "0 4px 12px rgba(75, 46, 40, 0.4)" }}
+              className="w-[64px] h-[64px] rounded-full flex items-center justify-center transition-transform active:scale-95 shadow-md relative"
+              style={{ backgroundColor: "#4B2E28", boxShadow: "0 4px 12px rgba(75, 46, 40, 0.4)" }}
             >
-              <span className="text-[#FDFBF8] text-[32px] font-light leading-none relative" style={{ top: "-2px" }}>+</span>
+              <div className="absolute inset-[3px] rounded-full border-[1.5px] border-dashed border-[#F5E9E0]/70 pointer-events-none"></div>
+              <span className="text-[#FDFBF8] text-[36px] font-light leading-none relative" style={{ top: "-2px" }}>+</span>
             </Link>
           </div>
 
