@@ -46,8 +46,8 @@ export default function DashboardPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#FDF6F3]">
-        <div className="animate-spin w-8 h-8 border-4 border-[#3C2415] border-t-transparent rounded-full" />
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundImage: "url('/login-bg.jpg')", backgroundSize: "cover" }}>
+        <div className="animate-spin w-8 h-8 border-4 border-[#4B2E28] border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -60,7 +60,7 @@ export default function DashboardPage() {
     <div
       className="min-h-screen pb-40 font-sans"
       style={{
-        backgroundImage: "url('/dashboard-bunny-bg.jpg')",
+        backgroundImage: "url('/login-bg.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundAttachment: "fixed",
@@ -68,15 +68,15 @@ export default function DashboardPage() {
     >
       {/* ── HEADER ── */}
       <header className="pt-20 px-6 pb-6 relative z-10">
-        <h2 className="text-[1.3rem] text-[#3C2415] mb-[-4px]" style={{ fontFamily: "var(--font-caveat), cursive", fontWeight: 700 }}>
+        <h2 className="text-[1.3rem] text-[#4B2E28] mb-[-4px]" style={{ fontFamily: "var(--font-caveat), cursive", fontWeight: 700 }}>
           Good to see you,
         </h2>
-        <h1 className="text-[3rem] font-bold text-[#3C2415] leading-none mb-3 tracking-tight flex items-center gap-2">
+        <h1 className="text-[3rem] font-bold text-[#4B2E28] leading-none mb-3 tracking-tight flex items-center gap-2">
           {user?.name?.split(' ')[0] || "There"}
           <span className="text-[2rem] font-normal" style={{ fontFamily: "var(--font-caveat), cursive" }}>♡</span>
         </h1>
         
-        <p className="text-[1.1rem] text-[#7A665A] leading-[1.3]" style={{ fontFamily: "var(--font-caveat), cursive", fontWeight: 600 }}>
+        <p className="text-[1.1rem] text-[#5F4D4A] leading-[1.3]" style={{ fontFamily: "var(--font-caveat), cursive", fontWeight: 600 }}>
           Your memories<br/>
           are little pieces<br/>
           of happiness ♡
@@ -84,24 +84,24 @@ export default function DashboardPage() {
         
         {/* Underline doodle */}
         <svg width="80" height="10" viewBox="0 0 100 10" fill="none" className="mt-2 opacity-60">
-          <path d="M5,5 Q50,10 95,2" stroke="#A66B6B" strokeWidth="2" strokeLinecap="round" />
+          <path d="M5,5 Q50,10 95,2" stroke="#4B2E28" strokeWidth="2" strokeLinecap="round" />
         </svg>
 
         {/* Small scattered hearts/stars near text */}
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="absolute top-16 right-32 opacity-70">
-           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="#A66B6B" strokeWidth="1.5" />
+           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="#4B2E28" strokeWidth="1.5" />
         </svg>
       </header>
 
       {/* ── TODAY's MEMORY ── */}
       {featuredMemory && (
         <div className="px-5 mt-2 relative z-10">
-          <div className="relative bg-[#FCF8F5]/90 backdrop-blur-md rounded-[24px] p-4 shadow-sm border border-[#F0E6DF]">
+          <div className="relative bg-[#F5E9E0]/90 backdrop-blur-md rounded-[24px] p-4 shadow-sm border border-[#E8D5C8]">
             
             {/* Tape Label */}
             <div 
               className="absolute -top-3 left-6 px-3 py-1 shadow-sm rotate-[-3deg]"
-              style={{ backgroundColor: "#E3C2AA", color: "#4A3320" }}
+              style={{ backgroundColor: "#F5E9E0", color: "#4B2E28", border: "1px solid #E8D5C8" }}
             >
               <span className="text-[14px] font-bold" style={{ fontFamily: "var(--font-caveat), cursive" }}>
                 Today's Memory ♡
@@ -110,7 +110,7 @@ export default function DashboardPage() {
 
             <div className="flex gap-4 mt-3">
               {/* Image */}
-              <div className="w-[130px] h-[130px] shrink-0 rounded-[16px] overflow-hidden relative shadow-sm bg-[#F5ECE0]">
+              <div className="w-[130px] h-[130px] shrink-0 rounded-[16px] overflow-hidden relative shadow-sm bg-[#F5E9E0]">
                 {featuredMemory.mediaUrl ? (
                   <img src={featuredMemory.mediaUrl} alt={featuredMemory.title} className="w-full h-full object-cover" />
                 ) : (
@@ -127,18 +127,18 @@ export default function DashboardPage() {
 
               {/* Info */}
               <div className="flex-1 py-1 relative">
-                <button className="absolute -top-1 right-0 text-[#8B6A5B] opacity-70">
+                <button className="absolute -top-1 right-0 text-[#4B2E28] opacity-70">
                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                      <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
                    </svg>
                 </button>
-                <h3 className="text-[1.6rem] text-[#3C2415] font-bold leading-tight mb-2 pr-4" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+                <h3 className="text-[1.6rem] text-[#4B2E28] font-bold leading-tight mb-2 pr-4" style={{ fontFamily: "var(--font-caveat), cursive" }}>
                   {featuredMemory.title} ♡
                 </h3>
-                <p className="text-[#6B5A50] text-[15px] leading-[1.2] line-clamp-3 mb-3" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+                <p className="text-[#5F4D4A] text-[15px] leading-[1.2] line-clamp-3 mb-3" style={{ fontFamily: "var(--font-caveat), cursive" }}>
                   {featuredMemory.description || "A special moment saved forever."}
                 </p>
-                <div className="flex items-center gap-1.5 text-[#8B6A5B] text-[12px] font-medium">
+                <div className="flex items-center gap-1.5 text-[#5F4D4A] text-[12px] font-medium">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                     <line x1="16" y1="2" x2="16" y2="6" />
@@ -151,7 +151,7 @@ export default function DashboardPage() {
             </div>
             
             {/* Doodles bottom right */}
-            <div className="absolute -bottom-2 right-4 text-[#A66B6B] opacity-60 flex gap-1">
+            <div className="absolute -bottom-2 right-4 text-[#4B2E28] opacity-60 flex gap-1">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="mt-1"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
             </div>
@@ -164,7 +164,7 @@ export default function DashboardPage() {
         <Link
           href="/memories/new"
           className="w-full rounded-[30px] flex items-center justify-between p-4 shadow-md transition-transform active:scale-[0.98] relative"
-          style={{ backgroundColor: "#A36D6D" }}
+          style={{ backgroundColor: "#4B2E28" }}
         >
           <div className="flex items-center gap-4">
             {/* Camera Icon */}
@@ -195,7 +195,7 @@ export default function DashboardPage() {
         </Link>
         
         {/* Floating heart below button */}
-        <div className="absolute -bottom-3 right-8 text-[#A66B6B] opacity-70">
+        <div className="absolute -bottom-3 right-8 text-[#4B2E28] opacity-70">
            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
         </div>
       </div>
@@ -204,14 +204,14 @@ export default function DashboardPage() {
       <div className="mt-8 px-5 relative z-10">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#A66B6B" stroke="#A66B6B" strokeWidth="2">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#4B2E28" stroke="#4B2E28" strokeWidth="2">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
-            <h2 className="text-[1.6rem] text-[#3C2415] font-bold leading-none" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+            <h2 className="text-[1.6rem] text-[#4B2E28] font-bold leading-none" style={{ fontFamily: "var(--font-caveat), cursive" }}>
               Recent Memories
             </h2>
           </div>
-          <Link href="/gallery" className="text-[#A66B6B] text-[12px] font-semibold flex items-center gap-1 hover:text-[#8B5A5A]" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "16px" }}>
+          <Link href="/gallery" className="text-[#4B2E28] text-[12px] font-semibold flex items-center gap-1 hover:opacity-70" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "16px" }}>
             View All →
           </Link>
         </div>
@@ -221,11 +221,11 @@ export default function DashboardPage() {
             <Link 
               href={`/memories/${memory.id}/edit`} 
               key={memory.id}
-              className="bg-[#FCF8F5]/90 backdrop-blur-sm rounded-[20px] p-2 flex items-center gap-4 shadow-sm border border-[#F0E6DF] relative overflow-hidden"
+              className="bg-[#F5E9E0]/90 backdrop-blur-sm rounded-[20px] p-2 flex items-center gap-4 shadow-sm border border-[#E8D5C8] relative overflow-hidden"
             >
               {/* Image Thumbnail with tape */}
-              <div className="w-[70px] h-[70px] shrink-0 rounded-[14px] overflow-hidden bg-[#F5ECE0] relative ml-1">
-                 <div className="absolute -top-2 -left-2 w-8 h-4 bg-[#DDB99F] rotate-[-25deg] z-10 shadow-sm opacity-80"></div>
+              <div className="w-[70px] h-[70px] shrink-0 rounded-[14px] overflow-hidden bg-[#F5E9E0] relative ml-1">
+                 <div className="absolute -top-2 -left-2 w-8 h-4 bg-[#F5E9E0] rotate-[-25deg] z-10 shadow-sm opacity-80 border border-[#E8D5C8]"></div>
                 {memory.mediaUrl ? (
                   <img src={memory.mediaUrl} alt={memory.title} className="w-full h-full object-cover" />
                 ) : (
@@ -238,13 +238,13 @@ export default function DashboardPage() {
               {/* Content */}
               <div className="flex-1 py-1 pr-2">
                 <div className="flex justify-between items-center mb-1">
-                  <h3 className="font-bold text-[#3C2415] text-[1.2rem]" style={{ fontFamily: "var(--font-caveat), cursive" }}>{memory.title} ♡</h3>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A66B6B" strokeWidth="2">
+                  <h3 className="font-bold text-[#4B2E28] text-[1.2rem]" style={{ fontFamily: "var(--font-caveat), cursive" }}>{memory.title} ♡</h3>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4B2E28" strokeWidth="2">
                     <polyline points="9 18 15 12 9 6"></polyline>
                   </svg>
                 </div>
                 
-                <div className="flex items-center gap-2 text-[#8B6A5B] text-[11px] font-medium">
+                <div className="flex items-center gap-2 text-[#5F4D4A] text-[11px] font-medium">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                     <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -256,20 +256,16 @@ export default function DashboardPage() {
               </div>
 
               {/* Right side floating heart */}
-              <div className="absolute right-4 bottom-2 text-[#A66B6B] opacity-60">
+              <div className="absolute right-4 bottom-2 text-[#4B2E28] opacity-60">
                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                 </svg>
-                 {/* Sparkle line next to heart */}
-                 <svg width="6" height="6" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3" className="absolute -top-1 -right-1">
-                    <line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/>
                  </svg>
               </div>
             </Link>
           ))}
           
           {recentMemories.length === 0 && (
-            <div className="text-center py-10 text-[#8B6A5B] font-medium" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.2rem" }}>
+            <div className="text-center py-10 text-[#5F4D4A] font-medium" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.2rem" }}>
               No memories yet. Add your first one above!
             </div>
           )}

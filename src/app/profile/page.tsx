@@ -60,13 +60,13 @@ export default function ProfilePage() {
   if (status === "loading") return null;
 
   return (
-    <div className="min-h-screen relative overflow-hidden font-sans pb-32" style={{ backgroundColor: "#FAF4F1" }}>
+    <div className="min-h-screen relative overflow-hidden font-sans pb-32" style={{ backgroundColor: "#F5E9E0" }}>
       
       {/* ── HEADER BACKGROUND SHAPE ── */}
       <svg viewBox="0 0 400 240" preserveAspectRatio="none" 
         className="absolute top-0 left-0 w-full h-[240px] z-0">
         {/* Flat on right, scoop down on left */}
-        <path fill="#AA6A73" d="M0 0 L400 0 L400 170 L160 170 C90 170 50 240 0 130 Z" />
+        <path fill="#4B2E28" d="M0 0 L400 0 L400 170 L160 170 C90 170 50 240 0 130 Z" />
       </svg>
 
       {/* ── FLOATING DECORATIONS ── */}
@@ -155,13 +155,13 @@ export default function ProfilePage() {
 
       {/* ── STATS CARDS ── */}
       <div className="relative z-20 flex gap-4 px-6 mt-6">
-        <div className="flex-1 bg-[#EBE0DB] rounded-3xl p-4 flex flex-col items-center justify-center">
-          <p className="text-[13px] text-[#5A4040] font-medium tracking-wide">Memories Shared</p>
-          <p className="text-[28px] font-bold text-[#3A2222] leading-none mt-2">{memoryCount}</p>
+        <div className="flex-1 bg-[#F5E9E0] rounded-3xl p-4 flex flex-col items-center justify-center border border-[#E8D5C8]">
+          <p className="text-[13px] text-[#5F4D4A] font-medium tracking-wide">Memories Shared</p>
+          <p className="text-[28px] font-bold text-[#4B2E28] leading-none mt-2">{memoryCount}</p>
         </div>
-        <div className="flex-1 bg-[#EBE0DB] rounded-3xl p-4 flex flex-col items-center justify-center">
-          <p className="text-[13px] text-[#5A4040] font-medium tracking-wide">Boxes Created</p>
-          <p className="text-[28px] font-bold text-[#3A2222] leading-none mt-2">5</p>
+        <div className="flex-1 bg-[#F5E9E0] rounded-3xl p-4 flex flex-col items-center justify-center border border-[#E8D5C8]">
+          <p className="text-[13px] text-[#5F4D4A] font-medium tracking-wide">Boxes Created</p>
+          <p className="text-[28px] font-bold text-[#4B2E28] leading-none mt-2">5</p>
         </div>
       </div>
 
