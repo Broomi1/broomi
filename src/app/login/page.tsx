@@ -116,9 +116,9 @@ export default function LoginPage() {
         <div
           className="w-full relative"
           style={{
-            background: "#FAF4EF",
-            borderRadius: "200px 200px 48px 48px",
-            boxShadow: "0 8px 48px rgba(80,40,20,0.13)",
+            background: "transparent",
+            borderRadius: "48px",
+            boxShadow: "none",
             overflow: "visible",
             paddingBottom: "32px",
           }}
