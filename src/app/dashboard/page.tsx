@@ -67,15 +67,15 @@ export default function DashboardPage() {
       />
 
       {/* Header */}
-      <header className="relative z-10 pt-14 px-6 pb-4">
-        <p className="text-[1.3rem] text-[#4B2E28] font-semibold mb-[-6px]" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+      <header className="relative z-10 pt-24 px-6 pb-4">
+        <p className="text-[1.6rem] text-[#4B2E28] font-semibold mb-[-4px]" style={{ fontFamily: "var(--font-caveat), cursive" }}>
           Good to see you,
         </p>
-        <h1 className="text-[3.8rem] font-bold text-[#4B2E28] leading-none tracking-tight flex items-center gap-2 mb-3" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+        <h1 className="text-[5rem] font-bold text-[#4B2E28] leading-none tracking-tight flex items-center gap-2 mb-4" style={{ fontFamily: "var(--font-caveat), cursive" }}>
           {firstName}
-          <span className="text-[2.5rem]">&#9825;</span>
+          <span className="text-[3rem]">&#9825;</span>
         </h1>
-        <p className="text-[1.15rem] text-[#4B2E28] leading-[1.35] font-semibold" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+        <p className="text-[1.4rem] text-[#4B2E28] leading-[1.4] font-semibold" style={{ fontFamily: "var(--font-caveat), cursive" }}>
           Your memories<br />
           are little pieces<br />
           of happiness &#9825;
