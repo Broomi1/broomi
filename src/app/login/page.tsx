@@ -73,45 +73,6 @@ export default function LoginPage() {
       {/* Outer wrapper — holds sticky note + card */}
       <div className="relative w-full max-w-[400px] mx-auto pb-0">
 
-        {/* ── STICKY NOTE (torn paper, overlapping top-left) ── */}
-        <div
-          className="absolute z-30"
-          style={{
-            top: "-10px",
-            left: "-8px",
-            transform: "rotate(-8deg)",
-            filter: "drop-shadow(2px 4px 6px rgba(0,0,0,0.18))",
-          }}
-        >
-          {/* Tape strip at top */}
-          <div
-            className="absolute left-1/2 -translate-x-1/2 -top-3 w-10 h-5 rounded-sm z-10"
-            style={{ background: "rgba(210,190,165,0.75)" }}
-          />
-          {/* Torn paper body */}
-          <div
-            style={{
-              background: "#F2E6D0",
-              padding: "14px 18px 14px 16px",
-              clipPath:
-                "polygon(0% 4%,3% 0%,8% 2%,15% 0%,22% 3%,30% 0%,37% 2%,45% 0%,52% 3%,60% 1%,67% 3%,75% 0%,82% 2%,90% 0%,97% 2%,100% 0%,100% 95%,98% 98%,93% 96%,86% 99%,79% 97%,72% 100%,65% 97%,57% 99%,50% 96%,42% 100%,35% 97%,28% 99%,21% 96%,14% 100%,7% 97%,2% 99%,0% 96%)",
-            }}
-          >
-            <p
-              className="text-center leading-snug"
-              style={{
-                fontFamily: "var(--font-caveat), cursive",
-                fontSize: "17px",
-                color: "#5C3D2E",
-                lineHeight: 1.3,
-              }}
-            >
-              Better<br />Moments<br />Together<br />
-              <span style={{ fontSize: "20px" }}>♡</span>
-            </p>
-          </div>
-        </div>
-
         {/* ── MAIN ARCH CARD ── */}
         <div
           className="w-full relative"
@@ -123,80 +84,6 @@ export default function LoginPage() {
             paddingBottom: "32px",
           }}
         >
-          {/* ── POLAROID SECTION ── */}
-          <div className="flex justify-center pt-12 relative" style={{ marginBottom: "-8px" }}>
-            <div className="relative" style={{ width: "130px", height: "130px" }}>
-
-              {/* Back polaroid (tilted right) */}
-              <div
-                className="absolute"
-                style={{
-                  background: "white",
-                  padding: "8px 8px 26px 8px",
-                  borderRadius: "3px",
-                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                  transform: "rotate(9deg) translate(14px, 4px)",
-                  width: "110px",
-                  height: "110px",
-                  top: 0,
-                  left: 0,
-                  zIndex: 0,
-                }}
-              >
-                <div style={{ width: "100%", height: "100%", background: "#E8D8CC", borderRadius: "2px" }} />
-              </div>
-
-              {/* Front polaroid */}
-              <div
-                className="absolute"
-                style={{
-                  background: "white",
-                  padding: "8px 8px 28px 8px",
-                  borderRadius: "3px",
-                  boxShadow: "0 6px 18px rgba(0,0,0,0.2)",
-                  transform: "rotate(-4deg)",
-                  width: "110px",
-                  height: "110px",
-                  top: 0,
-                  left: 0,
-                  zIndex: 1,
-                  overflow: "hidden",
-                }}
-              >
-                <img
-                  src="/couple-polaroid.jpg"
-                  alt="Couple"
-                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top", borderRadius: "2px" }}
-                />
-              </div>
-
-              {/* Heart pin */}
-              <div
-                className="absolute"
-                style={{
-                  top: "-14px",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  zIndex: 10,
-                  color: "#E07B7B",
-                  fontSize: "22px",
-                  filter: "drop-shadow(0 2px 3px rgba(0,0,0,0.2))",
-                }}
-              >
-                ♥
-              </div>
-
-              {/* Decorative hearts & dashes around polaroid */}
-              <div style={{ position: "absolute", top: "30px", left: "-30px", color: "#8B5E5E", fontFamily: "var(--font-caveat), cursive", fontSize: "20px", transform: "rotate(-10deg)", opacity: 0.7 }}>♡</div>
-              <div style={{ position: "absolute", top: "60px", left: "-22px", width: "14px", height: "2px", background: "#8B5E5E", borderRadius: "2px", transform: "rotate(40deg)", opacity: 0.5 }} />
-              <div style={{ position: "absolute", top: "74px", left: "-16px", width: "10px", height: "2px", background: "#8B5E5E", borderRadius: "2px", transform: "rotate(-20deg)", opacity: 0.5 }} />
-
-              <div style={{ position: "absolute", top: "18px", right: "-30px", color: "#8B5E5E", fontFamily: "var(--font-caveat), cursive", fontSize: "20px", transform: "rotate(10deg)", opacity: 0.7 }}>♡</div>
-              <div style={{ position: "absolute", top: "48px", right: "-22px", width: "14px", height: "2px", background: "#8B5E5E", borderRadius: "2px", transform: "rotate(-40deg)", opacity: 0.5 }} />
-              <div style={{ position: "absolute", top: "62px", right: "-16px", width: "10px", height: "2px", background: "#8B5E5E", borderRadius: "2px", transform: "rotate(20deg)", opacity: 0.5 }} />
-            </div>
-          </div>
-
           {/* ── TITLE ── */}
           <div className="text-center px-6 pt-6">
             <h1
