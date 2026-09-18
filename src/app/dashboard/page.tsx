@@ -46,7 +46,7 @@ export default function DashboardPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundImage: "url('/home-bg-new.jpg')", backgroundSize: "cover" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundImage: "url('/home-bg-clean.jpg')", backgroundSize: "cover", backgroundPosition: "top center" }}>
         <div className="animate-spin w-8 h-8 border-4 border-[#4B2E28] border-t-transparent rounded-full" />
       </div>
     );
@@ -60,68 +60,14 @@ export default function DashboardPage() {
     <div
       className="min-h-screen pb-40 font-sans"
       style={{
-        backgroundImage: "url('/home-bg-new.jpg')",
+        backgroundImage: "url('/home-bg-clean.jpg')",
         backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundPosition: "top center",
         backgroundAttachment: "fixed",
       }}
     >
-      {/* ── HEADER ── */}
-      <header className="pt-20 px-6 pb-6 relative z-10">
-        <h2 className="text-[1.3rem] text-[#4B2E28] mb-[-4px]" style={{ fontFamily: "var(--font-caveat), cursive", fontWeight: 700 }}>
-          Good to see you,
-        </h2>
-        <h1 className="text-[4rem] font-bold text-[#4B2E28] leading-none tracking-tight flex items-center gap-2 mb-4" style={{ fontFamily: "var(--font-caveat), cursive" }}>
-          {user?.name?.split(' ')[0] || "weblom"}
-          <span className="text-[2.2rem] font-normal" style={{ fontFamily: "var(--font-caveat), cursive" }}>♡</span>
-        </h1>
-        
-        <p className="text-[1.2rem] text-[#5F4D4A] leading-[1.3]" style={{ fontFamily: "var(--font-caveat), cursive", fontWeight: 600 }}>
-          Your memories<br/>
-          are little pieces<br/>
-          of happiness ♡
-        </p>
-
-        {/* Small scattered hearts/stars near text */}
-        <div className="absolute top-20 right-28 opacity-70">
-           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4B2E28" strokeWidth="1.5">
-             <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-           </svg>
-        </div>
-        
-        {/* Sticky Note */}
-        <div className="absolute top-[220px] left-6 z-20" style={{ transform: "rotate(-4deg)" }}>
-          {/* Tape strip at top */}
-          <div
-            className="absolute left-1/2 -translate-x-1/2 -top-2 w-10 h-5 rounded-sm z-10"
-            style={{ background: "rgba(200, 180, 160, 0.7)" }}
-          />
-          <div
-            style={{
-              background: "#F2E8D5",
-              padding: "16px 16px 20px 16px",
-              boxShadow: "2px 4px 10px rgba(0,0,0,0.15)",
-              clipPath:
-                "polygon(0% 4%,3% 0%,8% 2%,15% 0%,22% 3%,30% 0%,37% 2%,45% 0%,52% 3%,60% 1%,67% 3%,75% 0%,82% 2%,90% 0%,97% 2%,100% 0%,100% 95%,98% 98%,93% 96%,86% 99%,79% 97%,72% 100%,65% 97%,57% 99%,50% 96%,42% 100%,35% 97%,28% 99%,21% 96%,14% 100%,7% 97%,2% 99%,0% 96%)",
-            }}
-          >
-            <p
-              className="text-center leading-tight tracking-wide"
-              style={{
-                fontFamily: "var(--font-caveat), cursive",
-                fontSize: "16px",
-                color: "#4B2E28",
-                fontWeight: 600,
-              }}
-            >
-              Small<br/>moments<br/>Big<br/>memories<br/>♡
-            </p>
-          </div>
-        </div>
-      </header>
-
-      {/* Adding space for sticky note */}
-      <div style={{ height: "70px" }} />
+      {/* Spacer to push content below the baked-in background text and drawings */}
+      <div className="w-full pt-[380px] sm:pt-[420px] md:pt-[480px]"></div>
 
       {/* ── TODAY's MEMORY ── */}
       {featuredMemory && (
