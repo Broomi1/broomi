@@ -66,24 +66,14 @@ export default function DashboardPage() {
         }}
       />
 
-      {/* Header */}
-      <header className="relative z-10 pt-14 px-6 pb-4">
-        <p className="text-[1.3rem] text-[#4B2E28] font-semibold mb-[-6px]" style={{ fontFamily: "var(--font-caveat), cursive" }}>
-          Good to see you,
-        </p>
-        <h1 className="text-[3.8rem] font-bold text-[#4B2E28] leading-none tracking-tight flex items-center gap-2 mb-3" style={{ fontFamily: "var(--font-caveat), cursive" }}>
-          {firstName}
-          <span className="text-[2.5rem]">&#9825;</span>
-        </h1>
-        <p className="text-[1.15rem] text-[#4B2E28] leading-[1.35] font-semibold" style={{ fontFamily: "var(--font-caveat), cursive" }}>
-          Your memories<br />
-          are little pieces<br />
-          of happiness &#9825;
-        </p>
-        {/* Small heart doodle top-right */}
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4B2E28" strokeWidth="1.5" className="absolute top-16 right-28 opacity-80">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-        </svg>
+      {/* Header — using uploaded image for exact text styling */}
+      <header className="relative z-10 pt-10 px-4 pb-2">
+        <img
+          src="/home-header-text.png"
+          alt="Good to see you, weblom — Your memories are little pieces of happiness"
+          className="w-full max-w-[340px]"
+          style={{ display: "block" }}
+        />
       </header>
 
       {/* Cards section - starts below the header text area */}
