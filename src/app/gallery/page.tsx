@@ -47,7 +47,7 @@ export default function GalleryPage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundImage: "url('/login-bg.jpg')", backgroundSize: "cover" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#E3E9F0" }}>
         <div className="animate-spin w-8 h-8 border-4 border-[#4B2E28] border-t-transparent rounded-full" />
       </div>
     );
@@ -59,15 +59,23 @@ export default function GalleryPage() {
   const cardBgs = ["#F5E9E0", "#EDE6DC", "#F0E8DE", "#EBE2D8"];
 
   return (
-    <div
-      className="min-h-screen pb-36 font-sans"
-      style={{
-        backgroundImage: "url('/login-bg.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: "fixed",
-      }}
-    >
+    <div className="min-h-screen pb-36 font-sans relative" style={{ backgroundColor: "#E3E9F0" }}>
+      {/* Ultra-stable fixed background for mobile */}
+      <div 
+        className="pointer-events-none"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          backgroundImage: "url('/gallery-bg.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          zIndex: 0
+        }}
+      />
       {/* ── HEADER ── */}
       <header className="pt-24 px-6 pb-4 relative z-10">
         <h1 className="text-[3.2rem] font-bold text-[#4B2E28] leading-none mb-1 tracking-tight flex items-center gap-2" style={{ fontFamily: "var(--font-caveat), cursive" }}>
