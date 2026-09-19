@@ -62,6 +62,22 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen relative overflow-hidden font-sans pb-32" style={{ backgroundColor: "#F5E9E0" }}>
       
+      {/* Ultra-stable fixed background for mobile */}
+      <div 
+        className="pointer-events-none"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          backgroundImage: "url('/profile-bg.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          zIndex: 0
+        }}
+      />
       {/* ── HEADER BACKGROUND SHAPE ── */}
       <svg viewBox="0 0 400 240" preserveAspectRatio="none" 
         className="absolute top-0 left-0 w-full h-[240px] z-0">
