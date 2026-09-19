@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -20,9 +21,40 @@ export default function Nav() {
   const { data: session } = useSession();
   const role = (session?.user as any)?.role;
 
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    const resetTimer = () => {
+      setIsVisible(true);
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setIsVisible(false);
+      }, 5000);
+    };
+
+    window.addEventListener('touchstart', resetTimer, { passive: true });
+    window.addEventListener('touchmove', resetTimer, { passive: true });
+    window.addEventListener('mousemove', resetTimer, { passive: true });
+    window.addEventListener('click', resetTimer, { passive: true });
+    window.addEventListener('scroll', resetTimer, { passive: true });
+
+    resetTimer();
+
+    return () => {
+      window.removeEventListener('touchstart', resetTimer);
+      window.removeEventListener('touchmove', resetTimer);
+      window.removeEventListener('mousemove', resetTimer);
+      window.removeEventListener('click', resetTimer);
+      window.removeEventListener('scroll', resetTimer);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
   if (role === "admin") {
     return (
-      <nav className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-6 py-3 bg-[#F5E9E0]/90 backdrop-blur-md border-t border-[#E8D5C8] shadow-lg">
+      <nav className={`fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-6 py-3 bg-[#F5E9E0]/90 backdrop-blur-md border-t border-[#E8D5C8] shadow-lg transition-transform duration-500 ease-in-out ${isVisible ? "translate-y-0" : "translate-y-full"}`}>
         <NavItem href="/admin" icon={<span>⚙️</span>} label="Dashboard" active={pathname === "/admin"} />
         <NavItem href="/profile" icon={<span>👤</span>} label="Profile" active={pathname === "/profile"} />
       </nav>
@@ -32,7 +64,7 @@ export default function Nav() {
   const isNewMemory = pathname === "/memories/new";
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none flex flex-col items-center" style={{ height: "90px" }}>
+    <nav className={`fixed bottom-0 left-0 right-0 z-50 pointer-events-none flex flex-col items-center transition-transform duration-700 ease-in-out ${isVisible ? "translate-y-0" : "translate-y-[130%]"}`} style={{ height: "90px" }}>
       <div className={`relative w-full flex items-center justify-between px-2 pb-6 pt-3 pointer-events-auto border-t border-transparent ${!isNewMemory ? "bg-[#F5E9E0]" : ""}`} style={{ filter: !isNewMemory ? "drop-shadow(0 -4px 10px rgba(0,0,0,0.04))" : "none" }}>
         
         {!isNewMemory && <WavyTop />}
