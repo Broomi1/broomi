@@ -95,117 +95,52 @@ export default function AddMemoryPage() {
 
   const FIELD: React.CSSProperties = {
     width: "100%",
-    background: "#E8DCDA",
-    border: "none",
+    background: "rgba(255, 255, 255, 0.65)",
+    backdropFilter: "blur(12px)",
+    border: "1px solid rgba(255, 255, 255, 0.4)",
     borderRadius: "999px",
     padding: "15px 20px 15px 50px",
     fontSize: "15px",
-    color: "#3C1A1A",
+    color: "#4B2E28",
     outline: "none",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
     boxSizing: "border-box",
   };
 
   const LABEL: React.CSSProperties = {
     fontSize: "12px",
     fontWeight: 800,
-    color: "#3C1A1A",
+    color: "#4B2E28",
     letterSpacing: "0.12em",
     textTransform: "uppercase",
-    marginBottom: "10px",
+    marginBottom: "8px",
     display: "block",
+    textShadow: "0 1px 2px rgba(255,255,255,0.8)",
   };
 
   return (
-    <div className="min-h-screen pb-36 relative overflow-hidden" style={{ backgroundColor: "#F5EDE8" }}>
+    <div className="min-h-screen pb-36 relative overflow-hidden font-sans">
 
-      {/* ── BACKGROUND BLOBS ── */}
-      {/* Pink blob top-right */}
-      <div style={{
-        position: "absolute", top: "-40px", right: "-50px",
-        width: "200px", height: "200px",
-        borderRadius: "60% 40% 65% 45%",
-        background: "#D9A8B0",
-        zIndex: 0,
-      }}/>
-      {/* Pink blob bottom-left */}
-      <div style={{
-        position: "absolute", bottom: "80px", left: "-60px",
-        width: "180px", height: "180px",
-        borderRadius: "55% 65% 50% 70%",
-        background: "#D9A8B0",
-        zIndex: 0,
-      }}/>
-      {/* Scattered heart outlines */}
-      {[
-        { top:"8%",  left:"6%",  size:22 },
-        { top:"12%", left:"42%", size:18 },
-        { top:"5%",  right:"4%", size:16 },
-        { top:"32%", right:"4%", size:20 },
-        { top:"52%", left:"3%",  size:18 },
-        { bottom:"28%", left:"6%",  size:22 },
-        { bottom:"22%", right:"6%", size:20 },
-        { bottom:"12%", left:"42%", size:16 },
-        { bottom:"10%", right:"38%",size:14 },
-      ].map((pos, i) => (
-        <svg key={i} width={pos.size} height={pos.size} viewBox="0 0 24 24" fill="none"
-          stroke="#D9A8B0" strokeWidth="1.5"
-          style={{ position:"absolute", zIndex:1, ...Object.fromEntries(Object.entries(pos).filter(([k])=>k!=="size")) }}>
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-        </svg>
-      ))}
-
-      {/* ── POLAROID STACK TOP RIGHT ── */}
-      <div style={{ position:"absolute", top:"12px", right:"10px", zIndex:2, width:"170px", height:"160px" }}>
-        {/* Back polaroid — tilted */}
-        <div style={{
-          position:"absolute", top:"10px", right:"0px",
-          width:"120px", background:"white", padding:"8px 8px 28px",
-          boxShadow:"0 4px 14px rgba(0,0,0,0.12)",
-          transform:"rotate(8deg)", borderRadius:"4px",
-        }}>
-          <div style={{ width:"100%", aspectRatio:"1", backgroundImage:"url('https://loremflickr.com/400/400/couple,sunset')", backgroundSize:"cover", backgroundPosition:"center", borderRadius:"2px" }}/>
-          <p style={{ fontSize:"9px", color:"#8B6A5B", marginTop:"6px", textAlign:"center",
-                       fontStyle:"italic", fontFamily:"var(--font-caveat), cursive" }}>
-            Better together ♡
-          </p>
-        </div>
-        {/* Paper clip */}
-        <svg width="18" height="40" viewBox="0 0 18 40" fill="none" stroke="#888" strokeWidth="2"
-          style={{ position:"absolute", top:"-4px", right:"54px", zIndex:4 }}>
-          <path d="M9 2 C4 2 2 6 2 10 L2 30 C2 36 6 38 9 38 C12 38 16 36 16 30 L16 12 C16 8 14 6 11 6 C8 6 6 8 6 12 L6 28 C6 32 12 32 12 28 L12 14"/>
-        </svg>
-        {/* Front polaroid */}
-        <div style={{
-          position:"absolute", top:"0px", right:"40px",
-          width:"110px", background:"white", padding:"8px 8px 28px",
-          boxShadow:"0 6px 18px rgba(0,0,0,0.15)",
-          transform:"rotate(-5deg)", borderRadius:"4px",
-        }}>
-          <div style={{ width:"100%", aspectRatio:"1", backgroundImage:"url('/couple-polaroid.jpg')", backgroundSize:"cover", backgroundPosition:"center", borderRadius:"2px" }}/>
-          <p style={{ fontSize:"0px" }}>&nbsp;</p>
-        </div>
-        {/* Sticky note */}
-        <div style={{
-          position:"absolute", bottom:"-4px", right:"-4px",
-          width:"70px", padding:"8px",
-          background:"#F5E9A8", boxShadow:"0 3px 8px rgba(0,0,0,0.1)",
-          transform:"rotate(3deg)", borderRadius:"2px", zIndex:5,
-        }}>
-          <p style={{ fontSize:"11px", color:"#5A4020", lineHeight:1.3, fontFamily:"var(--font-caveat), cursive", fontWeight:600 }}>
-            Good<br/>Vibes<br/>Only ♡
-          </p>
-        </div>
-      </div>
+      {/* Ultra-stable fixed background for mobile */}
+      <div 
+        className="pointer-events-none"
+        style={{
+          position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
+          backgroundImage: "url('/home-bg-new2.jpg')",
+          backgroundSize: "cover", backgroundPosition: "center", backgroundRepeat: "no-repeat",
+          zIndex: 0
+        }}
+      />
 
       {/* ── HEADER ── */}
-      <header className="pt-20 px-6 pb-2 relative z-10">
-        <p style={{ fontFamily:"var(--font-caveat), cursive", fontSize:"1.3rem", color:"#3C1A1A", marginBottom:"-4px", fontStyle:"italic" }}>
+      <header className="pt-20 px-6 pb-2 relative z-10 flex flex-col mt-4">
+        <p style={{ fontFamily:"var(--font-caveat), cursive", fontSize:"1.5rem", color:"#4B2E28", marginBottom:"-4px" }}>
           Create a
         </p>
-        <h1 style={{ fontFamily:"var(--font-caveat), cursive", fontSize:"3rem", fontWeight:800, color:"#2A0A0A", lineHeight:1.1, marginBottom:"6px" }}>
+        <h1 style={{ fontFamily:"var(--font-caveat), cursive", fontSize:"3.4rem", fontWeight:800, color:"#4B2E28", lineHeight:1.1, marginBottom:"6px" }}>
           New Memory
         </h1>
-        <p style={{ fontSize:"14px", color:"#5A3A3A", fontWeight:500 }}>
+        <p style={{ fontSize:"15px", color:"#5F4D4A", fontWeight:600 }}>
           Preserve a moment forever.
         </p>
       </header>
@@ -213,8 +148,8 @@ export default function AddMemoryPage() {
       {/* ── FORM ── */}
       <form onSubmit={handleSubmit} className="px-6 mt-6 space-y-6 relative z-10">
         {error && (
-          <div style={{ background:"#FFE8E8", color:"#B04040", fontSize:"13px",
-                        padding:"10px 16px", borderRadius:"14px", border:"1px solid #FFCCCC" }}>
+          <div style={{ background:"rgba(255,232,232,0.8)", backdropFilter:"blur(10px)", color:"#B04040", fontSize:"13px",
+                        padding:"12px 16px", borderRadius:"14px", border:"1px solid rgba(255,204,204,0.5)" }}>
             {error}
           </div>
         )}
@@ -222,21 +157,22 @@ export default function AddMemoryPage() {
         {/* TYPE */}
         <div>
           <p style={LABEL}>Type</p>
-          <div className="flex gap-3 overflow-x-auto hide-scrollbar">
+          <div className="flex gap-3 overflow-x-auto hide-scrollbar pb-1">
             {types.map(({ v, l, icon }) => {
               const active = type === v;
               return (
                 <button key={v} type="button" onClick={() => setType(v)}
                   className="flex items-center gap-2 shrink-0 transition-all active:scale-95"
                   style={{
-                    padding: "10px 18px",
+                    padding: "12px 20px",
                     borderRadius: "999px",
-                    background: active ? "#C8A0A8" : "#E8DCDA",
-                    color: active ? "white" : "#3C1A1A",
-                    border: "none",
+                    background: active ? "#4B2E28" : "rgba(255, 255, 255, 0.65)",
+                    backdropFilter: active ? "none" : "blur(12px)",
+                    color: active ? "white" : "#4B2E28",
+                    border: active ? "1px solid #4B2E28" : "1px solid rgba(255, 255, 255, 0.4)",
                     fontSize: "14px",
                     fontWeight: 600,
-                    boxShadow: active ? "0 4px 12px rgba(160,80,100,0.25)" : "none",
+                    boxShadow: active ? "0 4px 12px rgba(75,46,40,0.3)" : "0 2px 8px rgba(0,0,0,0.05)",
                     cursor: "pointer",
                   }}>
                   {icon}
@@ -251,14 +187,13 @@ export default function AddMemoryPage() {
         <div>
           <p style={LABEL}>Title</p>
           <div style={{ position:"relative" }}>
-            <span style={{ position:"absolute", left:"18px", top:"50%", transform:"translateY(-50%)",
-                            color:"#8B6060", display:"flex" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <span style={{ position:"absolute", left:"20px", top:"50%", transform:"translateY(-50%)", color:"#4B2E28", display:"flex" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
               </svg>
             </span>
             <input type="text" value={title} onChange={e => setTitle(e.target.value)}
-              placeholder="Name this memory..." required style={FIELD}/>
+              placeholder="Name this memory..." required style={FIELD} className="placeholder-[#4B2E28]/50"/>
           </div>
         </div>
 
@@ -266,22 +201,20 @@ export default function AddMemoryPage() {
         <div>
           <p style={LABEL}>Date</p>
           <div style={{ position:"relative" }} onClick={() => dateInputRef.current?.showPicker?.()}>
-            <span style={{ position:"absolute", left:"18px", top:"50%", transform:"translateY(-50%)",
-                            color:"#8B6060", display:"flex" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <span style={{ position:"absolute", left:"20px", top:"50%", transform:"translateY(-50%)", color:"#4B2E28", display:"flex" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                 <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
                 <line x1="3" y1="10" x2="21" y2="10"/>
               </svg>
             </span>
             <div style={{ ...FIELD, paddingRight:"46px", display:"flex", alignItems:"center", cursor:"pointer", userSelect:"none" }}>
-              <span style={{ color:"#3C1A1A" }}>{fmtDate(date)}</span>
+              <span style={{ color:"#4B2E28", fontWeight:500 }}>{fmtDate(date)}</span>
             </div>
             <input ref={dateInputRef} type="date" value={date} onChange={e => setDate(e.target.value)} required
               style={{ position:"absolute", inset:0, opacity:0, cursor:"pointer", width:"100%", height:"100%" }}/>
-            <span style={{ position:"absolute", right:"18px", top:"50%", transform:"translateY(-50%)",
-                            color:"#8B6060", pointerEvents:"none" }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <span style={{ position:"absolute", right:"20px", top:"50%", transform:"translateY(-50%)", color:"#4B2E28", pointerEvents:"none" }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
             </span>
@@ -292,17 +225,18 @@ export default function AddMemoryPage() {
         <div>
           <p style={LABEL}>Your Story</p>
           <div style={{ position:"relative" }}>
-            <span style={{ position:"absolute", left:"18px", top:"18px", color:"#8B6060", display:"flex" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <span style={{ position:"absolute", left:"20px", top:"18px", color:"#4B2E28", display:"flex" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
               </svg>
             </span>
             <textarea value={description} onChange={e => setDescription(e.target.value)}
               placeholder="Write something beautiful..."
               rows={type === "text" ? 6 : 4}
+              className="placeholder-[#4B2E28]/50"
               style={{
                 ...FIELD,
-                borderRadius: "22px",
+                borderRadius: "26px",
                 paddingTop: "16px",
                 paddingBottom: "16px",
                 resize: "none",
@@ -319,22 +253,24 @@ export default function AddMemoryPage() {
             </p>
             <div onClick={() => fileRef.current?.click()}
               style={{
-                background: "#E8DCDA", borderRadius:"22px", border:"2px dashed #C8A8A8",
+                background: "rgba(255,255,255,0.45)", backdropFilter:"blur(12px)", 
+                borderRadius:"26px", border:"2px dashed rgba(75,46,40,0.4)",
                 display:"flex", flexDirection:"column", alignItems:"center",
-                justifyContent:"center", padding:"32px 16px", cursor:"pointer", minHeight:"120px",
+                justifyContent:"center", padding:"32px 16px", cursor:"pointer", minHeight:"140px",
+                boxShadow:"inset 0 2px 10px rgba(0,0,0,0.02)"
               }}>
               {preview && type === "photo" ? (
-                <img src={preview} alt="preview" style={{ maxHeight:"200px", borderRadius:"14px", objectFit:"cover", width:"100%" }}/>
+                <img src={preview} alt="preview" style={{ maxHeight:"200px", borderRadius:"16px", objectFit:"cover", width:"100%", border:"1px solid rgba(255,255,255,0.5)" }}/>
               ) : preview && type === "video" ? (
-                <video src={preview} controls style={{ maxHeight:"200px", borderRadius:"14px", width:"100%" }}/>
+                <video src={preview} controls style={{ maxHeight:"200px", borderRadius:"16px", width:"100%", border:"1px solid rgba(255,255,255,0.5)" }}/>
               ) : preview && type === "voice" ? (
                 <audio src={preview} controls style={{ width:"100%" }}/>
               ) : (
                 <>
-                  <span style={{ fontSize:"40px", marginBottom:"8px" }}>
+                  <span style={{ fontSize:"40px", marginBottom:"12px", opacity:0.9 }}>
                     {type === "photo" ? "📷" : type === "video" ? "🎥" : "🎙️"}
                   </span>
-                  <span style={{ fontSize:"14px", color:"#8B6060", fontWeight:500 }}>Tap to upload</span>
+                  <span style={{ fontSize:"15px", color:"#4B2E28", fontWeight:600 }}>Tap to upload</span>
                 </>
               )}
             </div>
@@ -344,15 +280,18 @@ export default function AddMemoryPage() {
         )}
 
         {/* SAVE BUTTON */}
-        <div style={{ paddingTop:"4px", paddingBottom:"12px" }}>
+        <div style={{ paddingTop:"8px", paddingBottom:"12px" }}>
           <button type="submit" disabled={loading}
             style={{
-              width:"100%", background:"#D18C9D", color:"white", border:"none",
+              width:"100%", background:"rgba(75,46,40,0.9)", backdropFilter:"blur(10px)",
+              color:"white", border:"1px solid rgba(255,255,255,0.2)",
               borderRadius:"999px", padding:"18px 24px", fontSize:"17px", fontWeight:600,
               cursor: loading ? "not-allowed" : "pointer", opacity: loading ? 0.7 : 1,
-              letterSpacing:"0.02em", boxShadow:"0 6px 20px rgba(209,140,157,0.35)",
-              transition:"opacity 0.2s",
-            }}>
+              letterSpacing:"0.02em", boxShadow:"0 8px 24px rgba(75,46,40,0.3)",
+              transition:"all 0.2s",
+            }}
+            className="active:scale-95"
+            >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
                 <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none">
