@@ -82,7 +82,7 @@ export default function ProfilePage() {
           </svg>
         </button>
         <h1 className="text-[20px] font-bold text-[#4B2E28]" style={{ fontFamily: "var(--font-caveat), cursive", textShadow: "0 1px 4px rgba(255,255,255,0.7)" }}>Profile</h1>
-        <button onClick={() => setIsPasswordExpanded(!isPasswordExpanded)} className="active:scale-90 transition-transform w-9 h-9 rounded-full flex items-center justify-center"
+        <button onClick={() => router.push('/profile/change-password')} className="active:scale-90 transition-transform w-9 h-9 rounded-full flex items-center justify-center"
           style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(8px)" }}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B2E28" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="3"/>
