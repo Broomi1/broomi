@@ -122,17 +122,13 @@ export default function Nav() {
           }
         />
 
-        {/* Logout */}
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
           className="flex flex-col items-center justify-center gap-[3px] px-2 active:scale-90 transition-transform"
         >
-          <div className="w-10 h-10 rounded-full flex items-center justify-center"
-            style={{ background: "rgba(75,46,40,0.08)" }}>
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#5F4D4A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-          </div>
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#5F4D4A" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
           <span className="text-[12px] font-semibold text-[#5F4D4A]" style={{ fontFamily: "var(--font-caveat), cursive" }}>Logout</span>
         </button>
       </div>
@@ -153,12 +149,7 @@ function NavDot({
       href={href}
       className="flex flex-col items-center justify-center gap-[3px] px-2 active:scale-90 transition-transform"
     >
-      <div
-        className="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
-        style={{ background: active ? "rgba(75,46,40,0.12)" : "rgba(75,46,40,0.04)" }}
-      >
-        {icon}
-      </div>
+      {icon}
       <span
         className={`text-[12px] font-semibold transition-colors ${active ? "text-[#4B2E28]" : "text-[#5F4D4A]"}`}
         style={{ fontFamily: "var(--font-caveat), cursive" }}
