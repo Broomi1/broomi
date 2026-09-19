@@ -130,7 +130,7 @@ export default function GalleryPage() {
           const rotate = idx % 2 === 0 ? "rotate-[-2deg]" : "rotate-[3deg]";
           return (
             <Link 
-              href={`/memories/${memory.id}/edit`} 
+              href={`/memories/${memory.id}`} 
               key={memory.id}
               className="rounded-[20px] p-3 flex flex-col gap-3 shadow-sm border border-[#E8D5C8]/60 relative overflow-hidden transition-transform active:scale-95"
               style={{ backgroundColor: bg }}
