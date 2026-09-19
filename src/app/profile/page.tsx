@@ -12,11 +12,6 @@ export default function ProfilePage() {
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [name, setName] = useState("Alex & Jamie");
-  
-  const [isPasswordExpanded, setIsPasswordExpanded] = useState(false);
-  const [oldPass, setOldPass] = useState("");
-  const [newPass, setNewPass] = useState("");
-  const [msg, setMsg] = useState("");
 
   const [notifications, setNotifications] = useState(true);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -54,24 +49,6 @@ export default function ProfilePage() {
     const data = await res.json();
     if (data.profileImage) setProfileImage(data.profileImage);
     setUploading(false);
-  };
-
-  const handlePasswordChange = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setMsg("");
-    if (!oldPass || !newPass) return setMsg("Please fill both fields.");
-    const res = await fetch("/api/auth/change-password", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ oldPassword: oldPass, newPassword: newPass }),
-    });
-    if (res.ok) {
-      setMsg("Password updated successfully!");
-      setOldPass(""); setNewPass("");
-      setTimeout(() => setIsPasswordExpanded(false), 2000);
-    } else {
-      setMsg((await res.json()).error || "Failed to update password.");
-    }
   };
 
   if (status === "loading") return null;
@@ -164,16 +141,11 @@ export default function ProfilePage() {
       </div>
 
       {/* ── STATS CARDS ── */}
-      <div className="relative z-20 flex gap-4 px-6 mt-6">
-        <div className="flex-1 rounded-3xl p-4 flex flex-col items-center justify-center border border-white/40 shadow-md"
+      <div className="relative z-20 flex px-6 mt-6">
+        <div className="w-full rounded-3xl p-4 flex flex-col items-center justify-center border border-white/40 shadow-md"
           style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(12px)" }}>
-          <p className="text-[12px] text-[#5F4D4A] font-semibold tracking-wide uppercase">Memories</p>
+          <p className="text-[12px] text-[#5F4D4A] font-semibold tracking-wide uppercase">Memories Shared</p>
           <p className="text-[32px] font-bold text-[#4B2E28] leading-none mt-1">{memoryCount}</p>
-        </div>
-        <div className="flex-1 rounded-3xl p-4 flex flex-col items-center justify-center border border-white/40 shadow-md"
-          style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(12px)" }}>
-          <p className="text-[12px] text-[#5F4D4A] font-semibold tracking-wide uppercase">Boxes</p>
-          <p className="text-[32px] font-bold text-[#4B2E28] leading-none mt-1">5</p>
         </div>
       </div>
 
@@ -187,20 +159,9 @@ export default function ProfilePage() {
         />
         <MenuItem 
           icon={<GearOutline />} 
-          label="Account Settings" 
-          onClick={() => setIsPasswordExpanded(!isPasswordExpanded)}
-        >
-          {isPasswordExpanded && (
-            <form onSubmit={handlePasswordChange} className="mt-2 space-y-3 bg-white/70 p-4 rounded-xl">
-              <input type="password" placeholder="Current Password" value={oldPass} onChange={e=>setOldPass(e.target.value)} required 
-                className="w-full bg-white/90 px-4 py-2.5 rounded-lg text-sm border border-[#E8D5C8] outline-none text-[#3A2222]" />
-              <input type="password" placeholder="New Password" value={newPass} onChange={e=>setNewPass(e.target.value)} required 
-                className="w-full bg-white/90 px-4 py-2.5 rounded-lg text-sm border border-[#E8D5C8] outline-none text-[#3A2222]" />
-              <button type="submit" className="w-full bg-[#4B2E28] text-white py-2.5 rounded-xl text-sm font-semibold mt-1 shadow-sm active:scale-95 transition-transform">Update Password</button>
-              {msg && <p className="text-xs text-center font-medium mt-2" style={{color: msg.includes('success') ? '#4A7C59' : '#C45252'}}>{msg}</p>}
-            </form>
-          )}
-        </MenuItem>
+          label="Change Password" 
+          onClick={() => router.push("/profile/change-password")}
+        />
         <MenuItem 
           icon={<BellOutline />} 
           label="Notifications" 
