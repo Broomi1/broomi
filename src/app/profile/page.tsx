@@ -60,7 +60,7 @@ export default function ProfilePage() {
   if (status === "loading") return null;
 
   return (
-    <div className="min-h-screen relative overflow-hidden font-sans pb-32" style={{ backgroundColor: "#F5E9E0" }}>
+    <div className="min-h-screen relative overflow-hidden font-sans pb-32">
       
       {/* Ultra-stable fixed background for mobile */}
       <div 
