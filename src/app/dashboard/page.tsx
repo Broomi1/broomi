@@ -59,7 +59,7 @@ export default function DashboardPage() {
       <div
         className="fixed inset-0 z-0 pointer-events-none"
         style={{
-          backgroundImage: "url('/final-home-bg.jpg')",
+          backgroundImage: "url('/home-bg-new2.jpg')",
           backgroundSize: "100% auto",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "bottom center",
