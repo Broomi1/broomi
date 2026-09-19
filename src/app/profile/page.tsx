@@ -78,12 +78,6 @@ export default function ProfilePage() {
           zIndex: 0
         }}
       />
-      {/* ── HEADER BACKGROUND SHAPE ── */}
-      <svg viewBox="0 0 400 240" preserveAspectRatio="none" 
-        className="absolute top-0 left-0 w-full h-[240px] z-0">
-        {/* Flat on right, scoop down on left */}
-        <path fill="#4B2E28" d="M0 0 L400 0 L400 170 L160 170 C90 170 50 240 0 130 Z" />
-      </svg>
 
       {/* ── FLOATING DECORATIONS ── */}
       {/* Solid Light Heart - top left */}
