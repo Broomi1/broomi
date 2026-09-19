@@ -71,7 +71,7 @@ export default function ProfilePage() {
           left: 0,
           width: "100vw",
           height: "100vh",
-          backgroundImage: "url('/profile-bg.jpg')",
+          backgroundImage: "url('/profile-bg-v2.jpg')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
