@@ -53,16 +53,21 @@ export default function DashboardPage() {
   const featuredMemory = memories.find((m) => m.mediaUrl) || memories[0];
 
   return (
-    <div className="min-h-screen font-sans pb-32 relative" style={{ background: "#A8C8E0" }}>
-
-      {/* Background image - pinned to bottom, full width, no zoom/crop */}
-      <div
-        className="fixed inset-0 z-0 pointer-events-none"
+    <div className="min-h-screen font-sans pb-32 relative" style={{ backgroundColor: "#A8C8E0" }}>
+      {/* Ultra-stable fixed background for mobile (prevents iOS jump & zoom issues) */}
+      <div 
+        className="pointer-events-none"
         style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
           backgroundImage: "url('/home-bg-new2.jpg')",
-          backgroundSize: "100% auto",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
-          backgroundPosition: "bottom center",
+          zIndex: 0
         }}
       />
 
