@@ -171,18 +171,21 @@ export default function ProfilePage() {
 
       {/* ── STATS CARDS ── */}
       <div className="relative z-20 flex gap-4 px-6 mt-6">
-        <div className="flex-1 bg-[#F5E9E0] rounded-3xl p-4 flex flex-col items-center justify-center border border-[#E8D5C8]">
-          <p className="text-[13px] text-[#5F4D4A] font-medium tracking-wide">Memories Shared</p>
-          <p className="text-[28px] font-bold text-[#4B2E28] leading-none mt-2">{memoryCount}</p>
+        <div className="flex-1 rounded-3xl p-4 flex flex-col items-center justify-center border border-white/40 shadow-md"
+          style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(12px)" }}>
+          <p className="text-[12px] text-[#5F4D4A] font-semibold tracking-wide uppercase">Memories</p>
+          <p className="text-[32px] font-bold text-[#4B2E28] leading-none mt-1">{memoryCount}</p>
         </div>
-        <div className="flex-1 bg-[#F5E9E0] rounded-3xl p-4 flex flex-col items-center justify-center border border-[#E8D5C8]">
-          <p className="text-[13px] text-[#5F4D4A] font-medium tracking-wide">Boxes Created</p>
-          <p className="text-[28px] font-bold text-[#4B2E28] leading-none mt-2">5</p>
+        <div className="flex-1 rounded-3xl p-4 flex flex-col items-center justify-center border border-white/40 shadow-md"
+          style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(12px)" }}>
+          <p className="text-[12px] text-[#5F4D4A] font-semibold tracking-wide uppercase">Boxes</p>
+          <p className="text-[32px] font-bold text-[#4B2E28] leading-none mt-1">5</p>
         </div>
       </div>
 
       {/* ── MENU LIST ── */}
-      <div className="relative z-20 px-6 mt-8 space-y-0 flex flex-col">
+      <div className="relative z-20 px-6 mt-6 rounded-3xl overflow-hidden border border-white/40 shadow-md mx-6"
+        style={{ background: "rgba(255,255,255,0.60)", backdropFilter: "blur(14px)" }}>
         <MenuItem 
           icon={<HeartSolid />} 
           label="My Memories" 
@@ -194,12 +197,12 @@ export default function ProfilePage() {
           onClick={() => setIsPasswordExpanded(!isPasswordExpanded)}
         >
           {isPasswordExpanded && (
-            <form onSubmit={handlePasswordChange} className="mt-2 space-y-3 bg-[#F4E9E6] p-4 rounded-xl">
+            <form onSubmit={handlePasswordChange} className="mt-2 space-y-3 bg-white/70 p-4 rounded-xl">
               <input type="password" placeholder="Current Password" value={oldPass} onChange={e=>setOldPass(e.target.value)} required 
-                className="w-full bg-white px-4 py-2.5 rounded-lg text-sm border-none outline-none text-[#3A2222]" />
+                className="w-full bg-white/90 px-4 py-2.5 rounded-lg text-sm border border-[#E8D5C8] outline-none text-[#3A2222]" />
               <input type="password" placeholder="New Password" value={newPass} onChange={e=>setNewPass(e.target.value)} required 
-                className="w-full bg-white px-4 py-2.5 rounded-lg text-sm border-none outline-none text-[#3A2222]" />
-              <button type="submit" className="w-full bg-[#AA6A73] text-white py-2.5 rounded-lg text-sm font-semibold mt-1">Update Password</button>
+                className="w-full bg-white/90 px-4 py-2.5 rounded-lg text-sm border border-[#E8D5C8] outline-none text-[#3A2222]" />
+              <button type="submit" className="w-full bg-[#4B2E28] text-white py-2.5 rounded-xl text-sm font-semibold mt-1 shadow-sm active:scale-95 transition-transform">Update Password</button>
               {msg && <p className="text-xs text-center font-medium mt-2" style={{color: msg.includes('success') ? '#4A7C59' : '#C45252'}}>{msg}</p>}
             </form>
           )}
@@ -209,7 +212,7 @@ export default function ProfilePage() {
           label="Notifications" 
           onClick={() => setNotifications(!notifications)}
           rightElement={
-            <div className={`w-10 h-6 rounded-full p-1 transition-colors ${notifications ? 'bg-[#AA6A73]' : 'bg-[#D6C5C3]'}`}>
+            <div className={`w-10 h-6 rounded-full p-1 transition-colors ${notifications ? 'bg-[#4B2E28]' : 'bg-[#D6C5C3]'}`}>
               <div className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform ${notifications ? 'translate-x-4' : 'translate-x-0'}`}/>
             </div>
           }
@@ -219,7 +222,7 @@ export default function ProfilePage() {
           label="Privacy & Security" 
           onClick={() => setIsPrivate(!isPrivate)}
           rightElement={
-            <div className={`w-10 h-6 rounded-full p-1 transition-colors ${isPrivate ? 'bg-[#AA6A73]' : 'bg-[#D6C5C3]'}`}>
+            <div className={`w-10 h-6 rounded-full p-1 transition-colors ${isPrivate ? 'bg-[#4B2E28]' : 'bg-[#D6C5C3]'}`}>
               <div className={`bg-white w-4 h-4 rounded-full shadow-sm transform transition-transform ${isPrivate ? 'translate-x-4' : 'translate-x-0'}`}/>
             </div>
           }
@@ -233,10 +236,11 @@ export default function ProfilePage() {
       </div>
 
       {/* ── SIGN OUT BUTTON ── */}
-      <div className="relative z-20 px-6 mt-8">
+      <div className="relative z-20 px-6 mt-6">
         <button 
           onClick={() => signOut({ callbackUrl: "/login" })}
-          className="w-full bg-[#3A2222] text-white py-[18px] rounded-full text-[16px] font-semibold tracking-wide active:scale-95 transition-transform shadow-lg"
+          className="w-full text-white py-[18px] rounded-full text-[16px] font-semibold tracking-wide active:scale-95 transition-transform shadow-lg"
+          style={{ background: "rgba(75,46,40,0.85)", backdropFilter: "blur(8px)", border: "1px solid rgba(255,255,255,0.2)" }}
         >
           Sign Out
         </button>
