@@ -13,6 +13,7 @@ model User {
   passwordHash String
   role         String   @default("customer") // "admin" or "customer"
   isActive     Boolean  @default(true)
+  profileImage String?
   createdAt    DateTime @default(now())
   memories     Memory[]
 }

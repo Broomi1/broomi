@@ -21,10 +21,11 @@ export default function ProfilePage() {
   const [notifications, setNotifications] = useState(true);
   const [isPrivate, setIsPrivate] = useState(false);
 
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
   useEffect(() => {
-    if (session?.user?.name) {
-      setName(session.user.name);
-    }
+    if (session?.user?.name) setName(session.user.name);
   }, [session]);
 
   useEffect(() => {
@@ -36,8 +37,24 @@ export default function ProfilePage() {
         .then((res) => res.json())
         .then((data) => setMemoryCount(data.length || 0))
         .catch(() => setMemoryCount(0));
+      // Fetch profile image from DB
+      fetch("/api/profile/avatar")
+        .then((res) => res.json())
+        .then((data) => { if (data.profileImage) setProfileImage(data.profileImage); });
     }
   }, [status, router]);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch("/api/profile/avatar", { method: "POST", body: formData });
+    const data = await res.json();
+    if (data.profileImage) setProfileImage(data.profileImage);
+    setUploading(false);
+  };
 
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,56 +96,18 @@ export default function ProfilePage() {
         }}
       />
 
-      {/* ── FLOATING DECORATIONS ── */}
-      {/* Solid Light Heart - top left */}
-      <svg className="absolute top-[100px] left-[45px] z-10 w-7 h-7 text-[#E8D9D6] opacity-80" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-      </svg>
-
-      {/* Outlined Heart - center right */}
-      <svg className="absolute top-[110px] right-[80px] z-10 w-6 h-6 text-[#E8D9D6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-      </svg>
-
-      {/* Outlined Heart - center left under avatar */}
-      <svg className="absolute top-[200px] left-[70px] z-10 w-5 h-5 text-[#C48C90]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-      </svg>
-
-      {/* Outlined Heart - right under polaroid */}
-      <svg className="absolute top-[200px] right-[70px] z-10 w-6 h-6 text-[#C48C90]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-      </svg>
-
-      {/* Solid Dark Heart - far right middle */}
-      <svg className="absolute top-[245px] right-[25px] z-10 w-7 h-7 text-[#AA6A73] opacity-90" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-      </svg>
-
-      {/* Floating Polaroid - Left */}
-      <div className="absolute top-[170px] left-[-20px] z-10 transform -rotate-12 bg-[#F9F9F9] p-[6px] pb-[20px] shadow-[0_4px_12px_rgba(0,0,0,0.1)] rounded-sm w-[90px]">
-        <div className="w-full aspect-square bg-[#AA6A73] rounded-sm relative">
-          <svg className="absolute -top-3 -right-2 text-[#E48286] w-6 h-6" viewBox="0 0 24 24" fill="currentColor" style={{ filter: "drop-shadow(0 2px 2px rgba(0,0,0,0.2))" }}>
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-          </svg>
-        </div>
-      </div>
-
-      {/* Floating Polaroid - Right */}
-      <div className="absolute top-[80px] right-[-30px] z-10 transform rotate-12 bg-[#F9F9F9] p-[8px] pb-[24px] shadow-[0_4px_12px_rgba(0,0,0,0.08)] rounded-sm w-[100px]">
-        <div className="w-full aspect-square bg-[#EAE2DB] rounded-sm"></div>
-      </div>
-
       {/* ── TOP NAV BAR ── */}
-      <header className="relative z-20 flex justify-between items-center px-6 pt-12 pb-4 text-white">
-        <button onClick={() => router.back()} className="active:scale-90 transition-transform">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <header className="relative z-20 flex justify-between items-center px-6 pt-12 pb-4">
+        <button onClick={() => router.back()} className="active:scale-90 transition-transform w-9 h-9 rounded-full flex items-center justify-center"
+          style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(8px)" }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B2E28" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
           </svg>
         </button>
-        <h1 className="text-[19px] font-semibold tracking-wide">Profile</h1>
-        <button onClick={() => setIsPasswordExpanded(!isPasswordExpanded)} className="active:scale-90 transition-transform">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <h1 className="text-[20px] font-bold text-[#4B2E28]" style={{ fontFamily: "var(--font-caveat), cursive", textShadow: "0 1px 4px rgba(255,255,255,0.7)" }}>Profile</h1>
+        <button onClick={() => setIsPasswordExpanded(!isPasswordExpanded)} className="active:scale-90 transition-transform w-9 h-9 rounded-full flex items-center justify-center"
+          style={{ background: "rgba(255,255,255,0.6)", backdropFilter: "blur(8px)" }}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B2E28" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
@@ -136,27 +115,48 @@ export default function ProfilePage() {
       </header>
 
       {/* ── AVATAR & NAME ── */}
-      <div className="relative z-20 flex flex-col items-center mt-3">
-        <div className="w-[124px] h-[124px] rounded-full border-[4px] border-white shadow-md overflow-hidden bg-[#EADBD7]">
-          <img src="/couple-polaroid.jpg" alt="Profile" className="w-full h-full object-cover" />
-        </div>
-        <div className="flex items-center gap-2 mt-4 relative">
+      <div className="relative z-20 flex flex-col items-center mt-4">
+        {/* Clickable avatar with upload */}
+        <label className="relative cursor-pointer group" htmlFor="avatar-upload">
+          <div className="w-[120px] h-[120px] rounded-full border-[4px] border-white shadow-lg overflow-hidden"
+            style={{ background: "rgba(255,255,255,0.6)" }}>
+            {uploading ? (
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="animate-spin w-8 h-8 border-4 border-[#4B2E28] border-t-transparent rounded-full" />
+              </div>
+            ) : profileImage ? (
+              <img src={profileImage} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-[#4B2E28] opacity-50">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+            )}
+          </div>
+          {/* Camera overlay */}
+          <div className="absolute bottom-0 right-0 w-9 h-9 rounded-full flex items-center justify-center shadow-md border-2 border-white"
+            style={{ background: "#4B2E28" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+            </svg>
+          </div>
+        </label>
+        <input id="avatar-upload" type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
+
+        {/* Name */}
+        <div className="flex items-center gap-2 mt-4">
           {isEditingName ? (
             <input 
-              type="text" 
-              value={name} 
-              onChange={e => setName(e.target.value)} 
-              onBlur={() => setIsEditingName(false)}
-              autoFocus
-              className="text-[24px] font-bold text-[#3A2222] tracking-tight bg-transparent border-b-2 border-[#AA6A73] outline-none text-center w-[200px]"
+              type="text" value={name} onChange={e => setName(e.target.value)}
+              onBlur={() => setIsEditingName(false)} autoFocus
+              className="text-[22px] font-bold text-[#3A2222] bg-white/70 border-b-2 border-[#4B2E28] outline-none text-center rounded px-2"
             />
           ) : (
-            <h2 className="text-[24px] font-bold text-[#3A2222] tracking-tight">
-              {name}
-            </h2>
+            <h2 className="text-[22px] font-bold text-[#3A2222]" style={{ textShadow: "0 1px 4px rgba(255,255,255,0.8)" }}>{name}</h2>
           )}
-          <button onClick={() => setIsEditingName(!isEditingName)} className="text-[#9C7A7A] active:scale-90 transition-transform">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <button onClick={() => setIsEditingName(!isEditingName)} className="text-[#4B2E28] active:scale-90 transition-transform">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
             </svg>
           </button>
