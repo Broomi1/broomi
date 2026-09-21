@@ -41,7 +41,12 @@ export default function GalleryPage() {
       fetch("/api/memories")
         .then((res) => res.json())
         .then((data) => {
-          setMemories(data);
+          if (Array.isArray(data)) {
+            setMemories(data);
+          } else {
+            console.error("API returned non-array:", data);
+            setMemories([]);
+          }
           setLoading(false);
         });
     }
@@ -241,7 +246,7 @@ export default function GalleryPage() {
                     }}
                   >
                     <div className="w-full h-full rounded-full overflow-hidden border-[2.5px] border-[#F5EFE8] bg-[#EDE6DC]">
-                      {firstMediaMemory.mediaUrl && firstMediaMemory.type !== "voice" ? (
+                      {firstMediaMemory?.mediaUrl && firstMediaMemory?.type !== "voice" ? (
                         firstMediaMemory.type === "video" ? (
                           <video src={firstMediaMemory.mediaUrl} className="w-full h-full object-cover" />
                         ) : (
@@ -249,7 +254,7 @@ export default function GalleryPage() {
                         )
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-2xl">
-                          {firstMediaMemory.type === "text" ? "📝" : firstMediaMemory.type === "voice" ? "🎙️" : "✨"}
+                          {firstMediaMemory?.type === "text" ? "📝" : firstMediaMemory?.type === "voice" ? "🎙️" : "✨"}
                         </div>
                       )}
                     </div>
