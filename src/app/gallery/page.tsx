@@ -60,14 +60,33 @@ export default function GalleryPage() {
   const cardBgs = ["#F5E9E0", "#EDE6DC", "#F0E8DE", "#EBE2D8"];
 
   return (
-    <div className="min-h-screen pb-36 font-sans" style={{ backgroundColor: "#F5EFE8" }}>
+    <div className="min-h-screen pb-36 font-sans relative">
+      
+      {/* ── BACKGROUND IMAGE (Fixed) ── */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          backgroundImage: "url('/gallery-new-bg.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
+      {/* Subtle overlay for readability */}
+      <div 
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.55)",
+          backdropFilter: "blur(2px)",
+        }}
+      />
 
       {/* ── HEADER ── */}
-      <header className="pt-16 px-5 pb-4">
+      <header className="pt-16 px-5 pb-4 relative z-10">
         <h1 className="text-[3rem] font-bold text-[#4B2E28] leading-none mb-1" style={{ fontFamily: "var(--font-caveat), cursive" }}>
           Gallery ♡
         </h1>
-        <p className="text-[1.1rem] text-[#7A6058]" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+        <p className="text-[1.1rem] text-[#7A6058] drop-shadow-sm font-semibold" style={{ fontFamily: "var(--font-caveat), cursive" }}>
           All your captured moments
         </p>
       </header>
@@ -168,8 +187,8 @@ export default function GalleryPage() {
 
       {/* ── RECENT MEMORIES (Stories style) ── */}
       {memories.length > 0 && (
-        <div className="mb-5">
-          <p className="px-5 mb-3 text-[1rem] font-semibold text-[#7A6058]" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.2rem" }}>
+        <div className="mb-5 relative z-10">
+          <p className="px-5 mb-3 text-[1rem] font-semibold text-[#4B2E28] drop-shadow-sm" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.2rem" }}>
             Recent Memories
           </p>
           <div className="flex gap-4 px-5 overflow-x-auto hide-scrollbar pb-1">
@@ -181,7 +200,7 @@ export default function GalleryPage() {
               >
                 {/* Story circle */}
                 <div
-                  className="rounded-full p-[2.5px] shrink-0"
+                  className="rounded-full p-[2.5px] shrink-0 shadow-sm"
                   style={{
                     background: "linear-gradient(135deg, #C4875A, #E8B89A, #C4875A)",
                     width: 68,
@@ -204,7 +223,7 @@ export default function GalleryPage() {
                 </div>
                 {/* Label */}
                 <span
-                  className="text-[#4B2E28] text-center leading-tight line-clamp-1 max-w-[64px]"
+                  className="text-[#4B2E28] text-center leading-tight line-clamp-1 max-w-[64px] drop-shadow-sm bg-white/40 px-1 rounded"
                   style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "0.78rem", fontWeight: 600 }}
                 >
                   {memory.title}
@@ -213,12 +232,12 @@ export default function GalleryPage() {
             ))}
           </div>
           {/* Divider */}
-          <div className="mt-4 mx-5 h-[1px] bg-[#E2D8CF]" />
+          <div className="mt-4 mx-5 h-[1px] bg-[#4B2E28] opacity-20" />
         </div>
       )}
 
       {/* ── PHOTO GRID (3 columns) ── */}
-      <div className="grid grid-cols-3 gap-[2px] pb-28">
+      <div className="grid grid-cols-3 gap-[2px] pb-28 relative z-10 px-[2px]">
         {filteredMemories.map((memory, index) => (
           <div
             key={memory.id}
@@ -258,7 +277,7 @@ export default function GalleryPage() {
       </div>
 
       {filteredMemories.length === 0 && (
-        <div className="text-center py-24 text-[#7A6058]" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.4rem" }}>
+        <div className="text-center py-24 text-[#4B2E28] relative z-10 drop-shadow-sm font-semibold" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.4rem" }}>
           No memories yet ♡
         </div>
       )}
