@@ -34,7 +34,9 @@ export default function LoginPage() {
         setError("Invalid username or password");
         setLoading(false);
       } else {
-        router.push("/dashboard");
+        const isFirstVisit = !localStorage.getItem("mt_has_visited");
+        localStorage.setItem("mt_has_visited", "true");
+        router.push(isFirstVisit ? "/dashboard" : "/gallery");
       }
     } else {
       try {
@@ -46,6 +48,8 @@ export default function LoginPage() {
         const data = await res.json();
         if (res.ok) {
           await signIn("credentials", { redirect: false, username, password, loginType: "customer" });
+          // Brand new account — always go to dashboard first
+          localStorage.setItem("mt_has_visited", "true");
           router.push("/dashboard");
         } else {
           setError(data.error || "Failed to create account");
