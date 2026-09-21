@@ -63,7 +63,8 @@ export default function GalleryPage() {
   const memoriesByMonth = useMemo(() => {
     const groups: Record<string, Memory[]> = {};
     memories.forEach(m => {
-      const d = new Date(m.date);
+      const d = new Date(m.date || m.createdAt);
+      if (isNaN(d.getTime())) return; // Prevents "Invalid time value" crashes
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
       if (!groups[key]) groups[key] = [];
       groups[key].push(m);
@@ -71,11 +72,14 @@ export default function GalleryPage() {
     return Object.entries(groups).map(([key, mems]) => {
       const [year, month] = key.split('-');
       const d = new Date(parseInt(year), parseInt(month) - 1, 1);
-      return {
-        label: d.toLocaleDateString("en-US", { month: "short", year: "numeric" }),
-        key,
-        memories: mems
-      };
+      let label = "Unknown";
+      try {
+        label = d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      } catch (e) {
+        // Fallback if formatting fails
+        label = key;
+      }
+      return { label, key, memories: mems };
     }).sort((a, b) => b.key.localeCompare(a.key)); // newest first
   }, [memories]);
 
@@ -271,7 +275,7 @@ export default function GalleryPage() {
         {filteredMemories.map((memory, index) => (
           <div
             key={memory.id}
-            onClick={() => setSlideshowIndex(index)}
+            onClick={() => { setSlideshowContext(null); setSlideshowIndex(index); }}
             className="relative overflow-hidden cursor-pointer active:opacity-75 transition-opacity"
             style={{ aspectRatio: "1/1" }}
           >
