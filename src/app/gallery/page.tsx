@@ -52,19 +52,6 @@ export default function GalleryPage() {
     }
   }, [status]);
 
-  if (status === "loading" || loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#E3E9F0" }}>
-        <div className="animate-spin w-8 h-8 border-4 border-[#4B2E28] border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-
-  const filteredMemories = filter === "all" ? memories : memories.filter(m => m.type === filter);
-
-  // Card pastel backgrounds — cream tones matching login
-  const cardBgs = ["#F5E9E0", "#EDE6DC", "#F0E8DE", "#EBE2D8"];
-
   const memoriesByMonth = useMemo(() => {
     const groups: Record<string, Memory[]> = {};
     memories.forEach(m => {
@@ -88,6 +75,15 @@ export default function GalleryPage() {
     }).sort((a, b) => b.key.localeCompare(a.key)); // newest first
   }, [memories]);
 
+  if (status === "loading" || loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#E3E9F0" }}>
+        <div className="animate-spin w-8 h-8 border-4 border-[#4B2E28] border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  const filteredMemories = filter === "all" ? memories : memories.filter(m => m.type === filter);
   const activeMemories = slideshowContext || filteredMemories;
 
   {/* ── SLIDESHOW OVERLAY ── */}
