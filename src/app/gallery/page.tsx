@@ -182,114 +182,49 @@ export default function GalleryPage() {
         </div>
       )}
 
-      {/* ── MASONRY GRID ── */}
-      <div className="px-4 relative z-10 pb-24 space-y-3">
-        {filteredMemories.reduce<JSX.Element[]>((acc, memory, index) => {
-          // Every 3rd card (index 0, 3, 6…) is a big full-width hero
-          const isHero = index % 3 === 0;
-
-          if (isHero) {
-            // Check if we need to flush any pending pair first (shouldn't happen at 0 but safety)
-            acc.push(
-              <div
-                key={memory.id}
-                onClick={() => setSlideshowIndex(index)}
-                className="relative w-full overflow-hidden cursor-pointer group"
-                style={{ borderRadius: "28px", height: "58vw", minHeight: 200, maxHeight: 340 }}
-              >
-                {memory.mediaUrl ? (
-                  memory.type === "video" ? (
-                    <video src={memory.mediaUrl} className="w-full h-full object-cover" />
-                  ) : (
-                    <img src={memory.mediaUrl} alt={memory.title} className="w-full h-full object-cover group-active:scale-[1.03] transition-transform duration-500" />
-                  )
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-7xl" style={{ background: "rgba(245,233,224,0.7)" }}>
-                    {memory.type === "text" ? "📝" : memory.type === "voice" ? "🎙️" : "✨"}
-                  </div>
-                )}
-
-                {/* Bottom fade with title */}
-                <div className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
-                  style={{ background: "linear-gradient(to top, rgba(75,46,40,0.7) 0%, transparent 100%)" }} />
-                <div className="absolute bottom-4 left-5 right-5 flex items-end justify-between">
-                  <span className="text-white font-bold drop-shadow-md text-xl leading-tight line-clamp-1"
-                    style={{ fontFamily: "var(--font-caveat), cursive" }}>
-                    {memory.title}
-                  </span>
-                  <span className="text-white/70 text-xs shrink-0 ml-2">
-                    {formatDateDisplay(memory.date)}
-                  </span>
-                </div>
-
-                {/* Top-left hero badge */}
-                <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] font-semibold tracking-widest uppercase"
-                  style={{ background: "rgba(245,233,224,0.82)", backdropFilter: "blur(8px)", color: "#4B2E28" }}>
-                  ♡ memory
-                </div>
-              </div>
-            );
-          } else {
-            // Pair up two consecutive non-hero items side by side
-            const next = filteredMemories[index + 1];
-            // Only render when this is the first of a pair (odd index in the group)
-            if (index % 3 === 1) {
-              acc.push(
-                <div key={`pair-${index}`} className="flex gap-3">
-                  {[memory, next].filter(Boolean).map((m, i) => (
-                    <div
-                      key={m.id}
-                      onClick={() => setSlideshowIndex(filteredMemories.indexOf(m))}
-                      className="relative flex-1 overflow-hidden cursor-pointer group"
-                      style={{ borderRadius: "22px", height: "52vw", maxHeight: 240 }}
-                    >
-                      {m.mediaUrl ? (
-                        m.type === "video" ? (
-                          <video src={m.mediaUrl} className="w-full h-full object-cover" />
-                        ) : (
-                          <img src={m.mediaUrl} alt={m.title} className="w-full h-full object-cover group-active:scale-[1.04] transition-transform duration-500" />
-                        )
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-5xl"
-                          style={{ background: i === 0 ? "rgba(240,232,222,0.75)" : "rgba(235,226,216,0.75)" }}>
-                          {m.type === "text" ? "📝" : m.type === "voice" ? "🎙️" : "✨"}
-                        </div>
-                      )}
-                      {/* Bottom fade */}
-                      <div className="absolute inset-x-0 bottom-0 h-16 pointer-events-none"
-                        style={{ background: "linear-gradient(to top, rgba(75,46,40,0.65) 0%, transparent 100%)" }} />
-                      <div className="absolute bottom-2.5 left-3 right-3">
-                        <span className="text-white font-semibold text-sm leading-tight line-clamp-1 drop-shadow"
-                          style={{ fontFamily: "var(--font-caveat), cursive" }}>
-                          {m.title}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              );
-            }
-            // index % 3 === 2 is handled above as part of the pair, skip
-          }
-          return acc;
-        }, [])}
+      {/* ── POLAROID WALL ── */}
+      <div className="px-4 relative z-10 pb-28">
+        {filteredMemories.length === 0 ? (
+          <div className="text-center py-20 text-[#5F4D4A]" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.5rem" }}>
+            No memories yet ♡<br />
+            <span className="text-base opacity-60">Start by adding one!</span>
+          </div>
+        ) : (
+          <div className="flex gap-4 items-start">
+            {/* Left column — offset down */}
+            <div className="flex-1 flex flex-col gap-6 mt-10">
+              {filteredMemories
+                .filter((_, i) => i % 2 === 0)
+                .map((memory, i) => (
+                  <PolaroidCard
+                    key={memory.id}
+                    memory={memory}
+                    rotation={polaroidRotations[(i * 2) % polaroidRotations.length]}
+                    onClick={() => setSlideshowIndex(i * 2)}
+                  />
+                ))}
+            </div>
+            {/* Right column — starts at top */}
+            <div className="flex-1 flex flex-col gap-6 mt-0">
+              {filteredMemories
+                .filter((_, i) => i % 2 === 1)
+                .map((memory, i) => (
+                  <PolaroidCard
+                    key={memory.id}
+                    memory={memory}
+                    rotation={polaroidRotations[(i * 2 + 1) % polaroidRotations.length]}
+                    onClick={() => setSlideshowIndex(i * 2 + 1)}
+                  />
+                ))}
+            </div>
+          </div>
+        )}
       </div>
-
-      {filteredMemories.length === 0 && (
-        <div className="text-center py-20 text-[#5F4D4A] font-medium relative z-10" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.4rem" }}>
-          No memories found ♡
-        </div>
-      )}
 
       {/* Hide scrollbar styles */}
       <style dangerouslySetInnerHTML={{__html: `
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}} />
 
       <Nav />
@@ -297,20 +232,93 @@ export default function GalleryPage() {
   );
 }
 
-function FilterTab({ active, onClick, label, icon }: { active: boolean, onClick: () => void, label: string, icon: React.ReactNode }) {
+const polaroidRotations = [-4, 3, -2.5, 5, -3.5, 2, -5, 4, -1.5, 3.5, -4.5, 2.5];
+
+function PolaroidCard({
+  memory,
+  rotation,
+  onClick,
+}: {
+  memory: { id: string; title: string; type: string; mediaUrl: string | null; date: string };
+  rotation: number;
+  onClick: () => void;
+}) {
+  return (
+    <div
+      onClick={onClick}
+      className="cursor-pointer active:scale-[0.96] transition-all duration-200 select-none"
+      style={{ transform: `rotate(${rotation}deg)`, transformOrigin: "center center" }}
+    >
+      <div
+        className="relative shadow-[0_8px_32px_rgba(0,0,0,0.18)]"
+        style={{
+          background: "#FEFCF8",
+          padding: "10px 10px 52px 10px",
+          borderRadius: "4px",
+        }}
+      >
+        {/* Photo area */}
+        <div className="w-full overflow-hidden" style={{ aspectRatio: "1/1", background: "#F0E8DE" }}>
+          {memory.mediaUrl ? (
+            memory.type === "video" ? (
+              <video src={memory.mediaUrl} className="w-full h-full object-cover" />
+            ) : (
+              <img
+                src={memory.mediaUrl}
+                alt={memory.title}
+                className="w-full h-full object-cover"
+                draggable={false}
+              />
+            )
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-5xl">
+              {memory.type === "text" ? "📝" : memory.type === "voice" ? "🎙️" : "✨"}
+            </div>
+          )}
+        </div>
+
+        {/* Handwritten caption */}
+        <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-center pb-3 pt-2">
+          <p
+            className="text-[#4B2E28] font-bold text-center line-clamp-1 px-2 leading-tight"
+            style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.05rem" }}
+          >
+            {memory.title}
+          </p>
+          <p
+            className="text-[#9B8B80] text-center"
+            style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "0.78rem" }}
+          >
+            {formatDateDisplay(memory.date)}
+          </p>
+        </div>
+
+        {/* Subtle tape strip at top */}
+        <div
+          className="absolute -top-3 left-1/2 -translate-x-1/2 w-10 h-5 opacity-60"
+          style={{
+            background: "rgba(240, 228, 210, 0.85)",
+            borderRadius: "2px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function FilterTab({ active, onClick, label, icon }: { active: boolean; onClick: () => void; label: string; icon: React.ReactNode }) {
   return (
     <button
       onClick={onClick}
       className={`snap-start flex items-center gap-2 px-5 py-2.5 rounded-full transition-all shrink-0 border shadow-sm ${
-        active 
-          ? "bg-[#4B2E28] text-white border-[#4B2E28]" 
+        active
+          ? "bg-[#4B2E28] text-white border-[#4B2E28]"
           : "bg-[#F5E9E0]/90 text-[#4B2E28] border-[#E8D5C8]"
       }`}
     >
       {icon}
-      <span className="text-[14px] font-medium tracking-wide">
-        {label}
-      </span>
+      <span className="text-[14px] font-medium tracking-wide">{label}</span>
     </button>
   );
 }
