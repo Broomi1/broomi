@@ -182,36 +182,102 @@ export default function GalleryPage() {
         </div>
       )}
 
-      {/* ── GRID ── */}
-      <div className="px-5 grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10 pb-20">
-        {filteredMemories.map((memory, index) => {
-          return (
-            <div 
-              key={memory.id}
-              onClick={() => setSlideshowIndex(index)}
-              className="relative overflow-hidden rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-300 active:scale-[0.98] bg-[#F5E9E0]/40 border border-white/50 backdrop-blur-md cursor-pointer group"
-            >
-              <div className="w-full h-[45vh] md:h-[55vh] relative flex items-center justify-center">
+      {/* ── MASONRY GRID ── */}
+      <div className="px-4 relative z-10 pb-24 space-y-3">
+        {filteredMemories.reduce<JSX.Element[]>((acc, memory, index) => {
+          // Every 3rd card (index 0, 3, 6…) is a big full-width hero
+          const isHero = index % 3 === 0;
+
+          if (isHero) {
+            // Check if we need to flush any pending pair first (shouldn't happen at 0 but safety)
+            acc.push(
+              <div
+                key={memory.id}
+                onClick={() => setSlideshowIndex(index)}
+                className="relative w-full overflow-hidden cursor-pointer group"
+                style={{ borderRadius: "28px", height: "58vw", minHeight: 200, maxHeight: 340 }}
+              >
                 {memory.mediaUrl ? (
                   memory.type === "video" ? (
                     <video src={memory.mediaUrl} className="w-full h-full object-cover" />
                   ) : (
-                    <img src={memory.mediaUrl} alt={memory.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <img src={memory.mediaUrl} alt={memory.title} className="w-full h-full object-cover group-active:scale-[1.03] transition-transform duration-500" />
                   )
                 ) : (
-                  <div className="text-7xl drop-shadow-sm group-hover:scale-110 transition-transform duration-500">
+                  <div className="w-full h-full flex items-center justify-center text-7xl" style={{ background: "rgba(245,233,224,0.7)" }}>
                     {memory.type === "text" ? "📝" : memory.type === "voice" ? "🎙️" : "✨"}
                   </div>
                 )}
+
+                {/* Bottom fade with title */}
+                <div className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
+                  style={{ background: "linear-gradient(to top, rgba(75,46,40,0.7) 0%, transparent 100%)" }} />
+                <div className="absolute bottom-4 left-5 right-5 flex items-end justify-between">
+                  <span className="text-white font-bold drop-shadow-md text-xl leading-tight line-clamp-1"
+                    style={{ fontFamily: "var(--font-caveat), cursive" }}>
+                    {memory.title}
+                  </span>
+                  <span className="text-white/70 text-xs shrink-0 ml-2">
+                    {formatDateDisplay(memory.date)}
+                  </span>
+                </div>
+
+                {/* Top-left hero badge */}
+                <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] font-semibold tracking-widest uppercase"
+                  style={{ background: "rgba(245,233,224,0.82)", backdropFilter: "blur(8px)", color: "#4B2E28" }}>
+                  ♡ memory
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          } else {
+            // Pair up two consecutive non-hero items side by side
+            const next = filteredMemories[index + 1];
+            // Only render when this is the first of a pair (odd index in the group)
+            if (index % 3 === 1) {
+              acc.push(
+                <div key={`pair-${index}`} className="flex gap-3">
+                  {[memory, next].filter(Boolean).map((m, i) => (
+                    <div
+                      key={m.id}
+                      onClick={() => setSlideshowIndex(filteredMemories.indexOf(m))}
+                      className="relative flex-1 overflow-hidden cursor-pointer group"
+                      style={{ borderRadius: "22px", height: "52vw", maxHeight: 240 }}
+                    >
+                      {m.mediaUrl ? (
+                        m.type === "video" ? (
+                          <video src={m.mediaUrl} className="w-full h-full object-cover" />
+                        ) : (
+                          <img src={m.mediaUrl} alt={m.title} className="w-full h-full object-cover group-active:scale-[1.04] transition-transform duration-500" />
+                        )
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-5xl"
+                          style={{ background: i === 0 ? "rgba(240,232,222,0.75)" : "rgba(235,226,216,0.75)" }}>
+                          {m.type === "text" ? "📝" : m.type === "voice" ? "🎙️" : "✨"}
+                        </div>
+                      )}
+                      {/* Bottom fade */}
+                      <div className="absolute inset-x-0 bottom-0 h-16 pointer-events-none"
+                        style={{ background: "linear-gradient(to top, rgba(75,46,40,0.65) 0%, transparent 100%)" }} />
+                      <div className="absolute bottom-2.5 left-3 right-3">
+                        <span className="text-white font-semibold text-sm leading-tight line-clamp-1 drop-shadow"
+                          style={{ fontFamily: "var(--font-caveat), cursive" }}>
+                          {m.title}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+            }
+            // index % 3 === 2 is handled above as part of the pair, skip
+          }
+          return acc;
+        }, [])}
       </div>
 
       {filteredMemories.length === 0 && (
-        <div className="text-center py-20 text-[#5F4D4A] font-medium" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.4rem" }}>
-          No memories found.
+        <div className="text-center py-20 text-[#5F4D4A] font-medium relative z-10" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.4rem" }}>
+          No memories found ♡
         </div>
       )}
 
