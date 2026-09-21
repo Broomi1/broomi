@@ -166,13 +166,64 @@ export default function GalleryPage() {
         </div>
       )}
 
-      {/* ── PHOTO GRID ── */}
-      <div className="px-4 grid grid-cols-2 gap-[3px] pb-28">
+      {/* ── RECENT MEMORIES (Stories style) ── */}
+      {memories.length > 0 && (
+        <div className="mb-5">
+          <p className="px-5 mb-3 text-[1rem] font-semibold text-[#7A6058]" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.2rem" }}>
+            Recent Memories
+          </p>
+          <div className="flex gap-4 px-5 overflow-x-auto hide-scrollbar pb-1">
+            {memories.slice(0, 10).map((memory, index) => (
+              <div
+                key={memory.id}
+                onClick={() => { setSlideshowIndex(index); }}
+                className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer"
+              >
+                {/* Story circle */}
+                <div
+                  className="rounded-full p-[2.5px] shrink-0"
+                  style={{
+                    background: "linear-gradient(135deg, #C4875A, #E8B89A, #C4875A)",
+                    width: 68,
+                    height: 68,
+                  }}
+                >
+                  <div className="w-full h-full rounded-full overflow-hidden border-[2.5px] border-[#F5EFE8] bg-[#EDE6DC]">
+                    {memory.mediaUrl && memory.type !== "voice" ? (
+                      memory.type === "video" ? (
+                        <video src={memory.mediaUrl} className="w-full h-full object-cover" />
+                      ) : (
+                        <img src={memory.mediaUrl} alt={memory.title} className="w-full h-full object-cover" draggable={false} />
+                      )
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-2xl">
+                        {memory.type === "text" ? "📝" : memory.type === "voice" ? "🎙️" : "✨"}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                {/* Label */}
+                <span
+                  className="text-[#4B2E28] text-center leading-tight line-clamp-1 max-w-[64px]"
+                  style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "0.78rem", fontWeight: 600 }}
+                >
+                  {memory.title}
+                </span>
+              </div>
+            ))}
+          </div>
+          {/* Divider */}
+          <div className="mt-4 mx-5 h-[1px] bg-[#E2D8CF]" />
+        </div>
+      )}
+
+      {/* ── PHOTO GRID (3 columns) ── */}
+      <div className="grid grid-cols-3 gap-[2px] pb-28">
         {filteredMemories.map((memory, index) => (
           <div
             key={memory.id}
             onClick={() => setSlideshowIndex(index)}
-            className="relative overflow-hidden cursor-pointer active:opacity-80 transition-opacity"
+            className="relative overflow-hidden cursor-pointer active:opacity-75 transition-opacity"
             style={{ aspectRatio: "1/1" }}
           >
             {memory.mediaUrl ? (
@@ -188,10 +239,18 @@ export default function GalleryPage() {
               )
             ) : (
               <div
-                className="w-full h-full flex items-center justify-center text-5xl"
-                style={{ backgroundColor: index % 2 === 0 ? "#EDE6DC" : "#E8DDD3" }}
+                className="w-full h-full flex items-center justify-center text-3xl"
+                style={{ backgroundColor: index % 3 === 0 ? "#EDE6DC" : index % 3 === 1 ? "#E8DDD3" : "#E3D8CE" }}
               >
                 {memory.type === "text" ? "📝" : memory.type === "voice" ? "🎙️" : "✨"}
+              </div>
+            )}
+            {/* Video indicator */}
+            {memory.type === "video" && (
+              <div className="absolute top-1.5 right-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="white" filter="drop-shadow(0 1px 2px rgba(0,0,0,0.5))">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
               </div>
             )}
           </div>
