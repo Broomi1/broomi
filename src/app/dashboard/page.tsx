@@ -2,59 +2,17 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import Link from "next/link";
 
 export default function DashboardPage() {
   const { status } = useSession();
   const router = useRouter();
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/login");
   }, [status, router]);
 
-  // Auto-scroll functionality (cinematic speed)
-  useEffect(() => {
-    const el = scrollContainerRef.current;
-    if (!el) return;
-
-    let animationFrameId: number;
-    let scrollPos = 0;
-
-    const scrollStep = () => {
-      if (el) {
-        scrollPos += 0.35; // Cinematic, dreamy speed
-        el.scrollTop = scrollPos;
-        
-        if (scrollPos >= el.scrollHeight - el.clientHeight) {
-          return;
-        }
-      }
-      animationFrameId = requestAnimationFrame(scrollStep);
-    };
-
-    const timeoutId = setTimeout(() => {
-      animationFrameId = requestAnimationFrame(scrollStep);
-    }, 2500);
-
-    const handleInteraction = () => {
-      cancelAnimationFrame(animationFrameId);
-      scrollPos = el.scrollTop; 
-    };
-
-    el.addEventListener("touchstart", handleInteraction, { passive: true });
-    el.addEventListener("wheel", handleInteraction, { passive: true });
-    el.addEventListener("mousedown", handleInteraction, { passive: true });
-
-    return () => {
-      clearTimeout(timeoutId);
-      cancelAnimationFrame(animationFrameId);
-      el.removeEventListener("touchstart", handleInteraction);
-      el.removeEventListener("wheel", handleInteraction);
-      el.removeEventListener("mousedown", handleInteraction);
-    };
-  }, [status]);
 
   if (status === "loading") return null;
 
@@ -96,19 +54,11 @@ export default function DashboardPage() {
         <div className="w-12 h-[1px] bg-[#4B2E28] mt-1 opacity-50" />
       </div>
 
-      {/* ── STORY CONTENT (Fixed to Right Side, Masked Auto-scrolling) ── */}
+      {/* ── STORY CONTENT (Fixed to Right Side, Still) ── */}
       <div
-        ref={scrollContainerRef}
-        className="absolute top-0 right-0 w-[80%] sm:w-[55%] md:w-[48%] h-full overflow-y-auto hide-scrollbar z-10"
-        style={{ 
-          scrollBehavior: "smooth",
-          // The magic: fades out the text smoothly at the top and bottom of the screen!
-          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)",
-          maskImage: "linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)"
-        }}
+        className="absolute top-0 right-0 w-[60%] sm:w-[55%] md:w-[48%] h-full flex flex-col justify-center z-10"
       >
-        {/* HUGE padding so the text emerges from the bottom and scrolls up into view */}
-        <div className="pl-4 pr-6 sm:pr-12 md:pr-20 w-full max-w-xl ml-auto" style={{ paddingTop: "70vh", paddingBottom: "70vh" }}>
+        <div className="pl-4 pr-6 sm:pr-12 md:pr-20 w-full max-w-xl ml-auto py-12">
           
           <div className="relative">
             {/* Decorative background flourish */}
