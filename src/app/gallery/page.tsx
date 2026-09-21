@@ -214,53 +214,6 @@ export default function GalleryPage() {
         </div>
       )}
 
-      {/* ── MONTHLY STORIES (Album Cards) ── */}
-      {memoriesByMonth.length > 0 && (
-        <div className="mb-6 relative z-10">
-          <p className="px-5 mb-3 text-[1rem] font-semibold text-[#4B2E28] drop-shadow-sm" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.2rem" }}>
-            Monthly Stories
-          </p>
-          <div className="flex gap-4 px-5 overflow-x-auto hide-scrollbar pb-2">
-            {memoriesByMonth.map((group) => {
-              const firstMediaMemory = group.memories.find(m => m.mediaUrl) || group.memories[0];
-              return (
-                <div
-                  key={group.key}
-                  onClick={() => { 
-                    setSlideshowContext(group.memories);
-                    setSlideshowIndex(0); 
-                  }}
-                  className="relative rounded-2xl overflow-hidden shadow-md shrink-0 cursor-pointer group transition-transform active:scale-95 border-2 border-white/60 bg-[#EDE6DC]"
-                  style={{ width: 110, height: 140 }}
-                >
-                  {firstMediaMemory?.mediaUrl && firstMediaMemory?.type !== "voice" ? (
-                    firstMediaMemory.type === "video" ? (
-                      <video src={firstMediaMemory.mediaUrl} className="w-full h-full object-cover" />
-                    ) : (
-                      <img src={firstMediaMemory.mediaUrl} alt={firstMediaMemory.title} className="w-full h-full object-cover" draggable={false} />
-                    )
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-4xl pb-4">
-                      {firstMediaMemory?.type === "text" ? "📝" : firstMediaMemory?.type === "voice" ? "🎙️" : "✨"}
-                    </div>
-                  )}
-                  
-                  {/* Label Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#4B2E28]/80 via-transparent to-transparent pointer-events-none" />
-                  <span
-                    className="absolute bottom-2 left-0 right-0 text-white text-center leading-tight drop-shadow-md px-1"
-                    style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1rem", letterSpacing: "0.02em" }}
-                  >
-                    {group.label}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-          {/* Divider */}
-          <div className="mt-5 mx-5 h-[1px] bg-[#4B2E28] opacity-15" />
-        </div>
-      )}
 
       {/* ── PHOTO FEED (Large 1-Column) ── */}
       <div className="flex flex-col gap-6 pb-32 relative z-10 px-5">
