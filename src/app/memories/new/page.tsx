@@ -32,24 +32,84 @@ export default function AddMemoryPage() {
     }
   };
 
+  // Helper to compress image before uploading
+  const compressImage = async (file: File): Promise<File> => {
+    if (!file.type.startsWith("image/")) return file;
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let { width, height } = img;
+          const MAX_SIZE = 1200;
+
+          if (width > height && width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          } else if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0, width, height);
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve(new File([blob], file.name, { type: "image/jpeg", lastModified: Date.now() }));
+              } else {
+                resolve(file);
+              }
+            },
+            "image/jpeg",
+            0.7
+          );
+        };
+      };
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
     let mediaUrl: string | null = null;
-    if (file) {
-      const fd = new FormData();
-      fd.append("file", file);
-      const r = await fetch("/api/upload", { method: "POST", body: fd });
-      mediaUrl = (await r.json()).url;
+    
+    try {
+      if (file) {
+        // Compress the image before uploading to speed it up drastically
+        const compressedFile = await compressImage(file);
+        
+        const fd = new FormData();
+        fd.append("file", compressedFile);
+        const r = await fetch("/api/upload", { method: "POST", body: fd });
+        if (!r.ok) throw new Error("Upload failed");
+        mediaUrl = (await r.json()).url;
+      }
+
+      const res = await fetch("/api/memories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, description, type, date, mediaUrl }),
+      });
+      
+      if (res.ok) {
+        router.push("/dashboard");
+      } else {
+        setError("Failed to save. Please try again.");
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error(err);
+      setError("An error occurred during upload. Please try again.");
+      setLoading(false);
     }
-    const res = await fetch("/api/memories", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description, type, date, mediaUrl }),
-    });
-    if (res.ok) router.push("/dashboard");
-    else { setError("Failed to save. Please try again."); setLoading(false); }
   };
 
   const fmtDate = (d: string) =>
