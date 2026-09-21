@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Nav from "@/components/Nav";
 import Link from "next/link";
 
@@ -28,6 +28,7 @@ export default function GalleryPage() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [slideshowIndex, setSlideshowIndex] = useState<number | null>(null);
+  const [slideshowContext, setSlideshowContext] = useState<Memory[] | null>(null);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -59,6 +60,28 @@ export default function GalleryPage() {
   // Card pastel backgrounds — cream tones matching login
   const cardBgs = ["#F5E9E0", "#EDE6DC", "#F0E8DE", "#EBE2D8"];
 
+  const memoriesByMonth = useMemo(() => {
+    const groups: Record<string, Memory[]> = {};
+    memories.forEach(m => {
+      const d = new Date(m.date);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(m);
+    });
+    return Object.entries(groups).map(([key, mems]) => {
+      const [year, month] = key.split('-');
+      const d = new Date(parseInt(year), parseInt(month) - 1, 1);
+      return {
+        label: d.toLocaleDateString("en-US", { month: "short", year: "numeric" }),
+        key,
+        memories: mems
+      };
+    }).sort((a, b) => b.key.localeCompare(a.key)); // newest first
+  }, [memories]);
+
+  const activeMemories = slideshowContext || filteredMemories;
+
+  {/* ── SLIDESHOW OVERLAY ── */}
   return (
     <div className="min-h-screen pb-36 font-sans relative">
       
@@ -128,12 +151,12 @@ export default function GalleryPage() {
       </div>
 
       {/* ── SLIDESHOW OVERLAY ── */}
-      {slideshowIndex !== null && filteredMemories[slideshowIndex] && (
+      {slideshowIndex !== null && activeMemories[slideshowIndex] && (
         <div className="fixed inset-0 z-[100] bg-[#1a1514]/95 backdrop-blur-lg flex flex-col items-center justify-center">
           {/* Top Bar */}
           <div className="absolute top-0 w-full p-6 flex justify-between items-center z-50">
             <button 
-              onClick={() => setSlideshowIndex(null)} 
+              onClick={() => { setSlideshowIndex(null); setSlideshowContext(null); }} 
               className="text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full backdrop-blur-md transition-all active:scale-95"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -141,7 +164,7 @@ export default function GalleryPage() {
               </svg>
             </button>
             <Link 
-              href={`/memories/${filteredMemories[slideshowIndex].id}`}
+              href={`/memories/${activeMemories[slideshowIndex].id}`}
               className="text-white/90 bg-white/10 hover:bg-white/20 px-5 py-2.5 rounded-full font-semibold backdrop-blur-md transition-all active:scale-95 text-sm tracking-wide"
             >
               Details & Edit
@@ -152,84 +175,91 @@ export default function GalleryPage() {
           <div 
             className="w-full h-[65vh] flex flex-col items-center justify-center px-4 cursor-pointer"
             onClick={() => {
-              if (slideshowIndex < filteredMemories.length - 1) {
+              if (slideshowIndex < activeMemories.length - 1) {
                 setSlideshowIndex(slideshowIndex + 1);
               } else {
                 setSlideshowIndex(null);
+                setSlideshowContext(null);
               }
             }}
           >
-            {filteredMemories[slideshowIndex].mediaUrl ? (
-              filteredMemories[slideshowIndex].type === "video" ? (
-                <video src={filteredMemories[slideshowIndex].mediaUrl!} autoPlay controls className="max-w-full max-h-full rounded-2xl shadow-2xl border border-white/10" />
+            {activeMemories[slideshowIndex].mediaUrl ? (
+              activeMemories[slideshowIndex].type === "video" ? (
+                <video src={activeMemories[slideshowIndex].mediaUrl!} autoPlay controls className="max-w-full max-h-full rounded-2xl shadow-2xl border border-white/10" />
               ) : (
-                <img src={filteredMemories[slideshowIndex].mediaUrl!} alt="memory" className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl drop-shadow-2xl select-none" />
+                <img src={activeMemories[slideshowIndex].mediaUrl!} alt="memory" className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl drop-shadow-2xl select-none" />
               )
             ) : (
               <div className="text-8xl md:text-9xl drop-shadow-2xl">
-                {filteredMemories[slideshowIndex].type === "text" ? "📝" : filteredMemories[slideshowIndex].type === "voice" ? "🎙️" : "✨"}
+                {activeMemories[slideshowIndex].type === "text" ? "📝" : activeMemories[slideshowIndex].type === "voice" ? "🎙️" : "✨"}
               </div>
             )}
             
             {/* Title display in slideshow */}
             <h2 className="text-white/90 text-3xl mt-6 font-medium text-center px-4 drop-shadow-md" style={{ fontFamily: "var(--font-caveat), cursive" }}>
-              {filteredMemories[slideshowIndex].title}
+              {activeMemories[slideshowIndex].title}
             </h2>
           </div>
 
           {/* Bottom Progress */}
           <div className="absolute bottom-12 text-white/50 text-sm font-medium tracking-widest uppercase flex flex-col items-center gap-2">
             <span>Tap image to continue</span>
-            <span>{slideshowIndex + 1} / {filteredMemories.length}</span>
+            <span>{slideshowIndex + 1} / {activeMemories.length}</span>
           </div>
         </div>
       )}
 
-      {/* ── RECENT MEMORIES (Stories style) ── */}
-      {memories.length > 0 && (
+      {/* ── MONTHLY STORIES ── */}
+      {memoriesByMonth.length > 0 && (
         <div className="mb-5 relative z-10">
           <p className="px-5 mb-3 text-[1rem] font-semibold text-[#4B2E28] drop-shadow-sm" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.2rem" }}>
-            Recent Memories
+            Monthly Stories
           </p>
           <div className="flex gap-4 px-5 overflow-x-auto hide-scrollbar pb-1">
-            {memories.slice(0, 10).map((memory, index) => (
-              <div
-                key={memory.id}
-                onClick={() => { setSlideshowIndex(index); }}
-                className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer"
-              >
-                {/* Story circle */}
+            {memoriesByMonth.map((group) => {
+              const firstMediaMemory = group.memories.find(m => m.mediaUrl) || group.memories[0];
+              return (
                 <div
-                  className="rounded-full p-[2.5px] shrink-0 shadow-sm"
-                  style={{
-                    background: "linear-gradient(135deg, #C4875A, #E8B89A, #C4875A)",
-                    width: 68,
-                    height: 68,
+                  key={group.key}
+                  onClick={() => { 
+                    setSlideshowContext(group.memories);
+                    setSlideshowIndex(0); 
                   }}
+                  className="flex flex-col items-center gap-1.5 shrink-0 cursor-pointer group"
                 >
-                  <div className="w-full h-full rounded-full overflow-hidden border-[2.5px] border-[#F5EFE8] bg-[#EDE6DC]">
-                    {memory.mediaUrl && memory.type !== "voice" ? (
-                      memory.type === "video" ? (
-                        <video src={memory.mediaUrl} className="w-full h-full object-cover" />
+                  {/* Story circle */}
+                  <div
+                    className="rounded-full p-[3px] shrink-0 shadow-sm transition-transform group-active:scale-95"
+                    style={{
+                      background: "linear-gradient(135deg, #4B2E28, #E8B89A, #8A5A44)",
+                      width: 72,
+                      height: 72,
+                    }}
+                  >
+                    <div className="w-full h-full rounded-full overflow-hidden border-[2.5px] border-[#F5EFE8] bg-[#EDE6DC]">
+                      {firstMediaMemory.mediaUrl && firstMediaMemory.type !== "voice" ? (
+                        firstMediaMemory.type === "video" ? (
+                          <video src={firstMediaMemory.mediaUrl} className="w-full h-full object-cover" />
+                        ) : (
+                          <img src={firstMediaMemory.mediaUrl} alt={firstMediaMemory.title} className="w-full h-full object-cover" draggable={false} />
+                        )
                       ) : (
-                        <img src={memory.mediaUrl} alt={memory.title} className="w-full h-full object-cover" draggable={false} />
-                      )
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-2xl">
-                        {memory.type === "text" ? "📝" : memory.type === "voice" ? "🎙️" : "✨"}
-                      </div>
-                    )}
+                        <div className="w-full h-full flex items-center justify-center text-2xl">
+                          {firstMediaMemory.type === "text" ? "📝" : firstMediaMemory.type === "voice" ? "🎙️" : "✨"}
+                        </div>
+                      )}
+                    </div>
                   </div>
+                  {/* Label */}
+                  <span
+                    className="text-[#4B2E28] text-center leading-tight line-clamp-1 max-w-[70px] drop-shadow-sm bg-white/40 px-1.5 rounded"
+                    style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "0.85rem", fontWeight: 700 }}
+                  >
+                    {group.label}
+                  </span>
                 </div>
-                {/* Label */}
-                <span
-                  className="text-[#4B2E28] text-center leading-tight line-clamp-1 max-w-[64px] drop-shadow-sm bg-white/40 px-1 rounded"
-                  style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "0.78rem", fontWeight: 600 }}
-                >
-                  {memory.title}
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
           {/* Divider */}
           <div className="mt-4 mx-5 h-[1px] bg-[#4B2E28] opacity-20" />
