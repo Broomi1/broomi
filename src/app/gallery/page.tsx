@@ -60,31 +60,15 @@ export default function GalleryPage() {
   const cardBgs = ["#F5E9E0", "#EDE6DC", "#F0E8DE", "#EBE2D8"];
 
   return (
-    <div className="min-h-screen pb-36 font-sans relative" style={{ backgroundColor: "#E3E9F0" }}>
-      {/* Ultra-stable fixed background for mobile */}
-      <div 
-        className="pointer-events-none"
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100vw",
-          height: "100vh",
-          backgroundImage: "url('/gallery-bg.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          zIndex: 0
-        }}
-      />
+    <div className="min-h-screen pb-36 font-sans" style={{ backgroundColor: "#F5EFE8" }}>
+
       {/* ── HEADER ── */}
-      <header className="pt-24 px-6 pb-4 relative z-10">
-        <h1 className="text-[3.2rem] font-bold text-[#4B2E28] leading-none mb-1 tracking-tight flex items-center gap-2" style={{ fontFamily: "var(--font-caveat), cursive" }}>
-          Gallery
-          <span className="text-[2rem] font-normal text-[#4B2E28]">♡</span>
+      <header className="pt-16 px-5 pb-4">
+        <h1 className="text-[3rem] font-bold text-[#4B2E28] leading-none mb-1" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+          Gallery ♡
         </h1>
-        <p className="text-[1.3rem] text-[#5F4D4A]" style={{ fontFamily: "var(--font-caveat), cursive", fontWeight: 600 }}>
-          All your captured moments ♡
+        <p className="text-[1.1rem] text-[#7A6058]" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+          All your captured moments
         </p>
       </header>
 
@@ -182,44 +166,43 @@ export default function GalleryPage() {
         </div>
       )}
 
-      {/* ── POLAROID WALL ── */}
-      <div className="px-4 relative z-10 pb-28">
-        {filteredMemories.length === 0 ? (
-          <div className="text-center py-20 text-[#5F4D4A]" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.5rem" }}>
-            No memories yet ♡<br />
-            <span className="text-base opacity-60">Start by adding one!</span>
+      {/* ── PHOTO GRID ── */}
+      <div className="px-4 grid grid-cols-2 gap-[3px] pb-28">
+        {filteredMemories.map((memory, index) => (
+          <div
+            key={memory.id}
+            onClick={() => setSlideshowIndex(index)}
+            className="relative overflow-hidden cursor-pointer active:opacity-80 transition-opacity"
+            style={{ aspectRatio: "1/1" }}
+          >
+            {memory.mediaUrl ? (
+              memory.type === "video" ? (
+                <video src={memory.mediaUrl} className="w-full h-full object-cover" />
+              ) : (
+                <img
+                  src={memory.mediaUrl}
+                  alt={memory.title}
+                  className="w-full h-full object-cover"
+                  draggable={false}
+                />
+              )
+            ) : (
+              <div
+                className="w-full h-full flex items-center justify-center text-5xl"
+                style={{ backgroundColor: index % 2 === 0 ? "#EDE6DC" : "#E8DDD3" }}
+              >
+                {memory.type === "text" ? "📝" : memory.type === "voice" ? "🎙️" : "✨"}
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="flex gap-4 items-start">
-            {/* Left column — offset down */}
-            <div className="flex-1 flex flex-col gap-6 mt-10">
-              {filteredMemories
-                .filter((_, i) => i % 2 === 0)
-                .map((memory, i) => (
-                  <PolaroidCard
-                    key={memory.id}
-                    memory={memory}
-                    rotation={polaroidRotations[(i * 2) % polaroidRotations.length]}
-                    onClick={() => setSlideshowIndex(i * 2)}
-                  />
-                ))}
-            </div>
-            {/* Right column — starts at top */}
-            <div className="flex-1 flex flex-col gap-6 mt-0">
-              {filteredMemories
-                .filter((_, i) => i % 2 === 1)
-                .map((memory, i) => (
-                  <PolaroidCard
-                    key={memory.id}
-                    memory={memory}
-                    rotation={polaroidRotations[(i * 2 + 1) % polaroidRotations.length]}
-                    onClick={() => setSlideshowIndex(i * 2 + 1)}
-                  />
-                ))}
-            </div>
-          </div>
-        )}
+        ))}
       </div>
+
+      {filteredMemories.length === 0 && (
+        <div className="text-center py-24 text-[#7A6058]" style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.4rem" }}>
+          No memories yet ♡
+        </div>
+      )}
 
       {/* Hide scrollbar styles */}
       <style dangerouslySetInnerHTML={{__html: `
@@ -228,81 +211,6 @@ export default function GalleryPage() {
       `}} />
 
       <Nav />
-    </div>
-  );
-}
-
-const polaroidRotations = [-4, 3, -2.5, 5, -3.5, 2, -5, 4, -1.5, 3.5, -4.5, 2.5];
-
-function PolaroidCard({
-  memory,
-  rotation,
-  onClick,
-}: {
-  memory: { id: string; title: string; type: string; mediaUrl: string | null; date: string };
-  rotation: number;
-  onClick: () => void;
-}) {
-  return (
-    <div
-      onClick={onClick}
-      className="cursor-pointer active:scale-[0.96] transition-all duration-200 select-none"
-      style={{ transform: `rotate(${rotation}deg)`, transformOrigin: "center center" }}
-    >
-      <div
-        className="relative shadow-[0_8px_32px_rgba(0,0,0,0.18)]"
-        style={{
-          background: "#FEFCF8",
-          padding: "10px 10px 52px 10px",
-          borderRadius: "4px",
-        }}
-      >
-        {/* Photo area */}
-        <div className="w-full overflow-hidden" style={{ aspectRatio: "1/1", background: "#F0E8DE" }}>
-          {memory.mediaUrl ? (
-            memory.type === "video" ? (
-              <video src={memory.mediaUrl} className="w-full h-full object-cover" />
-            ) : (
-              <img
-                src={memory.mediaUrl}
-                alt={memory.title}
-                className="w-full h-full object-cover"
-                draggable={false}
-              />
-            )
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-5xl">
-              {memory.type === "text" ? "📝" : memory.type === "voice" ? "🎙️" : "✨"}
-            </div>
-          )}
-        </div>
-
-        {/* Handwritten caption */}
-        <div className="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-center pb-3 pt-2">
-          <p
-            className="text-[#4B2E28] font-bold text-center line-clamp-1 px-2 leading-tight"
-            style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "1.05rem" }}
-          >
-            {memory.title}
-          </p>
-          <p
-            className="text-[#9B8B80] text-center"
-            style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "0.78rem" }}
-          >
-            {formatDateDisplay(memory.date)}
-          </p>
-        </div>
-
-        {/* Subtle tape strip at top */}
-        <div
-          className="absolute -top-3 left-1/2 -translate-x-1/2 w-10 h-5 opacity-60"
-          style={{
-            background: "rgba(240, 228, 210, 0.85)",
-            borderRadius: "2px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-          }}
-        />
-      </div>
     </div>
   );
 }
