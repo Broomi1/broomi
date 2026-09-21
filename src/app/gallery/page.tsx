@@ -124,64 +124,27 @@ export default function GalleryPage() {
       </div>
 
       {/* ── GRID ── */}
-      <div className="px-5 grid grid-cols-2 gap-4 relative z-10">
-        {filteredMemories.map((memory, idx) => {
-          const bg = cardBgs[idx % cardBgs.length];
-          const rotate = idx % 2 === 0 ? "rotate-[-2deg]" : "rotate-[3deg]";
+      <div className="px-5 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5 relative z-10 pb-10">
+        {filteredMemories.map((memory) => {
           return (
             <Link 
               href={`/memories/${memory.id}`} 
               key={memory.id}
-              className="rounded-[20px] p-3 flex flex-col gap-3 shadow-sm border border-[#E8D5C8]/60 relative overflow-hidden transition-transform active:scale-95"
-              style={{ backgroundColor: bg }}
+              className="relative overflow-hidden rounded-[1.5rem] shadow-sm hover:shadow-xl transition-all active:scale-[0.98] bg-[#F5E9E0]/30 border border-white/50 backdrop-blur-sm group"
             >
-              {/* Tape decoration on the card */}
-              {idx % 2 === 0 && (
-                <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-4 bg-[#F5E9E0]/80 border border-[#E8D5C8]/50 rotate-[-5deg] z-20 shadow-sm"></div>
-              )}
-              {idx % 2 !== 0 && (
-                <div className="absolute top-1 right-2 w-10 h-3 bg-[#E8D5C8] rotate-[15deg] z-20 shadow-sm opacity-90"></div>
-              )}
-              
-              {/* Polaroid Image */}
-              <div className={`bg-white p-2 pb-6 shadow-md ${rotate} rounded-sm mt-2 relative z-10 flex-shrink-0`}>
-                <div className="w-full aspect-square bg-[#F5E9E0] overflow-hidden rounded-sm relative">
-                  {memory.mediaUrl ? (
-                    <img src={memory.mediaUrl} alt={memory.title} className="w-full h-full object-cover" />
+              <div className="w-full aspect-[4/5] relative flex items-center justify-center">
+                {memory.mediaUrl ? (
+                  memory.type === "video" ? (
+                    <video src={memory.mediaUrl} className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-4xl">
-                      {memory.type === "text" ? "📝" : "🎙️"}
-                    </div>
-                  )}
-                </div>
-                {/* Hand-drawn heart on polaroid frame */}
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4B2E28" strokeWidth="2" className="absolute bottom-1 right-2 opacity-70">
-                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                </svg>
-              </div>
-
-              {/* Info Box */}
-              <div className="bg-[#F5E9E0]/90 rounded-xl p-3 flex-1 flex flex-col justify-between shadow-sm relative z-10 border border-[#E8D5C8]">
-                <div>
-                  <h3 className="font-bold text-[#4B2E28] text-[1.4rem] leading-none mb-1 line-clamp-1" style={{ fontFamily: "var(--font-caveat), cursive" }}>{memory.title}</h3>
-                  <div className="text-[#5F4D4A] text-[10px] font-medium tracking-wide">
-                    {formatDateDisplay(memory.date)}
+                    <img src={memory.mediaUrl} alt={memory.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  )
+                ) : (
+                  <div className="text-6xl drop-shadow-sm">
+                    {memory.type === "text" ? "📝" : memory.type === "voice" ? "🎙️" : "✨"}
                   </div>
-                </div>
-                
-                <div className="absolute bottom-2 right-2 w-7 h-7 rounded-full bg-[#E8D5C8]/80 flex items-center justify-center text-[#4B2E28]">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </div>
+                )}
               </div>
-              
-              {/* Background doodles on the card itself */}
-              {idx % 2 === 0 ? (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4B2E28" strokeWidth="1.5" className="absolute bottom-2 left-2 opacity-30 z-0"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-              ) : (
-                <svg width="30" height="30" viewBox="0 0 24 24" stroke="#5F4D4A" strokeWidth="1.5" className="absolute bottom-1 right-8 opacity-30 z-0"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/><path d="M12 6v6l4.25 2.5"/></svg>
-              )}
             </Link>
           );
         })}

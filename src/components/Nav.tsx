@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -10,43 +10,18 @@ export default function Nav() {
   const { data: session } = useSession();
   const role = (session?.user as any)?.role;
 
-  const [visible, setVisible] = useState(true);
-  const lastScrollY = useRef(0);
-  const ticking = useRef(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => {
-      if (ticking.current) return;
-      ticking.current = true;
-      requestAnimationFrame(() => {
-        const current = window.scrollY;
-        if (current <= 40) {
-          // Always show at the very top
-          setVisible(true);
-        } else if (current < lastScrollY.current) {
-          // Scrolling UP → show
-          setVisible(true);
-        } else if (current > lastScrollY.current + 6) {
-          // Scrolling DOWN (threshold 6px) → hide
-          setVisible(false);
-        }
-        lastScrollY.current = current;
-        ticking.current = false;
-      });
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Shared transition classes
-  const transition = `transition-all duration-500 ease-in-out ${visible ? "translate-y-0 opacity-100" : "translate-y-32 opacity-0 pointer-events-none"}`;
+  // If on a page where we completely hide the nav, we could return null here. 
+  // But currently Dashboard handles it by just not importing Nav.
 
   if (role === "admin") {
     return (
-      <div className={`fixed bottom-6 left-0 right-0 z-50 flex justify-center px-6 ${transition}`}>
-        <div className="flex items-center gap-4 px-6 py-3 rounded-full shadow-xl border border-white/30"
-          style={{ background: "rgba(245,233,224,0.92)", backdropFilter: "blur(16px)" }}>
+      <div className="fixed bottom-6 left-0 right-0 z-50 flex flex-col items-center justify-end pointer-events-none">
+        <div 
+          className={`flex items-center gap-4 px-6 py-3 rounded-full shadow-xl border border-white/30 transition-all duration-300 pointer-events-auto ${isOpen ? "translate-y-0 opacity-100 mb-6" : "translate-y-10 opacity-0 mb-0 invisible"}`}
+          style={{ background: "rgba(245,233,224,0.92)", backdropFilter: "blur(16px)" }}
+        >
           <NavDot href="/admin" label="Dashboard" active={pathname === "/admin"}
             icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>}
           />
@@ -54,15 +29,23 @@ export default function Nav() {
             icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>}
           />
         </div>
+        
+        {/* Toggle Line */}
+        <button 
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-16 h-1.5 rounded-full pointer-events-auto transition-colors active:scale-95"
+          style={{ background: isOpen ? "rgba(75, 46, 40, 0.6)" : "rgba(75, 46, 40, 0.4)" }}
+        />
       </div>
     );
   }
 
   return (
-    <div className={`fixed bottom-6 left-0 right-0 z-50 flex justify-center px-4 ${transition}`}>
+    <div className="fixed bottom-6 left-0 right-0 z-[60] flex flex-col items-center justify-end pointer-events-none">
+      
       {/* Floating pill dock */}
       <div
-        className="flex items-center rounded-full shadow-2xl border border-white/30 overflow-visible"
+        className={`flex items-center rounded-full shadow-2xl border border-white/30 overflow-visible transition-all duration-300 ease-out pointer-events-auto ${isOpen ? "translate-y-0 opacity-100 scale-100 mb-5" : "translate-y-12 opacity-0 scale-95 mb-0 pointer-events-none"}`}
         style={{
           background: "rgba(245,233,224,0.88)",
           backdropFilter: "blur(20px)",
@@ -122,6 +105,7 @@ export default function Nav() {
           }
         />
 
+        {/* Logout */}
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
           className="flex flex-col items-center justify-center gap-[3px] px-2 active:scale-90 transition-transform"
@@ -132,6 +116,13 @@ export default function Nav() {
           <span className="text-[12px] font-semibold text-[#5F4D4A]" style={{ fontFamily: "var(--font-caveat), cursive" }}>Logout</span>
         </button>
       </div>
+
+      {/* Toggle Line Indicator */}
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-14 h-1.5 rounded-full pointer-events-auto active:scale-95 transition-all"
+        style={{ background: isOpen ? "rgba(75, 46, 40, 0.7)" : "rgba(75, 46, 40, 0.4)", backdropFilter: "blur(4px)" }}
+      />
     </div>
   );
 }
