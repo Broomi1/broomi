@@ -104,7 +104,7 @@ export default function GalleryPage() {
       </header>
 
       {/* ── FEATURED PHOTO WINDOW ── */}
-      <div className="relative z-10 px-5 mt-2">
+      <div className="relative z-10 px-5 flex flex-col justify-center" style={{ minHeight: "calc(100vh - 120px)" }}>
         {memories.length === 0 ? (
           <div
             className="w-full rounded-[2rem] flex flex-col items-center justify-center bg-white/40 border border-white/60 shadow-lg"
