@@ -125,7 +125,7 @@ export default function GalleryPage() {
         ) : current ? (
           <div
             className="relative w-full rounded-[2rem] overflow-hidden shadow-2xl cursor-pointer active:scale-[0.99] transition-transform border border-white/50"
-            style={{ height: "65vh" }}
+            style={{ height: "52vh" }}
             onClick={handleTap}
           >
             {/* Media */}

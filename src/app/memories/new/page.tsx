@@ -100,7 +100,7 @@ export default function AddMemoryPage() {
       });
       
       if (res.ok) {
-        router.push("/dashboard");
+        router.push("/gallery");
       } else {
         setError("Failed to save. Please try again.");
         setLoading(false);
