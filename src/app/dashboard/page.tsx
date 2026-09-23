@@ -2,18 +2,34 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import ScrollAnimation from "@/components/ScrollAnimation";
 
 export default function DashboardPage() {
   const { status } = useSession();
   const router = useRouter();
+  
+  // Show the animation first
+  const [showAnimation, setShowAnimation] = useState(true);
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/login");
   }, [status, router]);
 
   if (status === "loading") return null;
+
+  if (showAnimation) {
+    return (
+      <ScrollAnimation 
+        buttonText="Read Our Story" 
+        onComplete={() => {
+          setShowAnimation(false);
+          window.scrollTo(0, 0);
+        }} 
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-[#FAF6F0]">
@@ -46,7 +62,7 @@ export default function DashboardPage() {
 
       {/* ── STORY CONTENT (right side, manually scrollable, no auto-scroll) ── */}
       <div
-        className="absolute top-0 right-0 h-full z-10 overflow-y-auto"
+        className="absolute top-0 right-0 h-full z-10 overflow-y-auto animate-in fade-in duration-1000"
         style={{
           width: "58%",
           scrollbarWidth: "none",

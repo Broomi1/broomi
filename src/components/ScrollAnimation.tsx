@@ -3,7 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function ScrollAnimation() {
+export default function ScrollAnimation({ 
+  buttonText = "Enter Now", 
+  onComplete 
+}: { 
+  buttonText?: string, 
+  onComplete?: () => void 
+}) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const router = useRouter();
   
@@ -109,7 +115,7 @@ export default function ScrollAnimation() {
 
   return (
     <div style={{ height: "400vh", backgroundColor: "#000" }}>
-      <div className="sticky top-0 left-0 w-full h-screen overflow-hidden">
+      <div className="sticky top-0 left-0 w-full overflow-hidden" style={{ height: "100dvh" }}>
         {imagesLoaded < frameCount && (
           <div className="absolute inset-0 flex items-center justify-center text-white z-50 bg-[#1a1514]">
             <div className="flex flex-col items-center">
@@ -132,10 +138,10 @@ export default function ScrollAnimation() {
         >
           <h1 className="text-white text-6xl font-bold mb-8 drop-shadow-xl" style={{ fontFamily: "var(--font-caveat), cursive" }}>MemoryTap</h1>
           <button
-            onClick={() => router.push("/login")}
+            onClick={() => onComplete ? onComplete() : router.push("/login")}
             className="px-10 py-3.5 bg-white text-black font-semibold rounded-full text-lg shadow-[0_0_40px_rgba(255,255,255,0.4)] active:scale-95 transition-all hover:shadow-[0_0_60px_rgba(255,255,255,0.6)]"
           >
-            Enter Now
+            {buttonText}
           </button>
         </div>
         
