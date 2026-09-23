@@ -4,35 +4,66 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import ScrollAnimation from "@/components/ScrollAnimation";
 
 export default function DashboardPage() {
   const { status } = useSession();
   const router = useRouter();
   
-  // Show the animation first
-  const [showAnimation, setShowAnimation] = useState(true);
+  const [memoriesCount, setMemoriesCount] = useState<number | null>(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/login");
   }, [status, router]);
 
-  if (status === "loading") return null;
+  useEffect(() => {
+    if (status === "authenticated") {
+      fetch("/api/memories")
+        .then(res => res.json())
+        .then(data => {
+          if (Array.isArray(data)) {
+            setMemoriesCount(data.length);
+            if (data.length === 0) {
+              setShowPopup(true);
+            }
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }, [status]);
 
-  if (showAnimation) {
-    return (
-      <ScrollAnimation 
-        buttonText="Read Our Story" 
-        onComplete={() => {
-          setShowAnimation(false);
-          window.scrollTo(0, 0);
-        }} 
-      />
-    );
-  }
+  if (status === "loading") return null;
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-[#FAF6F0]">
+
+      {/* ── FIRST TIME UPLOAD POPUP ── */}
+      {showPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-5">
+          <div className="bg-[#FAF6F0] rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl animate-in zoom-in duration-300">
+            <div className="text-6xl mb-4">🌸</div>
+            <h2 className="text-3xl font-bold text-[#4B2E28] mb-2" style={{ fontFamily: "var(--font-caveat), cursive" }}>
+              Welcome to broomi!
+            </h2>
+            <p className="text-[#7A6058] mb-8 font-medium">
+              You haven't captured any memories yet. Let's start by adding your very first one.
+            </p>
+            <Link
+              href="/memories/new"
+              className="inline-block w-full py-3.5 bg-[#4B2E28] text-white font-bold rounded-full text-lg shadow-lg active:scale-95 transition-transform"
+              style={{ fontFamily: "var(--font-caveat), cursive" }}
+            >
+              Upload Memory
+            </Link>
+            <button 
+              onClick={() => setShowPopup(false)}
+              className="mt-4 text-[#7A6058] text-sm font-medium underline underline-offset-2"
+            >
+              Maybe later
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ── BACKGROUND IMAGE (Fixed, Girl on Left) ── */}
       <div
