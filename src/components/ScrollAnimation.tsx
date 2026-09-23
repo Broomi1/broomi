@@ -114,7 +114,7 @@ export default function ScrollAnimation() {
           <div className="absolute inset-0 flex items-center justify-center text-white z-50 bg-[#1a1514]">
             <div className="flex flex-col items-center">
                <div className="w-48 h-1 bg-white/20 rounded-full overflow-hidden mb-3">
-                 <div className="h-full bg-white transition-all duration-300" style={{ width: \`\${(imagesLoaded / frameCount) * 100}%\` }} />
+                 <div className="h-full bg-white transition-all duration-300" style={{ width: `${(imagesLoaded / frameCount) * 100}%` }} />
                </div>
                <span className="text-sm font-medium opacity-70 tracking-widest uppercase">Loading Experience</span>
             </div>
@@ -128,7 +128,7 @@ export default function ScrollAnimation() {
         />
         
         <div 
-          className={\`absolute bottom-24 left-0 right-0 flex flex-col items-center justify-center transition-all duration-1000 \${isAtEnd ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-10 pointer-events-none"}\`}
+          className={`absolute bottom-24 left-0 right-0 flex flex-col items-center justify-center transition-all duration-1000 ${isAtEnd ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 translate-y-10 pointer-events-none"}`}
         >
           <h1 className="text-white text-6xl font-bold mb-8 drop-shadow-xl" style={{ fontFamily: "var(--font-caveat), cursive" }}>MemoryTap</h1>
           <button
@@ -140,7 +140,7 @@ export default function ScrollAnimation() {
         </div>
         
         {/* Scroll indicator when not at end */}
-        <div className={\`absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center transition-opacity duration-500 \${isAtEnd ? 'opacity-0' : 'opacity-60'}\`}>
+        <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center transition-opacity duration-500 ${isAtEnd ? 'opacity-0' : 'opacity-60'}`}>
            <span className="text-white text-xs tracking-widest uppercase mb-2">Scroll</span>
            <div className="w-px h-12 bg-gradient-to-b from-white to-transparent" />
         </div>
