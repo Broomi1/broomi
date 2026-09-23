@@ -154,7 +154,7 @@ export default function ScrollAnimation({
         </div>
 
         {/* broomi watermark cover */}
-        <div className="absolute bottom-4 right-4 select-none pointer-events-none drop-shadow-md bg-white/40 px-2 py-0.5 rounded-md backdrop-blur-sm">
+        <div className="absolute bottom-8 right-4 select-none pointer-events-none drop-shadow-md bg-white/40 px-2 py-0.5 rounded-md backdrop-blur-sm">
           <span style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "20px", color: "#4B2E28", letterSpacing: "0.15em", fontWeight: 700 }}>
             broomi
           </span>
