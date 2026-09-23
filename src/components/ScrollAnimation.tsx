@@ -147,8 +147,15 @@ export default function ScrollAnimation({
         
         {/* Scroll indicator when not at end */}
         <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center transition-opacity duration-500 ${isAtEnd ? 'opacity-0' : 'opacity-60'}`}>
-           <span className="text-white text-xs tracking-widest uppercase mb-2">Scroll</span>
-           <div className="w-px h-12 bg-gradient-to-b from-white to-transparent" />
+           <span className="text-white text-sm tracking-widest uppercase mb-2 drop-shadow-md">Scroll Down</span>
+           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-bounce">
+             <path d="M12 5v14M19 12l-7 7-7-7"/>
+           </svg>
+        </div>
+
+        {/* Flower watermark cover */}
+        <div className="absolute bottom-4 right-4 text-4xl opacity-90 select-none pointer-events-none drop-shadow-lg">
+          🌸
         </div>
       </div>
     </div>
