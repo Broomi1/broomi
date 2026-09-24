@@ -4,13 +4,14 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import HomeAnimation from "@/components/HomeAnimation";
 
 export default function DashboardPage() {
   const { status } = useSession();
   const router = useRouter();
 
-  // Always show popup when user lands on dashboard after login
-  const [showPopup, setShowPopup] = useState(true);
+  // Steps: "popup" → "animation" → "story"
+  const [step, setStep] = useState<"popup" | "animation" | "story">("popup");
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/login");
@@ -18,49 +19,66 @@ export default function DashboardPage() {
 
   if (status === "loading") return null;
 
+  // ── STEP 1: ADD MEMORY POPUP ──
+  if (step === "popup") {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black px-5">
+        <style>{`
+          @keyframes popIn {
+            0%   { opacity: 0; transform: scale(0.88); }
+            100% { opacity: 1; transform: scale(1); }
+          }
+        `}</style>
+        <div
+          className="bg-[#FAF6F0] rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl"
+          style={{ animation: "popIn 0.45s cubic-bezier(0.34,1.56,0.64,1) forwards" }}
+        >
+          <div className="text-6xl mb-4">📸</div>
+          <h2
+            className="text-3xl font-bold text-[#4B2E28] mb-2"
+            style={{ fontFamily: "var(--font-caveat), cursive" }}
+          >
+            Add a Memory
+          </h2>
+          <p className="text-[#7A6058] mb-8 leading-relaxed text-sm">
+            Capture a moment worth keeping. Tap below to add your next memory.
+          </p>
+          <Link
+            href="/memories/new"
+            className="inline-block w-full py-3.5 bg-[#4B2E28] text-white font-bold rounded-full text-lg shadow-lg active:scale-95 transition-transform"
+            style={{ fontFamily: "var(--font-caveat), cursive" }}
+          >
+            Add Memory
+          </Link>
+          <button
+            onClick={() => {
+              setStep("animation");
+              window.scrollTo(0, 0);
+            }}
+            className="mt-4 block w-full text-[#7A6058] text-sm font-medium underline underline-offset-2"
+          >
+            Maybe later
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── STEP 2: HOME ANIMATION (after popup) ──
+  if (step === "animation") {
+    return (
+      <HomeAnimation
+        onComplete={() => {
+          setStep("story");
+          window.scrollTo(0, 0);
+        }}
+      />
+    );
+  }
+
+  // ── STEP 3: STORY / DASHBOARD ──
   return (
     <div className="min-h-screen relative overflow-hidden bg-[#FAF6F0]">
-
-      <style>{`
-        @keyframes popIn {
-          0% { opacity: 0; transform: scale(0.85); }
-          100% { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
-
-      {/* ── ADD MEMORY POPUP ── */}
-      {showPopup && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-5">
-          <div
-            className="bg-[#FAF6F0] rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl"
-            style={{ animation: "popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards" }}
-          >
-            <div className="text-6xl mb-4">📸</div>
-            <h2
-              className="text-3xl font-bold text-[#4B2E28] mb-2"
-              style={{ fontFamily: "var(--font-caveat), cursive" }}
-            >
-              Add a Memory
-            </h2>
-            <p className="text-[#7A6058] mb-8 leading-relaxed">
-              Capture a moment worth keeping. Tap below to add your next memory.
-            </p>
-            <Link
-              href="/memories/new"
-              className="inline-block w-full py-3.5 bg-[#4B2E28] text-white font-bold rounded-full text-lg shadow-lg active:scale-95 transition-transform"
-              style={{ fontFamily: "var(--font-caveat), cursive" }}
-            >
-              Add Memory
-            </Link>
-            <button
-              onClick={() => setShowPopup(false)}
-              className="mt-4 block w-full text-[#7A6058] text-sm font-medium underline underline-offset-2"
-            >
-              Maybe later
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* ── BACKGROUND IMAGE (Fixed, Girl on Left) ── */}
       <div
@@ -81,22 +99,30 @@ export default function DashboardPage() {
         }}
       />
 
-      {/* ── BRANDING (bottom-left) ── */}
+      {/* ── BRANDING ── */}
       <div className="fixed bottom-6 left-5 z-20 select-none opacity-45">
         <span style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "15px", color: "#4B2E28", letterSpacing: "0.15em", fontWeight: 700 }}>
           broomi
         </span>
       </div>
 
-      {/* ── STORY CONTENT (right side) ── */}
+      {/* ── STORY CONTENT ── */}
       <div
-        className="absolute top-0 right-0 h-full z-10 overflow-y-auto animate-in fade-in duration-1000"
+        className="absolute top-0 right-0 h-full z-10 overflow-y-auto"
         style={{
           width: "58%",
           scrollbarWidth: "none",
           msOverflowStyle: "none",
+          animation: "fadeInStory 0.8s ease forwards",
         }}
       >
+        <style>{`
+          @keyframes fadeInStory {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+          }
+        `}</style>
+
         <div className="pl-3 pr-4 sm:pr-8 py-10 relative">
 
           <div className="absolute top-6 right-3 text-xl select-none pointer-events-none opacity-70 rotate-12">⭐</div>
@@ -142,7 +168,6 @@ export default function DashboardPage() {
             </p>
 
             <p>For some reason, I couldn't just walk away.</p>
-
             <p>So I made myself a small promise:</p>
           </div>
 
