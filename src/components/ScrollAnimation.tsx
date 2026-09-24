@@ -139,7 +139,7 @@ export default function ScrollAnimation({
             </div>
           </div>
         )}
-        <canvas ref={canvasRef} className="w-full h-full object-cover" style={{ imageRendering: "high-quality" }} />
+        <canvas ref={canvasRef} className="w-full h-full" />
         
         <div 
           className="absolute inset-0 bg-black transition-opacity duration-1000 pointer-events-none" 
