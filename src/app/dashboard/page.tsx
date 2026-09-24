@@ -8,56 +8,53 @@ import Link from "next/link";
 export default function DashboardPage() {
   const { status } = useSession();
   const router = useRouter();
-  
-  const [memoriesCount, setMemoriesCount] = useState<number | null>(null);
-  const [showPopup, setShowPopup] = useState(false);
+
+  // Always show popup when user lands on dashboard after login
+  const [showPopup, setShowPopup] = useState(true);
 
   useEffect(() => {
     if (status === "unauthenticated") router.push("/login");
   }, [status, router]);
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      fetch("/api/memories")
-        .then(res => res.json())
-        .then(data => {
-          if (Array.isArray(data)) {
-            setMemoriesCount(data.length);
-            if (data.length === 0) {
-              setShowPopup(true);
-            }
-          }
-        })
-        .catch(err => console.error(err));
-    }
-  }, [status]);
 
   if (status === "loading") return null;
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-[#FAF6F0]">
 
-      {/* ── FIRST TIME UPLOAD POPUP ── */}
+      <style>{`
+        @keyframes popIn {
+          0% { opacity: 0; transform: scale(0.85); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
+
+      {/* ── ADD MEMORY POPUP ── */}
       {showPopup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-5">
-          <div className="bg-[#FAF6F0] rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl animate-in zoom-in duration-300">
-            <div className="text-6xl mb-4">🌸</div>
-            <h2 className="text-3xl font-bold text-[#4B2E28] mb-2" style={{ fontFamily: "var(--font-caveat), cursive" }}>
-              Welcome to broomi!
+          <div
+            className="bg-[#FAF6F0] rounded-[2rem] p-8 max-w-sm w-full text-center shadow-2xl"
+            style={{ animation: "popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards" }}
+          >
+            <div className="text-6xl mb-4">📸</div>
+            <h2
+              className="text-3xl font-bold text-[#4B2E28] mb-2"
+              style={{ fontFamily: "var(--font-caveat), cursive" }}
+            >
+              Add a Memory
             </h2>
-            <p className="text-[#7A6058] mb-8 font-medium">
-              You haven't captured any memories yet. Let's start by adding your very first one.
+            <p className="text-[#7A6058] mb-8 leading-relaxed">
+              Capture a moment worth keeping. Tap below to add your next memory.
             </p>
             <Link
               href="/memories/new"
               className="inline-block w-full py-3.5 bg-[#4B2E28] text-white font-bold rounded-full text-lg shadow-lg active:scale-95 transition-transform"
               style={{ fontFamily: "var(--font-caveat), cursive" }}
             >
-              Upload Memory
+              Add Memory
             </Link>
-            <button 
+            <button
               onClick={() => setShowPopup(false)}
-              className="mt-4 text-[#7A6058] text-sm font-medium underline underline-offset-2"
+              className="mt-4 block w-full text-[#7A6058] text-sm font-medium underline underline-offset-2"
             >
               Maybe later
             </button>
@@ -91,7 +88,7 @@ export default function DashboardPage() {
         </span>
       </div>
 
-      {/* ── STORY CONTENT (right side, manually scrollable, no auto-scroll) ── */}
+      {/* ── STORY CONTENT (right side) ── */}
       <div
         className="absolute top-0 right-0 h-full z-10 overflow-y-auto animate-in fade-in duration-1000"
         style={{
@@ -100,15 +97,10 @@ export default function DashboardPage() {
           msOverflowStyle: "none",
         }}
       >
-        {/* Scrollbar hide for webkit */}
-        <style>{`.story-scroll::-webkit-scrollbar { display: none; }`}</style>
-
         <div className="pl-3 pr-4 sm:pr-8 py-10 relative">
 
-          {/* ── STICKER: Star top right ── */}
           <div className="absolute top-6 right-3 text-xl select-none pointer-events-none opacity-70 rotate-12">⭐</div>
 
-          {/* "Meet Anna." */}
           <h1
             className="font-bold text-[#4B2E28] mb-3 leading-tight"
             style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "clamp(22px, 6vw, 32px)" }}
@@ -116,7 +108,6 @@ export default function DashboardPage() {
             Meet Anna.
           </h1>
 
-          {/* Opening quote */}
           <span
             className="block text-[#C4A898] leading-none mb-2"
             style={{ fontFamily: "Georgia, serif", fontSize: "clamp(28px, 7vw, 44px)", lineHeight: 0.6 }}
@@ -124,7 +115,6 @@ export default function DashboardPage() {
             "
           </span>
 
-          {/* Story body */}
           <div
             className="text-[#5F4D4A] leading-snug flex flex-col gap-3"
             style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "clamp(13px, 3.4vw, 16px)" }}
@@ -134,13 +124,11 @@ export default function DashboardPage() {
               streets, old cafés and artists, when I began noticing the locks.
             </p>
 
-            {/* Emphasized */}
             <p className="font-bold italic text-[#4B2E28] pl-3 border-l-2 border-[#C4A898]"
                style={{ fontSize: "clamp(13px, 3.6vw, 17px)" }}>
               Names. Dates.<br />Little promises left behind.
             </p>
 
-            {/* ── STICKER: Key (locks theme) ── */}
             <div className="flex justify-end pr-2 select-none pointer-events-none">
               <span className="text-base opacity-60 -rotate-12">🔑</span>
             </div>
@@ -158,14 +146,11 @@ export default function DashboardPage() {
             <p>So I made myself a small promise:</p>
           </div>
 
-          {/* ── PROMISE CARD ── */}
           <div
             className="my-4 px-4 py-4 rounded-2xl border border-[#E8D5C8]/60 relative"
             style={{ background: "rgba(255,255,255,0.45)", backdropFilter: "blur(10px)" }}
           >
-            {/* Sticker on card */}
             <span className="absolute -top-3 -right-2 text-lg select-none pointer-events-none rotate-6">🌿</span>
-
             <p
               className="font-bold italic text-[#4B2E28] leading-snug"
               style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "clamp(13px, 3.8vw, 17px)" }}
@@ -179,7 +164,6 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          {/* Closing quote */}
           <div className="text-right pr-2 mb-4">
             <span
               className="text-[#C4A898] leading-none"
@@ -189,14 +173,12 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          {/* ── STICKER: Heart ── */}
           <div className="flex gap-2 mb-5 pl-1 select-none pointer-events-none">
             <span className="text-sm opacity-50">♡</span>
             <span className="text-sm opacity-30">♡</span>
             <span className="text-sm opacity-20">♡</span>
           </div>
 
-          {/* ── CTA BUTTON ── */}
           <Link
             href="/gallery"
             className="relative group flex items-center justify-center overflow-hidden rounded-full p-[2px] w-fit active:scale-95 transition-all"
@@ -216,10 +198,6 @@ export default function DashboardPage() {
             </div>
           </Link>
 
-          {/* Bottom sticker */}
-          <div className="absolute bottom-8 right-4 text-lg select-none pointer-events-none opacity-50 -rotate-6">✨</div>
-
-          {/* Spacer for bottom nav clearance */}
           <div className="h-16" />
         </div>
       </div>
