@@ -13,7 +13,7 @@ export default function ScrollAnimation({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const router = useRouter();
   
-  const frameCount = 240;
+  const frameCount = 196;
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [imagesLoaded, setImagesLoaded] = useState(0);
 
