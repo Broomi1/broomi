@@ -44,20 +44,30 @@ export default function ScrollAnimation({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
     
-    // Set canvas dimensions
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // Set canvas dimensions with devicePixelRatio for maximum sharpness
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
+    canvas.style.width = `${window.innerWidth}px`;
+    canvas.style.height = `${window.innerHeight}px`;
+    
+    // Scale context to match DPR
+    ctx.scale(dpr, dpr);
     
     const renderFrame = (index: number) => {
       const img = images[index];
       if (!img) return;
       
-      // Calculate object-cover dimensions
-      const scale = Math.max(canvas.width / img.width, canvas.height / img.height);
-      const x = (canvas.width / 2) - (img.width / 2) * scale;
-      const y = (canvas.height / 2) - (img.height / 2) * scale;
+      // Calculate object-cover dimensions (using logical pixels)
+      const scale = Math.max(window.innerWidth / img.width, window.innerHeight / img.height);
+      const x = (window.innerWidth / 2) - (img.width / 2) * scale;
+      const y = (window.innerHeight / 2) - (img.height / 2) * scale;
       
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Enable high-quality image smoothing
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
     };
     
@@ -71,7 +81,7 @@ export default function ScrollAnimation({
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
       
       // Calculate which frame to show
-      const scrollFraction = scrollTop / maxScroll;
+      const scrollFraction = Math.max(0, Math.min(1, scrollTop / maxScroll));
       const frameIndex = Math.min(
         frameCount - 1,
         Math.floor(scrollFraction * frameCount)
@@ -86,8 +96,11 @@ export default function ScrollAnimation({
     
     window.addEventListener("scroll", handleScroll);
     window.addEventListener("resize", () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      ctx.scale(dpr, dpr);
       handleScroll(); // re-render current frame
     });
     
@@ -126,7 +139,7 @@ export default function ScrollAnimation({
             </div>
           </div>
         )}
-        <canvas ref={canvasRef} className="w-full h-full object-cover" />
+        <canvas ref={canvasRef} className="w-full h-full object-cover" style={{ imageRendering: "high-quality" }} />
         
         <div 
           className="absolute inset-0 bg-black transition-opacity duration-1000 pointer-events-none" 
@@ -151,13 +164,6 @@ export default function ScrollAnimation({
            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-bounce">
              <path d="M12 5v14M19 12l-7 7-7-7"/>
            </svg>
-        </div>
-
-        {/* broomi watermark cover */}
-        <div className="absolute bottom-12 right-4 select-none pointer-events-none drop-shadow-md bg-white/40 px-2 py-0.5 rounded-md backdrop-blur-sm">
-          <span style={{ fontFamily: "var(--font-caveat), cursive", fontSize: "20px", color: "#4B2E28", letterSpacing: "0.15em", fontWeight: 700 }}>
-            broomi
-          </span>
         </div>
       </div>
     </div>
