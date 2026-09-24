@@ -17,23 +17,34 @@ export default function ScrollAnimation({
   const [images, setImages] = useState<HTMLImageElement[]>([]);
   const [imagesLoaded, setImagesLoaded] = useState(0);
 
-  // Preload images
+  // Preload and pre-decode images for maximum clarity
   useEffect(() => {
-    const loadedImages: HTMLImageElement[] = [];
+    const loadedImages: HTMLImageElement[] = new Array(frameCount);
     let loaded = 0;
-    
+
     for (let i = 1; i <= frameCount; i++) {
       const img = new Image();
       const paddedIndex = i.toString().padStart(3, "0");
       img.src = `/heroimages/ezgif-frame-${paddedIndex}.jpg`;
-      img.onload = () => {
+      img.decoding = "async";
+      const idx = i - 1;
+      img.decode().then(() => {
+        loadedImages[idx] = img;
         loaded++;
         setImagesLoaded(loaded);
-      };
-      // Keep reference to trigger onload
-      loadedImages.push(img);
+        if (loaded === frameCount) {
+          setImages([...loadedImages]);
+        }
+      }).catch(() => {
+        // fallback for browsers without decode()
+        loadedImages[idx] = img;
+        loaded++;
+        setImagesLoaded(loaded);
+        if (loaded === frameCount) {
+          setImages([...loadedImages]);
+        }
+      });
     }
-    setImages(loadedImages);
   }, []);
 
   useEffect(() => {
