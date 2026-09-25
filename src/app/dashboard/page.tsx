@@ -20,8 +20,8 @@ export default function DashboardPage() {
       // Check if they've already seen the popup in this session
       const hasSeenPopup = sessionStorage.getItem("hasSeenPopup");
       if (hasSeenPopup) {
-        // Skip straight to the story if they return to home later
-        setStep("story");
+        // Play the animation on the home page, skip the popup
+        setStep("animation");
       } else {
         setStep("popup");
       }
