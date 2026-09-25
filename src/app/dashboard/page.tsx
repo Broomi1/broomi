@@ -11,13 +11,24 @@ export default function DashboardPage() {
   const router = useRouter();
 
   // Steps: "popup" → "animation" → "story"
-  const [step, setStep] = useState<"popup" | "animation" | "story">("popup");
+  const [step, setStep] = useState<"popup" | "animation" | "story" | null>(null);
 
   useEffect(() => {
-    if (status === "unauthenticated") router.push("/login");
+    if (status === "unauthenticated") {
+      router.push("/login");
+    } else if (status === "authenticated") {
+      // Check if they've already seen the popup in this session
+      const hasSeenPopup = sessionStorage.getItem("hasSeenPopup");
+      if (hasSeenPopup) {
+        // Skip straight to the story if they return to home later
+        setStep("story");
+      } else {
+        setStep("popup");
+      }
+    }
   }, [status, router]);
 
-  if (status === "loading") return null;
+  if (status === "loading" || !step) return null;
 
   // ── STEP 1: ADD MEMORY POPUP ──
   if (step === "popup") {
@@ -45,6 +56,7 @@ export default function DashboardPage() {
           </p>
           <Link
             href="/memories/new"
+            onClick={() => sessionStorage.setItem("hasSeenPopup", "true")}
             className="inline-block w-full py-3.5 bg-[#4B2E28] text-white font-bold rounded-full text-lg shadow-lg active:scale-95 transition-transform"
             style={{ fontFamily: "var(--font-caveat), cursive" }}
           >
@@ -52,6 +64,7 @@ export default function DashboardPage() {
           </Link>
           <button
             onClick={() => {
+              sessionStorage.setItem("hasSeenPopup", "true");
               setStep("animation");
               window.scrollTo(0, 0);
             }}
